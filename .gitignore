@@ -89,4 +89,5 @@ fastlane/test_output
 
 iOSInjectionProject/
 
+Shortkathon/Shortkathon/APIService/URLClass.swift
 # End of https://www.toptal.com/developers/gitignore/api/swift

@@ -1,64 +1,118 @@
 import Foundation
+import Alamofire
 
-// 서버와 통신할 때 사용되는 기본 사용자 모델이에요!
-struct User: Codable {
-    let id: Int?
-    let name: String
-    let part: String
-    let age: Int
-}
-
-struct UpdateUserRequest: Codable {
-    let name: String
-    let part: String
-    let age: String
-}
-
-// 서버로부터의 성공/실패 응답을 처리하는 구조체입니당:)
 struct APIResponse: Codable {
-    let success: Bool
+    let check: Bool
 }
 
 class APIService {
     static let shared = APIService()
-    private let networkManager = NetworkManager.shared
+    let urlInstance = URLClass()
+    private lazy var baseURL = urlInstance.baseURL
     
     private init() {}
     
-    // MARK: - 사용자 목록 조회 메서드에요~
-    // 특정 파트의 사용자들을 가져오는 GET 요청이에요!
-    // @escaping은 네트워크 작업은 시간이 걸리기에 함수가 끝나도 나중에 결과를 처리해야되기 때문에 존재!
-    func getUsers(part: String, completion: @escaping (Result<[User], Error>) -> Void) {
-        networkManager.request("/user",
-                             method: "GET",
-                             parameters: ["part": part],
-                             completion: completion)
+    // GET 요청
+    func get<T: Codable>(endpoint: String, completion: @escaping (Result<T, Error>) -> Void) {
+        let urlString = "\(baseURL)\(endpoint)"
+            
+        print("📡 GET 요청 시작 ===============")
+//        print("URL: \(urlString)")
+        
+        AF.request(urlString,
+                  method: .get,
+                  headers: ["accept": "application/json"])
+        .validate()
+        .responseDecodable(of: T.self) { response in
+            self.handleResponse(response, completion: completion)
+        }
     }
     
-    // MARK: - 새로운 사용자 생성 메서드에요~
-    // 새로운 사용자를 생성하는 POST 요청이에요!
-    func createUser(user: User, completion: @escaping (Result<APIResponse, Error>) -> Void) {
-        networkManager.request("/user",
-                             method: "POST",
-                             body: user,
-                             completion: completion)
+    // POST 요청
+    func post<T: Codable>(endpoint: String, parameters: [String: Any], completion: @escaping (Result<T, Error>) -> Void) {
+        let urlString = "\(baseURL)\(endpoint)"
+        
+        print("📡 POST 요청 시작 ===============")
+        print("URL: \(urlString)")
+        print("Parameters: \(parameters)")
+        
+        AF.request(urlString,
+                  method: .post,
+                  parameters: parameters,
+                  encoding: JSONEncoding.default,
+                  headers: ["Content-Type": "application/json",
+                           "accept": "application/json"])
+        .validate()
+        .responseDecodable(of: T.self) { response in
+            self.handleResponse(response, completion: completion)
+        }
     }
     
-    // MARK: - 사용자 정보 업데이트 메서드에요~
-    // 특정 ID의 사용자 정보를 수정하는 PATCH 요청이에요!
-    func updateUser(id: Int, user: UpdateUserRequest, completion: @escaping (Result<APIResponse, Error>) -> Void) {
-        networkManager.request("/user/\(id)",
-                             method: "PATCH",
-                             body: user,
-                             completion: completion)
+    // PUT 요청
+    func put<T: Codable>(endpoint: String, parameters: [String: Any], completion: @escaping (Result<T, Error>) -> Void) {
+        let urlString = "\(baseURL)\(endpoint)"
+        
+        print("📡 PUT 요청 시작 ===============")
+        print("URL: \(urlString)")
+        print("Parameters: \(parameters)")
+        
+        AF.request(urlString,
+                  method: .put,
+                  parameters: parameters,
+                  encoding: JSONEncoding.default,
+                  headers: ["Content-Type": "application/json",
+                           "accept": "application/json"])
+        .validate()
+        .responseDecodable(of: T.self) { response in
+            self.handleResponse(response, completion: completion)
+        }
     }
     
-    // MARK: - 사용자 삭제 메서드에요~
-    // 특정 ID의 사용자를 삭제하는 DELETE 요청이에요!
-    func deleteUser(id: Int, completion: @escaping (Result<APIResponse, Error>) -> Void) {
-        networkManager.request("/user/\(id)",
-                             method: "DELETE",
-                             completion: completion)
+    // DELETE 요청
+    func delete<T: Codable>(endpoint: String, completion: @escaping (Result<T, Error>) -> Void) {
+        let urlString = "\(baseURL)\(endpoint)"
+        
+        print("📡 DELETE 요청 시작 ===============")
+        print("URL: \(urlString)")
+        
+        AF.request(urlString,
+                  method: .delete,
+                  headers: ["accept": "application/json"])
+        .validate()
+        .responseDecodable(of: T.self) { response in
+            self.handleResponse(response, completion: completion)
+        }
+    }
+    
+    // 응답 처리 헬퍼 메서드
+    private func handleResponse<T: Codable>(_ response: DataResponse<T, AFError>, completion: @escaping (Result<T, Error>) -> Void) {
+        print("\n📡 서버 응답 ===============")
+        
+        if let statusCode = response.response?.statusCode {
+            print("상태 코드: \(statusCode)")
+        }
+        
+        if let headers = response.response?.allHeaderFields {
+            print("헤더 필드:")
+            headers.forEach { key, value in
+                print("\(key): \(value)")
+            }
+        }
+        
+        if let data = response.data, let jsonString = String(data: data, encoding: .utf8) {
+            print("\n📦 응답 데이터:")
+            print(jsonString)
+        }
+        
+        switch response.result {
+        case .success(let value):
+            print("✅ 요청 성공")
+            completion(.success(value))
+        case .failure(let error):
+            print("❌ 요청 실패: \(error.localizedDescription)")
+            completion(.failure(error))
+        }
+        
+        print("===============================\n")
     }
 }
-
