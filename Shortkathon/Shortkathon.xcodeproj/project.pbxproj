@@ -7,11 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-<<<<<<< HEAD
+
 		DE0387E52D16B5D4000274BF /* FSCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = DE0387E42D16B5D4000274BF /* FSCalendar */; };
-=======
+
 		4862C7D52D1862F500FFC91B /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 4862C7D42D1862F500FFC91B /* Alamofire */; };
->>>>>>> 7f3e8c2b7db58857de87effad88063148476261f
+7f3e8c2b7db58857de87effad88063148476261f
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
