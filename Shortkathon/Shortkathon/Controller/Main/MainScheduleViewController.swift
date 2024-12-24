@@ -25,8 +25,7 @@ class MainScheduleViewController: UIViewController, UITableViewDelegate, UITable
         configureTableView()
         setConstraints()
     
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        view.addGestureRecognizer(tapGesture)
+        
 
         tableView.dragInteractionEnabled = true
         tableView.dragDelegate = self
