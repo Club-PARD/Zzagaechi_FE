@@ -11,6 +11,7 @@
 		DE0387E52D16B5D4000274BF /* FSCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = DE0387E42D16B5D4000274BF /* FSCalendar */; };
 
 		DE0387E52D16B5D4000274BF /* FSCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = DE0387E42D16B5D4000274BF /* FSCalendar */; };
+		483506802D1AD29100030CA2 /* FSCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = 4835067F2D1AD29100030CA2 /* FSCalendar */; };
 		4862C7D52D1862F500FFC91B /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 4862C7D42D1862F500FFC91B /* Alamofire */; };
 7f3e8c2b7db58857de87effad88063148476261f
 /* End PBXBuildFile section */
@@ -81,6 +82,7 @@
 
 				4862C7D52D1862F500FFC91B /* Alamofire in Frameworks */,
  7f3e8c2b7db58857de87effad88063148476261f
+				483506802D1AD29100030CA2 /* FSCalendar in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -148,6 +150,7 @@
 
 				4862C7D42D1862F500FFC91B /* Alamofire */,
 7f3e8c2b7db58857de87effad88063148476261f
+				4835067F2D1AD29100030CA2 /* FSCalendar */,
 			);
 			productName = Shortkathon;
 			productReference = 48E4B2882CE5011F001F4294 /* Shortkathon.app */;
@@ -239,6 +242,7 @@
 
 				4862C7D32D1862F500FFC91B /* XCRemoteSwiftPackageReference "Alamofire" */,
 7f3e8c2b7db58857de87effad88063148476261f
+				4835067E2D1AD29100030CA2 /* XCRemoteSwiftPackageReference "FSCalendar" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 48E4B2892CE5011F001F4294 /* Products */;
@@ -607,12 +611,15 @@
 /* Begin XCRemoteSwiftPackageReference section */
 
 		DE0387E32D16B5D4000274BF /* XCRemoteSwiftPackageReference "FSCalendar" */ = {
+		4835067E2D1AD29100030CA2 /* XCRemoteSwiftPackageReference "FSCalendar" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/WenchaoD/FSCalendar.git";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 2.8.4;
 
+			};
+		};
 		4862C7D32D1862F500FFC91B /* XCRemoteSwiftPackageReference "Alamofire" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
@@ -631,6 +638,11 @@
 			package = DE0387E32D16B5D4000274BF /* XCRemoteSwiftPackageReference "FSCalendar" */;
 			productName = FSCalendar;
 
+		4835067F2D1AD29100030CA2 /* FSCalendar */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4835067E2D1AD29100030CA2 /* XCRemoteSwiftPackageReference "FSCalendar" */;
+			productName = FSCalendar;
+		};
 		4862C7D42D1862F500FFC91B /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4862C7D32D1862F500FFC91B /* XCRemoteSwiftPackageReference "Alamofire" */;
