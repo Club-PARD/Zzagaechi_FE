@@ -16,21 +16,23 @@ class DetailPlanViewController : UIViewController {
     func configureNavigationBar(){
         navigationItem.title = "새로운 일 분류"
         
-        let backButton = UIBarButtonItem(
-            title: "생성",
-            style: .plain,
-            target: self,
-            action: #selector(backButtonTapped)
-        )
+        let customButton = UIButton(type: .system)
+        customButton.setImage(UIImage(systemName: "chevron.left"), for: .normal)
+        customButton.setTitle(" 생성", for: .normal)
+        customButton.tintColor = #colorLiteral(red: 1, green: 0.3735775948, blue: 0.3423727155, alpha: 1)
+        customButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
+
+        let backButton = UIBarButtonItem(customView: customButton)
         navigationItem.leftBarButtonItem = backButton
         
-        // 오른쪽 버튼 설정 (완료)
+        
         let doneButton = UIBarButtonItem(
             title: "완료",
             style: .done,
             target: self,
             action: #selector(doneButtonTapped)
         )
+        doneButton.tintColor = #colorLiteral(red: 0.6817840338, green: 0.6817839742, blue: 0.6817840338, alpha: 1)
         navigationItem.rightBarButtonItem = doneButton
     }
 
