@@ -37,11 +37,11 @@ class DateCollectionViewCell : UICollectionViewCell {
     override var isSelected: Bool {
             didSet {
                 if isSelected {
-                    contentView.backgroundColor = #colorLiteral(red: 0.7294117647, green: 0.8117647059, blue: 0.9568627451, alpha: 1) // 선택됐을 때 색상
+                    contentView.backgroundColor = #colorLiteral(red: 0.7294117647, green: 0.8117647059, blue: 0.9568627451, alpha: 1)
                     dateLabel.textColor = .black
                     dayLabel.textColor = .black
                 } else {
-                    contentView.backgroundColor =  #colorLiteral(red: 0.2605186105, green: 0.2605186105, blue: 0.2605186105, alpha: 1)// 선택 해제됐을 때 색상
+                    contentView.backgroundColor =  #colorLiteral(red: 0.2605186105, green: 0.2605186105, blue: 0.2605186105, alpha: 1)
                     dateLabel.textColor = .white
                     dayLabel.textColor = .white
                 }

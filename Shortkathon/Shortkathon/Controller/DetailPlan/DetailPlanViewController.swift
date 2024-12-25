@@ -88,8 +88,8 @@ class DetailPlanViewController : UIViewController {
         view.backgroundColor = #colorLiteral(red: 0.2128768861, green: 0.2128768861, blue: 0.2128768861, alpha: 1)
         configureNavigationBar()
         configureCollectionView()
-        configureTableView()
         setUI()
+        
         scrollView.delegate = self
         scrollView.delaysContentTouches = false
         dateCollectionView.panGestureRecognizer.allowedTouchTypes = [NSNumber(value: UITouch.TouchType.direct.rawValue)]
@@ -138,29 +138,16 @@ class DetailPlanViewController : UIViewController {
     }
     
     
-    func configureTableView(){
-        
-        //        toDoListTableView.delegate = self
-        //        toDoListTableView.dataSource = self
-        
-        //        seperateListTableView.dragDelegate = self
-        //        seperateListTableView.dropDelegate = self
-        //        toDoListTableView.dragDelegate = self
-        //        toDoListTableView.dropDelegate = self
-        
-        
-        
-        
-    }
+  
     
     func setUI(){
-        view.addSubview(scrollView)
-        scrollView.addSubview(contentView)
         
         [scrollView,contentView].forEach{
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentView)
         
         [monthLabel,dateCollectionView, seperateDayListView,seperateLabel,seperateListTableView,toDoListTableView].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
@@ -261,66 +248,6 @@ extension DetailPlanViewController:  UICollectionViewDelegateFlowLayout {
     }
 }
 
-
-
-
-
-
-//extension DetailPlanViewController: UITableViewDelegate, UITableViewDataSource {
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return tableView == referenceTableView ? referenceItems.count : timeItems.count
-//    }
-//
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let cell = tableView.dequeueReusableCell(withIdentifier: tableView == referenceTableView ? "ReferenceCell" : "TimeCell", for: indexPath)
-//        let item = tableView == referenceTableView ? referenceItems[indexPath.row] : timeItems[indexPath.row]
-//
-//        var content = cell.defaultContentConfiguration()
-//        content.text = item
-//        content.textProperties.color = .white
-//        cell.contentConfiguration = content
-//        cell.backgroundColor = .clear
-//
-//        return cell
-//    }
-//}
-
-
-//extension DetailPlanViewController: UITableViewDragDelegate, UITableViewDropDelegate {
-//    func tableView(_ tableView: UITableView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
-//        let item = tableView == referenceTableView ? referenceItems[indexPath.row] : timeItems[indexPath.row]
-//        let itemProvider = NSItemProvider(object: item as NSString)
-//        let dragItem = UIDragItem(itemProvider: itemProvider)
-//        dragItem.localObject = item
-//        return [dragItem]
-//    }
-//
-//    func tableView(_ tableView: UITableView, dropSessionDidUpdate session: UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UITableViewDropProposal {
-//        if tableView == timeTableView {
-//            return UITableViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
-//        }
-//        return UITableViewDropProposal(operation: .forbidden)
-//    }
-//
-//    func tableView(_ tableView: UITableView, performDropWith coordinator: UITableViewDropCoordinator) {
-//        guard let destinationIndexPath = coordinator.destinationIndexPath else { return }
-//
-//        coordinator.items.forEach { dropItem in
-//            guard let sourceIndexPath = dropItem.sourceIndexPath,
-//                  let item = dropItem.dragItem.localObject as? String else { return }
-//
-//            if tableView == timeTableView && sourceIndexPath.row < referenceItems.count {
-//                referenceItems.remove(at: sourceIndexPath.row)
-//                timeItems.insert(item, at: destinationIndexPath.row)
-//
-//                tableView.performBatchUpdates({
-//                    referenceTableView.deleteRows(at: [sourceIndexPath], with: .automatic)
-//                    timeTableView.insertRows(at: [destinationIndexPath], with: .automatic)
-//                })
-//            }
-//        }
-//    }
-//}
 extension DetailPlanViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView == self.scrollView {
