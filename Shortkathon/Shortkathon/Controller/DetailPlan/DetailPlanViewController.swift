@@ -15,7 +15,7 @@ class DetailPlanViewController : UIViewController {
         layout.scrollDirection = .horizontal
         layout.minimumInteritemSpacing = 11
         layout.minimumLineSpacing = 15
-
+        
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
@@ -31,6 +31,8 @@ class DetailPlanViewController : UIViewController {
         view.layer.cornerRadius = 12
         return view
     }()
+    
+    
     
     // 더미 데이터
     private let dates: [(date: String, day: String)] = [
@@ -73,6 +75,14 @@ class DetailPlanViewController : UIViewController {
         dateCollectionView.delegate = self
         dateCollectionView.dataSource = self
         dateCollectionView.register(DateCollectionViewCell.self, forCellWithReuseIdentifier: DateCollectionViewCell.identifier)
+        
+        
+        // 셀 선택시 로직
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            let indexPath = IndexPath(item: 0, section: 0)
+            self.dateCollectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
+            self.collectionView(self.dateCollectionView, didSelectItemAt: indexPath)
+        }
     }
     
     func setUI(){
@@ -124,9 +134,9 @@ extension  DetailPlanViewController : UICollectionViewDelegate, UICollectionView
     }
     
     
-        func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-               return CGSize(width: 60, height: 80)
-           }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: 60, height: 80)
+    }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         // 여기에 날짜 선택 시 contentView의 내용을 변경하는 로직 추가
