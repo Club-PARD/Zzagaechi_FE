@@ -5,7 +5,7 @@ class SeperateDayListView : UIView {
     //MARK: - property
     var data: [String] = []
     
-    let messageLabel : UILabel = {
+    var messageLabel : UILabel = {
         let label = UILabel()
         label.text = "요일을 선택하고 세분화 목록을 여기로 드래그 하세요!"
         label.textColor = #colorLiteral(red: 0.7294117647, green: 0.7294117647, blue: 0.7294117647, alpha: 1)

@@ -4,7 +4,7 @@ import UIKit
 class DateCollectionViewCell : UICollectionViewCell {
     static let identifier = "DateCollectionViewCell"
     
-    let dateLabel: UILabel = {
+    var dateLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.textColor = .white
@@ -12,7 +12,7 @@ class DateCollectionViewCell : UICollectionViewCell {
         return label
     }()
     
-    let dayLabel: UILabel = {
+    var dayLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.textColor = .white

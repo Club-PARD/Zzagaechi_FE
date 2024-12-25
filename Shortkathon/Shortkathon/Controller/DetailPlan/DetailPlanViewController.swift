@@ -2,7 +2,23 @@ import UIKit
 
 class DetailPlanViewController : UIViewController {
     
-    let monthLabel : UILabel = {
+    //MARK: - property
+    
+    let scrollView : UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.backgroundColor = .clear
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.alwaysBounceVertical = true
+        return scrollView
+    }()
+    
+    let contentView : UIView = {
+        let view = UIView()
+        view.backgroundColor = .clear
+        return view
+    }()
+    
+    var monthLabel : UILabel = {
         let label = UILabel()
         label.text = "1월"
         label.font = UIFont(name: "Pretendard-Regular", size: 25)
@@ -15,12 +31,13 @@ class DetailPlanViewController : UIViewController {
         layout.scrollDirection = .horizontal
         layout.minimumInteritemSpacing = 11
         layout.minimumLineSpacing = 15
-        
-        
+    
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.isScrollEnabled = true
+        collectionView.canCancelContentTouches = true
+        collectionView.delaysContentTouches = false
         collectionView.alwaysBounceHorizontal = true
         return collectionView
     }()
@@ -73,8 +90,12 @@ class DetailPlanViewController : UIViewController {
         configureCollectionView()
         configureTableView()
         setUI()
+        scrollView.delegate = self
+        scrollView.delaysContentTouches = false
+        dateCollectionView.panGestureRecognizer.allowedTouchTypes = [NSNumber(value: UITouch.TouchType.direct.rawValue)]
     }
     
+    //MARK: - functions
     func configureNavigationBar(){
         navigationItem.title = "새로운 일 분류"
         
@@ -102,7 +123,11 @@ class DetailPlanViewController : UIViewController {
         dateCollectionView.delegate = self
         dateCollectionView.dataSource = self
         dateCollectionView.register(DateCollectionViewCell.self, forCellWithReuseIdentifier: DateCollectionViewCell.identifier)
-        
+        dateCollectionView.canCancelContentTouches = true
+        dateCollectionView.delaysContentTouches = false
+        dateCollectionView.panGestureRecognizer.delaysTouchesBegan = false
+        dateCollectionView.panGestureRecognizer.delaysTouchesEnded = false
+
         
         // 셀 선택시 로직
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -115,39 +140,60 @@ class DetailPlanViewController : UIViewController {
     
     func configureTableView(){
         
-//        toDoListTableView.delegate = self
-//        toDoListTableView.dataSource = self
+        //        toDoListTableView.delegate = self
+        //        toDoListTableView.dataSource = self
         
-//        seperateListTableView.dragDelegate = self
-//        seperateListTableView.dropDelegate = self
-//        toDoListTableView.dragDelegate = self
-//        toDoListTableView.dropDelegate = self
+        //        seperateListTableView.dragDelegate = self
+        //        seperateListTableView.dropDelegate = self
+        //        toDoListTableView.dragDelegate = self
+        //        toDoListTableView.dropDelegate = self
         
         
         
         
     }
+    
     func setUI(){
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentView)
+        
+        [scrollView,contentView].forEach{
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        
         [monthLabel,dateCollectionView, seperateDayListView,seperateLabel,seperateListTableView,toDoListTableView].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview($0)
+            contentView.addSubview($0)
         }
         
         NSLayoutConstraint.activate([
-            monthLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor , constant: 22),
-            monthLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant:  24),
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            contentView.heightAnchor.constraint(equalToConstant: 1000),
+            
+            monthLabel.topAnchor.constraint(equalTo: contentView.topAnchor , constant: 22),
+            monthLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant:  24),
+            monthLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -333),
             
             dateCollectionView.topAnchor.constraint(equalTo: monthLabel.bottomAnchor, constant: 10),
-            dateCollectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant:  22),
-            dateCollectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            dateCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant:  22),
+            dateCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor ),
             dateCollectionView.heightAnchor.constraint(equalToConstant: 80),
             
             seperateLabel.topAnchor.constraint(equalTo: dateCollectionView.bottomAnchor, constant: 19),
-            seperateLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 26),
+            seperateLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 26),
             
             seperateDayListView.topAnchor.constraint(equalTo: seperateLabel.bottomAnchor, constant: 5),
-            seperateDayListView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,constant: 24 ),
-            seperateDayListView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant:  -24),
+            seperateDayListView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: 24 ),
+            seperateDayListView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant:  -24),
             seperateDayListView.heightAnchor.constraint(equalToConstant: 242), // 나중에 바꾸기
         ])
     }
@@ -224,17 +270,17 @@ extension DetailPlanViewController:  UICollectionViewDelegateFlowLayout {
 //    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 //        return tableView == referenceTableView ? referenceItems.count : timeItems.count
 //    }
-//    
+//
 //    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 //        let cell = tableView.dequeueReusableCell(withIdentifier: tableView == referenceTableView ? "ReferenceCell" : "TimeCell", for: indexPath)
 //        let item = tableView == referenceTableView ? referenceItems[indexPath.row] : timeItems[indexPath.row]
-//        
+//
 //        var content = cell.defaultContentConfiguration()
 //        content.text = item
 //        content.textProperties.color = .white
 //        cell.contentConfiguration = content
 //        cell.backgroundColor = .clear
-//        
+//
 //        return cell
 //    }
 //}
@@ -248,25 +294,25 @@ extension DetailPlanViewController:  UICollectionViewDelegateFlowLayout {
 //        dragItem.localObject = item
 //        return [dragItem]
 //    }
-//    
+//
 //    func tableView(_ tableView: UITableView, dropSessionDidUpdate session: UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UITableViewDropProposal {
 //        if tableView == timeTableView {
 //            return UITableViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
 //        }
 //        return UITableViewDropProposal(operation: .forbidden)
 //    }
-//    
+//
 //    func tableView(_ tableView: UITableView, performDropWith coordinator: UITableViewDropCoordinator) {
 //        guard let destinationIndexPath = coordinator.destinationIndexPath else { return }
-//        
+//
 //        coordinator.items.forEach { dropItem in
 //            guard let sourceIndexPath = dropItem.sourceIndexPath,
 //                  let item = dropItem.dragItem.localObject as? String else { return }
-//            
+//
 //            if tableView == timeTableView && sourceIndexPath.row < referenceItems.count {
 //                referenceItems.remove(at: sourceIndexPath.row)
 //                timeItems.insert(item, at: destinationIndexPath.row)
-//                
+//
 //                tableView.performBatchUpdates({
 //                    referenceTableView.deleteRows(at: [sourceIndexPath], with: .automatic)
 //                    timeTableView.insertRows(at: [destinationIndexPath], with: .automatic)
@@ -275,3 +321,16 @@ extension DetailPlanViewController:  UICollectionViewDelegateFlowLayout {
 //        }
 //    }
 //}
+extension DetailPlanViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView == self.scrollView {
+            // 수평 스크롤 방지
+            if scrollView.contentOffset.x != 0 {
+                scrollView.contentOffset.x = 0
+            }
+        }
+    }
+    func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
+        return scrollView == self.scrollView
+    }
+}
