@@ -2,6 +2,15 @@ import UIKit
 
 class DetailPlanViewController : UIViewController {
     
+    let monthLabel : UILabel = {
+        let label = UILabel()
+        label.text = "1월"
+        label.font = UIFont(name: "Pretendard-Regular", size: 25)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    
     
     //MARK: - main
     override func viewDidLoad() {
@@ -25,7 +34,7 @@ class DetailPlanViewController : UIViewController {
         let backButton = UIBarButtonItem(customView: customButton)
         navigationItem.leftBarButtonItem = backButton
         
-        
+    
         let doneButton = UIBarButtonItem(
             title: "완료",
             style: .done,
@@ -37,7 +46,13 @@ class DetailPlanViewController : UIViewController {
     }
 
     func setUI(){
+        view.addSubview(monthLabel)
         
+        
+        NSLayoutConstraint.activate([
+            monthLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor , constant: 22),
+            monthLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant:  24),
+        ])
     }
     
     
