@@ -25,19 +25,45 @@ class DetailPlanViewController : UIViewController {
         return collectionView
     }()
     
-    private let contentView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .systemGray6
+    let seperateDayListView : SeperateDayListView = {
+        let view = SeperateDayListView()
+        view.backgroundColor = #colorLiteral(red: 0.2, green: 0.2, blue: 0.2, alpha: 1)
         view.layer.cornerRadius = 12
         return view
     }()
     
     
+    let seperateLabel : UILabel = {
+        let label = UILabel()
+        label.text = "요일 나누기"
+        label.font = UIFont(name: "Pretendard-Regular", size: 20)
+        return label
+    }()
+    
+    
+    let seperateListTableView : UITableView = {
+        let tableView = UITableView()
+        tableView.backgroundColor = .clear
+        tableView.layer.cornerRadius = 12
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "SeperateListCell")
+        return tableView
+    }()
+    
+    let toDoListTableView : UITableView = {
+        let tableView = UITableView()
+        tableView.backgroundColor = .clear
+        tableView.layer.cornerRadius = 12
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "ToDoListCell")
+        return tableView
+    }()
     
     // 더미 데이터
     private let dates: [(date: String, day: String)] = [
         ("4", "수"), ("5", "목"), ("6", "금"), ("7", "토"), ("8", "일"), ("9", "월"), ("10", "화"), ("11", "수"), ("12", "목")
     ]
+    
+    
+    let seperateListData : [String] = []
     
     //MARK: - main
     override func viewDidLoad() {
@@ -45,6 +71,7 @@ class DetailPlanViewController : UIViewController {
         view.backgroundColor = #colorLiteral(red: 0.2128768861, green: 0.2128768861, blue: 0.2128768861, alpha: 1)
         configureNavigationBar()
         configureCollectionView()
+        configureTableView()
         setUI()
     }
     
@@ -85,8 +112,23 @@ class DetailPlanViewController : UIViewController {
         }
     }
     
+    
+    func configureTableView(){
+        
+//        toDoListTableView.delegate = self
+//        toDoListTableView.dataSource = self
+        
+//        seperateListTableView.dragDelegate = self
+//        seperateListTableView.dropDelegate = self
+//        toDoListTableView.dragDelegate = self
+//        toDoListTableView.dropDelegate = self
+        
+        
+        
+        
+    }
     func setUI(){
-        [monthLabel,dateCollectionView, contentView].forEach {
+        [monthLabel,dateCollectionView, seperateDayListView,seperateLabel,seperateListTableView,toDoListTableView].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
@@ -96,9 +138,17 @@ class DetailPlanViewController : UIViewController {
             monthLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant:  24),
             
             dateCollectionView.topAnchor.constraint(equalTo: monthLabel.bottomAnchor, constant: 10),
-            dateCollectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant:  24),
+            dateCollectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant:  22),
             dateCollectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            dateCollectionView.heightAnchor.constraint(equalToConstant: 80), // 나중에 삭제
+            dateCollectionView.heightAnchor.constraint(equalToConstant: 80),
+            
+            seperateLabel.topAnchor.constraint(equalTo: dateCollectionView.bottomAnchor, constant: 19),
+            seperateLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 26),
+            
+            seperateDayListView.topAnchor.constraint(equalTo: seperateLabel.bottomAnchor, constant: 5),
+            seperateDayListView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,constant: 24 ),
+            seperateDayListView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant:  -24),
+            seperateDayListView.heightAnchor.constraint(equalToConstant: 242), // 나중에 바꾸기
         ])
     }
     
@@ -164,3 +214,64 @@ extension DetailPlanViewController:  UICollectionViewDelegateFlowLayout {
         return 15
     }
 }
+
+
+
+
+
+
+//extension DetailPlanViewController: UITableViewDelegate, UITableViewDataSource {
+//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        return tableView == referenceTableView ? referenceItems.count : timeItems.count
+//    }
+//    
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        let cell = tableView.dequeueReusableCell(withIdentifier: tableView == referenceTableView ? "ReferenceCell" : "TimeCell", for: indexPath)
+//        let item = tableView == referenceTableView ? referenceItems[indexPath.row] : timeItems[indexPath.row]
+//        
+//        var content = cell.defaultContentConfiguration()
+//        content.text = item
+//        content.textProperties.color = .white
+//        cell.contentConfiguration = content
+//        cell.backgroundColor = .clear
+//        
+//        return cell
+//    }
+//}
+
+
+//extension DetailPlanViewController: UITableViewDragDelegate, UITableViewDropDelegate {
+//    func tableView(_ tableView: UITableView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
+//        let item = tableView == referenceTableView ? referenceItems[indexPath.row] : timeItems[indexPath.row]
+//        let itemProvider = NSItemProvider(object: item as NSString)
+//        let dragItem = UIDragItem(itemProvider: itemProvider)
+//        dragItem.localObject = item
+//        return [dragItem]
+//    }
+//    
+//    func tableView(_ tableView: UITableView, dropSessionDidUpdate session: UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UITableViewDropProposal {
+//        if tableView == timeTableView {
+//            return UITableViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
+//        }
+//        return UITableViewDropProposal(operation: .forbidden)
+//    }
+//    
+//    func tableView(_ tableView: UITableView, performDropWith coordinator: UITableViewDropCoordinator) {
+//        guard let destinationIndexPath = coordinator.destinationIndexPath else { return }
+//        
+//        coordinator.items.forEach { dropItem in
+//            guard let sourceIndexPath = dropItem.sourceIndexPath,
+//                  let item = dropItem.dragItem.localObject as? String else { return }
+//            
+//            if tableView == timeTableView && sourceIndexPath.row < referenceItems.count {
+//                referenceItems.remove(at: sourceIndexPath.row)
+//                timeItems.insert(item, at: destinationIndexPath.row)
+//                
+//                tableView.performBatchUpdates({
+//                    referenceTableView.deleteRows(at: [sourceIndexPath], with: .automatic)
+//                    timeTableView.insertRows(at: [destinationIndexPath], with: .automatic)
+//                })
+//            }
+//        }
+//    }
+//}
