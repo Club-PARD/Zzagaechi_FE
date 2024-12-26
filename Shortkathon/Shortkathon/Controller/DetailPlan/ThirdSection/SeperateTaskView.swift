@@ -24,7 +24,7 @@ class SeperateTaskView : UIView {
         view.separatorStyle = .none
         view.allowsSelection = false
         view.showsVerticalScrollIndicator = false
-
+        
         return view
     }()
     
@@ -54,6 +54,8 @@ class SeperateTaskView : UIView {
         tipButtonAction()
         
         plusTaskButton.addTarget(self, action:  #selector(plusAction), for: .touchUpInside)
+        seperateTaskTableView.dragDelegate = self
+        seperateTaskTableView.dragInteractionEnabled = true
     }
     
     required init?(coder: NSCoder) {
@@ -95,7 +97,7 @@ class SeperateTaskView : UIView {
         seperateTaskTableView.dataSource = self
         seperateTaskTableView.register(SeperateTaskViewTableCell.self, forCellReuseIdentifier: "ThirdTableCell")
         seperateTaskTableView.isUserInteractionEnabled = true
-
+        
     }
     
     func tipButtonAction() {
@@ -148,7 +150,7 @@ extension SeperateTaskView : UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-
+    
 }
 
 
@@ -177,33 +179,52 @@ extension SeperateTaskView : UITextFieldDelegate {
     
     
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-           return true
-       }
-       
-       // 스와이프 스타일 설정
-       func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-           return .delete
-       }
-       
-       // 삭제 액션 처리
-       func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-           if editingStyle == .delete {
-               // 데이터 소스에서 항목 삭제
-               task.remove(at: indexPath.row)
-               
-               // TableView에서 행 삭제
-               tableView.deleteRows(at: [indexPath], with: .fade)
-               
-               // task 배열이 비어있으면 빈 문자열 추가
-               if task.isEmpty {
-                   task.append("")
-                   tableView.reloadData()
-               }
-           }
-       }
-       
-       // (선택사항) 삭제 버튼 텍스트 커스텀
-       func tableView(_ tableView: UITableView, titleForDeleteConfirmationButtonForRowAt indexPath: IndexPath) -> String? {
-           return "삭제"
-       }
+        return true
+    }
+    
+    // 스와이프 스타일 설정
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        return .delete
+    }
+    
+    // 삭제 액션 처리
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            // 데이터 소스에서 항목 삭제
+            task.remove(at: indexPath.row)
+            
+            // TableView에서 행 삭제
+            tableView.deleteRows(at: [indexPath], with: .fade)
+            
+            // task 배열이 비어있으면 빈 문자열 추가
+            if task.isEmpty {
+                task.append("")
+                tableView.reloadData()
+            }
+        }
+    }
+    
+    // (선택사항) 삭제 버튼 텍스트 커스텀
+    func tableView(_ tableView: UITableView, titleForDeleteConfirmationButtonForRowAt indexPath: IndexPath) -> String? {
+        return "삭제"
+    }
+}
+
+
+extension SeperateTaskView: UITableViewDragDelegate {
+    func tableView(_ tableView: UITableView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
+        let dragItem = UIDragItem(itemProvider: NSItemProvider(object: task[indexPath.row] as NSString))
+        dragItem.localObject = task[indexPath.row]
+        return [dragItem]
+    }
+    
+    func tableView(_ tableView: UITableView, dragSessionDidEnd session: UIDragSession) {
+        
+        if let sourceIndexPath = tableView.indexPathForRow(at: session.location(in: tableView)) {
+            task.remove(at: sourceIndexPath.row)
+            tableView.reloadData()
+//            updateTableViewHeight()
+        }
+    }
+
 }

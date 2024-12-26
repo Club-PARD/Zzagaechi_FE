@@ -29,6 +29,9 @@ class SeperateDayListView : UIView {
         updateUI()
         setUI()
         setTable()
+        seperateListTableView.dropDelegate = self
+        seperateListTableView.dragInteractionEnabled = true
+
     }
     
     required init?(coder: NSCoder) {
@@ -104,6 +107,26 @@ extension SeperateDayListView : UITableViewDelegate, UITableViewDataSource {
         footerView.backgroundColor = .clear
         return footerView
     }
+}
+
+
+extension SeperateDayListView: UITableViewDropDelegate {
+    func tableView(_ tableView: UITableView, performDropWith coordinator: UITableViewDropCoordinator) {
+        guard let destinationIndexPath = coordinator.destinationIndexPath else { return }
+        
+        coordinator.items.forEach { dropItem in
+            guard let sourceItem = dropItem.dragItem.localObject as? String else { return }
+            
+            // 드롭된 아이템을 데이터 배열에 추가
+            data.insert(sourceItem, at: destinationIndexPath.section)
+            
+            // UI 업데이트
+            updateUI()
+            tableView.reloadData()
+        }
+    }
     
-    
+    func tableView(_ tableView: UITableView, dropSessionDidUpdate session: UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UITableViewDropProposal {
+        return UITableViewDropProposal(operation: .copy, intent: .insertAtDestinationIndexPath)
+    }
 }
