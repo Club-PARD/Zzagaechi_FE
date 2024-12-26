@@ -174,4 +174,36 @@ extension SeperateTaskView : UITextFieldDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 57
     }
+    
+    
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+           return true
+       }
+       
+       // 스와이프 스타일 설정
+       func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+           return .delete
+       }
+       
+       // 삭제 액션 처리
+       func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+           if editingStyle == .delete {
+               // 데이터 소스에서 항목 삭제
+               task.remove(at: indexPath.row)
+               
+               // TableView에서 행 삭제
+               tableView.deleteRows(at: [indexPath], with: .fade)
+               
+               // task 배열이 비어있으면 빈 문자열 추가
+               if task.isEmpty {
+                   task.append("")
+                   tableView.reloadData()
+               }
+           }
+       }
+       
+       // (선택사항) 삭제 버튼 텍스트 커스텀
+       func tableView(_ tableView: UITableView, titleForDeleteConfirmationButtonForRowAt indexPath: IndexPath) -> String? {
+           return "삭제"
+       }
 }
