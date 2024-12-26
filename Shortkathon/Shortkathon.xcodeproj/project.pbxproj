@@ -7,10 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-
 		483506802D1AD29100030CA2 /* FSCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = 4835067F2D1AD29100030CA2 /* FSCalendar */; };
 		4862C7D52D1862F500FFC91B /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 4862C7D42D1862F500FFC91B /* Alamofire */; };
-7f3e8c2b7db58857de87effad88063148476261f
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,13 +70,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DE0387E52D16B5D4000274BF /* FSCalendar in Frameworks */,
 				4862C7D52D1862F500FFC91B /* Alamofire in Frameworks */,
-
-				DE0387E52D16B5D4000274BF /* FSCalendar in Frameworks */,
-
-				4862C7D52D1862F500FFC91B /* Alamofire in Frameworks */,
-
 				483506802D1AD29100030CA2 /* FSCalendar in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -140,13 +132,7 @@
 			);
 			name = Shortkathon;
 			packageProductDependencies = (
-				DE0387E42D16B5D4000274BF /* FSCalendar */,
 				4862C7D42D1862F500FFC91B /* Alamofire */,
-
-				DE0387E42D16B5D4000274BF /* FSCalendar */,
-
-				4862C7D42D1862F500FFC91B /* Alamofire */,
-
 				4835067F2D1AD29100030CA2 /* FSCalendar */,
 			);
 			productName = Shortkathon;
@@ -232,13 +218,7 @@
 			mainGroup = 48E4B27F2CE5011F001F4294;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				DE0387E32D16B5D4000274BF /* XCRemoteSwiftPackageReference "FSCalendar" */,
 				4862C7D32D1862F500FFC91B /* XCRemoteSwiftPackageReference "Alamofire" */,
-
-				DE0387E32D16B5D4000274BF /* XCRemoteSwiftPackageReference "FSCalendar" */,
-
-				4862C7D32D1862F500FFC91B /* XCRemoteSwiftPackageReference "Alamofire" */,
-
 				4835067E2D1AD29100030CA2 /* XCRemoteSwiftPackageReference "FSCalendar" */,
 			);
 			preferredProjectObjectVersion = 77;
@@ -606,7 +586,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-
 		4835067E2D1AD29100030CA2 /* XCRemoteSwiftPackageReference "FSCalendar" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/WenchaoD/FSCalendar.git";
@@ -621,13 +600,11 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 5.10.2;
-7f3e8c2b7db58857de87effad88063148476261f
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-
 		4835067F2D1AD29100030CA2 /* FSCalendar */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4835067E2D1AD29100030CA2 /* XCRemoteSwiftPackageReference "FSCalendar" */;
@@ -637,7 +614,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4862C7D32D1862F500FFC91B /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
- 7f3e8c2b7db58857de87effad88063148476261f
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
