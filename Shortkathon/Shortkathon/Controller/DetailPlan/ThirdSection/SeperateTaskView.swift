@@ -21,6 +21,9 @@ class SeperateTaskView : UIView {
     let seperateTaskTableView : UITableView = {
         let view = UITableView()
         view.rowHeight = 45
+        view.backgroundColor = .clear
+        view.separatorStyle = .none
+        view.allowsSelection = false
         return view
     }()
     
@@ -76,8 +79,8 @@ class SeperateTaskView : UIView {
             tipImage.heightAnchor.constraint(equalToConstant: 40),
             
             seperateTaskTableView.topAnchor.constraint(equalTo: seperateLabel.bottomAnchor , constant: 21),
-            seperateTaskTableView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            seperateTaskTableView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            seperateTaskTableView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 9),
+            seperateTaskTableView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -9),
             seperateTaskTableView.heightAnchor.constraint(equalToConstant: 200),
             
             plusTaskButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
@@ -89,7 +92,8 @@ class SeperateTaskView : UIView {
         seperateTaskTableView.delegate = self
         seperateTaskTableView.dataSource = self
         seperateTaskTableView.register(SeperateTaskViewTableCell.self, forCellReuseIdentifier: "ThirdTableCell")
-        
+        seperateTaskTableView.isUserInteractionEnabled = true
+
     }
     
     func tipButtonAction() {
@@ -117,37 +121,53 @@ class SeperateTaskView : UIView {
 //MARK: - TableView Extension
 extension SeperateTaskView : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return task.count
+        return 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "ThirdTableCell", for: indexPath) as? SeperateTaskViewTableCell else {return UITableViewCell()}
-        cell.taskTextField.text = task[indexPath.section]
-        cell.taskTextField.tag = indexPath.section
+        
+        cell.taskTextField.text = task[indexPath.row]
+        cell.taskTextField.tag = indexPath.row
         cell.taskTextField.delegate = self
         cell.selectionStyle = .none
+        
+        // 셀과 텍스트필드의 사용자 상호작용 활성화
+        cell.isUserInteractionEnabled = true
+        cell.taskTextField.isUserInteractionEnabled = true
         
         return cell
     }
     
-    
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-        
-
+        return task.count
     }
     
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 10
+    }
     
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let footerView = UIView()
+        footerView.backgroundColor = .clear
+        return footerView
+    }
 }
 
 
 //MARK: - textField extension
 extension SeperateTaskView : UITextFieldDelegate {
     //textFiled 편집되었을떄 호출
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        // 텍스트필드 편집 시작할 때 호출
+        print("텍스트필드 편집 시작")
+    }
+    
     func textFieldDidEndEditing(_ textField: UITextField) {
         task[textField.tag] = textField.text ?? ""
     }
-
+    
     // Enter 눌렀을때 return
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
