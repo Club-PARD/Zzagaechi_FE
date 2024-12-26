@@ -31,7 +31,7 @@ class DetailPlanViewController : UIViewController {
         layout.scrollDirection = .horizontal
         layout.minimumInteritemSpacing = 11
         layout.minimumLineSpacing = 15
-    
+        
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
         collectionView.showsHorizontalScrollIndicator = false
@@ -57,11 +57,12 @@ class DetailPlanViewController : UIViewController {
         return label
     }()
     
-
+    
     
     let seperateTaskView : SeperateTaskView = {
         let view = SeperateTaskView()
         view.backgroundColor = #colorLiteral(red: 0.2, green: 0.2, blue: 0.2, alpha: 1)
+        view.layer.cornerRadius = 12
         return view
     }()
     
@@ -120,7 +121,7 @@ class DetailPlanViewController : UIViewController {
         dateCollectionView.delaysContentTouches = false
         dateCollectionView.panGestureRecognizer.delaysTouchesBegan = false
         dateCollectionView.panGestureRecognizer.delaysTouchesEnded = false
-
+        
         
         // 셀 선택시 로직
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -131,7 +132,7 @@ class DetailPlanViewController : UIViewController {
     }
     
     
-  
+    
     
     func setUI(){
         
@@ -175,6 +176,12 @@ class DetailPlanViewController : UIViewController {
             seperateDayListView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: 24 ),
             seperateDayListView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant:  -24),
             seperateDayListView.heightAnchor.constraint(equalToConstant: 242), // 나중에 바꾸기
+            
+            
+            seperateTaskView.topAnchor.constraint(equalTo: seperateDayListView.bottomAnchor , constant: 22),
+            seperateTaskView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: 24 ),
+            seperateTaskView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant:  -24),
+            seperateTaskView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -33),
         ])
     }
     
@@ -192,7 +199,7 @@ class DetailPlanViewController : UIViewController {
 }
 
 
-
+//MARK: - CollectionView extension
 extension  DetailPlanViewController : UICollectionViewDelegate, UICollectionViewDataSource{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return dates.count

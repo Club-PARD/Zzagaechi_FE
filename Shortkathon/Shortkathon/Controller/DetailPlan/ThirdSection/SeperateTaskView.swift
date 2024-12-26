@@ -28,11 +28,24 @@ class SeperateTaskView : UIView {
         button.setImage(UIImage(named: "PlusImage"), for: .normal)
         return button
     }()
+    
+    let tipImage : UIImageView = {
+        let image = UIImageView()
+        image.image = UIImage(named: "Tips")
+        image.contentMode = .scaleAspectFill
+        image.clipsToBounds = true
+        image.isHidden = true
+        return image
+    }()
+    
+    
+    
     //MARK: - main
     override init(frame: CGRect) {
         super.init(frame: frame)
         setTable()
         setUI()
+        tipButtonAction()
     }
     
     required init?(coder: NSCoder) {
@@ -41,7 +54,7 @@ class SeperateTaskView : UIView {
     
     //MARK: - function
     func setUI(){
-        [seperateLabel,questionButton,seperateTaskTableView,plusTaskButton].forEach{
+        [seperateLabel,questionButton,seperateTaskTableView,plusTaskButton,tipImage].forEach{
             $0.translatesAutoresizingMaskIntoConstraints = false
             self.addSubview($0)
         }
@@ -50,12 +63,14 @@ class SeperateTaskView : UIView {
             seperateLabel.topAnchor.constraint(equalTo: self.topAnchor ,constant: 18),
             seperateLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor ,constant: 19),
             
-            questionButton.topAnchor.constraint(equalTo: self.bottomAnchor ,constant: 18),
+            questionButton.topAnchor.constraint(equalTo: self.topAnchor ,constant: 18),
             questionButton.leadingAnchor.constraint(equalTo: seperateLabel.trailingAnchor, constant:   1),
-            questionButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -254)
+            questionButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -254),
             
-            
-            
+            tipImage.leadingAnchor.constraint(equalTo: questionButton.trailingAnchor),
+            tipImage.bottomAnchor.constraint(equalTo: questionButton.topAnchor, constant: 2),
+            tipImage.widthAnchor.constraint(equalToConstant: 191),
+            tipImage.heightAnchor.constraint(equalToConstant: 40),
         ])
     }
     
@@ -64,6 +79,20 @@ class SeperateTaskView : UIView {
         seperateTaskTableView.dataSource = self
         seperateTaskTableView.register(SeperateTaskViewTableCell.self, forCellReuseIdentifier: "ThirdTableCell")
         
+    }
+    
+    func tipButtonAction() {
+        questionButton.addTarget(self, action: #selector(questionButtonTapped), for: .touchUpInside)
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleBackgroundTap))
+        self.addGestureRecognizer(tapGesture)
+    }
+    
+    @objc private func questionButtonTapped() {
+        tipImage.isHidden = false
+    }
+    
+    @objc private func handleBackgroundTap() {
+        tipImage.isHidden = true
     }
     
     
