@@ -20,7 +20,6 @@ class SeperateTaskView : UIView {
     
     let seperateTaskTableView : UITableView = {
         let view = UITableView()
-        view.rowHeight = 45
         view.backgroundColor = .clear
         view.separatorStyle = .none
         view.allowsSelection = false
@@ -111,6 +110,7 @@ class SeperateTaskView : UIView {
     
     @objc private func handleBackgroundTap() {
         tipImage.isHidden = true
+        print(task)
         self.endEditing(true)
     }
     
@@ -148,16 +148,7 @@ extension SeperateTaskView : UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-    
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 10
-    }
-    
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        let footerView = UIView()
-        footerView.backgroundColor = .clear
-        return footerView
-    }
+
 }
 
 
@@ -178,5 +169,9 @@ extension SeperateTaskView : UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 57
     }
 }
