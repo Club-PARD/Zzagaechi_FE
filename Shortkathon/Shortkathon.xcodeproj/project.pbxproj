@@ -234,7 +234,6 @@
 				DE0387E32D16B5D4000274BF /* XCRemoteSwiftPackageReference "FSCalendar" */,
 				4862C7D32D1862F500FFC91B /* XCRemoteSwiftPackageReference "Alamofire" */,
 
-				DE0387E32D16B5D4000274BF /* XCRemoteSwiftPackageReference "FSCalendar" */,
 
 				4862C7D32D1862F500FFC91B /* XCRemoteSwiftPackageReference "Alamofire" */,
 
