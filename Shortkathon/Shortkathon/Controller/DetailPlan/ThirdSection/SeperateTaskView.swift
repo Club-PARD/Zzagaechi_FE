@@ -24,6 +24,8 @@ class SeperateTaskView : UIView {
         view.backgroundColor = .clear
         view.separatorStyle = .none
         view.allowsSelection = false
+        view.showsVerticalScrollIndicator = false
+
         return view
     }()
     
@@ -51,6 +53,7 @@ class SeperateTaskView : UIView {
         setTable()
         setUI()
         tipButtonAction()
+        
         plusTaskButton.addTarget(self, action:  #selector(plusAction), for: .touchUpInside)
     }
     
@@ -108,6 +111,7 @@ class SeperateTaskView : UIView {
     
     @objc private func handleBackgroundTap() {
         tipImage.isHidden = true
+        self.endEditing(true)
     }
     
     @objc private func plusAction(){
@@ -121,16 +125,18 @@ class SeperateTaskView : UIView {
 //MARK: - TableView Extension
 extension SeperateTaskView : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return task.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "ThirdTableCell", for: indexPath) as? SeperateTaskViewTableCell else {return UITableViewCell()}
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "ThirdTableCell", for: indexPath) as? SeperateTaskViewTableCell else {
+            
+            return UITableViewCell()
+        }
         
         cell.taskTextField.text = task[indexPath.row]
         cell.taskTextField.tag = indexPath.row
         cell.taskTextField.delegate = self
-        cell.selectionStyle = .none
         
         // 셀과 텍스트필드의 사용자 상호작용 활성화
         cell.isUserInteractionEnabled = true
@@ -140,7 +146,7 @@ extension SeperateTaskView : UITableViewDelegate, UITableViewDataSource {
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return task.count
+        return 1
     }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {

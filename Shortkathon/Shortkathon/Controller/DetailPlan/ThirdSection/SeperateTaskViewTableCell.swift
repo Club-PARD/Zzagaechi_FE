@@ -12,10 +12,11 @@ class SeperateTaskViewTableCell : UITableViewCell {
         textField.textColor = .black
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.isUserInteractionEnabled = true
-        textField.backgroundColor = .yellow
+        textField.backgroundColor = .clear
         return textField
     }()
     
+   
     
     
     //MARK: - main
@@ -27,7 +28,7 @@ class SeperateTaskViewTableCell : UITableViewCell {
         
         self.isUserInteractionEnabled = true
         self.contentView.isUserInteractionEnabled = true
-
+        setUI()
     }
     
     required init?(coder: NSCoder) {
@@ -42,7 +43,8 @@ class SeperateTaskViewTableCell : UITableViewCell {
             taskTextField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             taskTextField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             taskTextField.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            taskTextField.heightAnchor.constraint(equalToConstant: 40)
+            taskTextField.heightAnchor.constraint(equalToConstant: 40),
+        
         ])
     }
     
