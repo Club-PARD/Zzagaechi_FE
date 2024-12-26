@@ -136,8 +136,7 @@ extension AppleLoginViewController: ASAuthorizationControllerDelegate, ASAuthori
             saveUserIdentifier(user: userIdentifier)
             navigateToMainPage(with: userIdentifier)
             
-        case let passwordCredential as ASPasswordCredential:
-            print("iCloud 계정으로 연결")
+      
         default:
             break
         }
@@ -170,7 +169,7 @@ extension AppleLoginViewController{
                         print("✅ 로그인 성공")
                         UserDefaults.standard.set(uid, forKey: "userIdentifier")
                         // 메인 페이지로 이동하는 코드는 별도의 메서드로 분리하여 처리
-                        NotificationCenter.default.post(name: NSNotification.Name("LoginSuccess"), object: nil)
+//                        NotificationCenter.default.post(name: NSNotification.Name("LoginSuccess"), object: nil)
                     } else {
                         print("⚠️ 로그인 실패")
                     }

@@ -57,22 +57,15 @@ class DetailPlanViewController : UIViewController {
         return label
     }()
     
+
     
-    let seperateListTableView : UITableView = {
-        let tableView = UITableView()
-        tableView.backgroundColor = .clear
-        tableView.layer.cornerRadius = 12
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "SeperateListCell")
-        return tableView
+    let seperateTaskView : SeperateTaskView = {
+        let view = SeperateTaskView()
+        view.backgroundColor = #colorLiteral(red: 0.2, green: 0.2, blue: 0.2, alpha: 1)
+        return view
     }()
     
-    let toDoListTableView : UITableView = {
-        let tableView = UITableView()
-        tableView.backgroundColor = .clear
-        tableView.layer.cornerRadius = 12
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "ToDoListCell")
-        return tableView
-    }()
+    
     
     // 더미 데이터
     private let dates: [(date: String, day: String)] = [
@@ -149,7 +142,7 @@ class DetailPlanViewController : UIViewController {
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
         
-        [monthLabel,dateCollectionView, seperateDayListView,seperateLabel,seperateListTableView,toDoListTableView].forEach {
+        [monthLabel,dateCollectionView, seperateDayListView,seperateLabel,seperateTaskView].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             contentView.addSubview($0)
         }
