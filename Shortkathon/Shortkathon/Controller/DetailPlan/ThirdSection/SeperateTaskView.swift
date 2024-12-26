@@ -3,7 +3,7 @@ import UIKit
 
 class SeperateTaskView : UIView {
     //MARK: - property
-    var task : [String] = []
+    var task : [String] = [""]
     let seperateLabel : UILabel = {
         let label = UILabel()
         label.textColor = .white
@@ -20,12 +20,14 @@ class SeperateTaskView : UIView {
     
     let seperateTaskTableView : UITableView = {
         let view = UITableView()
+        view.rowHeight = 45
         return view
     }()
     
     let plusTaskButton : UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "PlusImage"), for: .normal)
+        
         return button
     }()
     
@@ -46,6 +48,7 @@ class SeperateTaskView : UIView {
         setTable()
         setUI()
         tipButtonAction()
+        plusTaskButton.addTarget(self, action:  #selector(plusAction), for: .touchUpInside)
     }
     
     required init?(coder: NSCoder) {
@@ -71,6 +74,14 @@ class SeperateTaskView : UIView {
             tipImage.bottomAnchor.constraint(equalTo: questionButton.topAnchor, constant: 2),
             tipImage.widthAnchor.constraint(equalToConstant: 191),
             tipImage.heightAnchor.constraint(equalToConstant: 40),
+            
+            seperateTaskTableView.topAnchor.constraint(equalTo: seperateLabel.bottomAnchor , constant: 21),
+            seperateTaskTableView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            seperateTaskTableView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            seperateTaskTableView.heightAnchor.constraint(equalToConstant: 200),
+            
+            plusTaskButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            plusTaskButton.topAnchor.constraint(equalTo: seperateTaskTableView.bottomAnchor, constant: 6.5 )
         ])
     }
     
@@ -95,26 +106,51 @@ class SeperateTaskView : UIView {
         tipImage.isHidden = true
     }
     
-    
+    @objc private func plusAction(){
+        task.append("")
+        print(task)
+        seperateTaskTableView.reloadData()
+    }
 }
 
 
 //MARK: - TableView Extension
 extension SeperateTaskView : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return task.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "ThirdTableCell", for: indexPath) as? SeperateTaskViewTableCell else {return UITableViewCell()}
+        cell.taskTextField.text = task[indexPath.section]
+        cell.taskTextField.tag = indexPath.section
+        cell.taskTextField.delegate = self
+        cell.selectionStyle = .none
         
         return cell
     }
     
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return task.count
+        return 1
+        
+
     }
     
     
+}
+
+
+//MARK: - textField extension
+extension SeperateTaskView : UITextFieldDelegate {
+    //textFiled 편집되었을떄 호출
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        task[textField.tag] = textField.text ?? ""
+    }
+
+    // Enter 눌렀을때 return
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
 }
