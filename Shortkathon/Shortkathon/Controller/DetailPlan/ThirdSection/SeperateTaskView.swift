@@ -253,17 +253,46 @@ extension SeperateTaskView : UITextFieldDelegate {
 extension SeperateTaskView: UITableViewDragDelegate {
     func tableView(_ tableView: UITableView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
         let dragItem = UIDragItem(itemProvider: NSItemProvider(object: task[indexPath.row] as NSString))
-        dragItem.localObject = task[indexPath.row]
+        // indexPath 정보를 저장하여 나중에 삭제할 때 사용
+        dragItem.localObject = (task[indexPath.row], indexPath)
         return [dragItem]
     }
     
     func tableView(_ tableView: UITableView, dragSessionDidEnd session: UIDragSession) {
-        
-        if let sourceIndexPath = tableView.indexPathForRow(at: session.location(in: tableView)) {
-            task.remove(at: sourceIndexPath.row)
+        // 드래그가 성공적으로 완료되었을 때만 삭제
+        if session.items.count > 0,
+           let firstItem = session.items.first,
+           let (_, indexPath) = firstItem.localObject as? (String, IndexPath) {
+            // 데이터 소스에서 항목 삭제
+            task.remove(at: indexPath.row)
+            
+            // 배열이 비어있으면 빈 문자열 추가
+            if task.isEmpty {
+                task.append("")
+            }
+            
+            // TableView 업데이트
             tableView.reloadData()
-//            updateTableViewHeight()
+            updateViewHeight()
         }
     }
-    
 }
+
+
+//extension SeperateTaskView: UITableViewDragDelegate {
+//    func tableView(_ tableView: UITableView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
+//        let dragItem = UIDragItem(itemProvider: NSItemProvider(object: task[indexPath.row] as NSString))
+//        dragItem.localObject = task[indexPath.row]
+//        return [dragItem]
+//    }
+//    
+//    func tableView(_ tableView: UITableView, dragSessionDidEnd session: UIDragSession) {
+//        
+//        if let sourceIndexPath = tableView.indexPathForRow(at: session.location(in: tableView)) {
+//            task.remove(at: sourceIndexPath.row)
+//            tableView.reloadData()
+////            updateTableViewHeight()
+//        }
+//    }
+//    
+//}
