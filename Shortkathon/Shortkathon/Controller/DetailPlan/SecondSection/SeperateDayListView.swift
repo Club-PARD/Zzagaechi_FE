@@ -3,12 +3,17 @@ import UIKit
 
 class SeperateDayListView : UIView {
     //MARK: - property
-//    var data: [String] = []
+    //    var data: [String] = []
     var data: [String] = ["레퍼런스 찾아보기","디자인 제작", "교수님께 피드백 받고 수정"]
     
-    private var tableViewHeightConstraint: NSLayoutConstraint?
-    private let cellHeight: CGFloat = 45
+    
+    private let cellHeight: CGFloat = 50
     private let footerHeight: CGFloat = 10
+    private let topPadding: CGFloat = 15  // 상단 여백
+    
+    var viewHeightConstraint: NSLayoutConstraint?
+    var tableViewHeightConstraint: NSLayoutConstraint?
+    
     
     
     var messageLabel : UILabel = {
@@ -24,6 +29,7 @@ class SeperateDayListView : UIView {
         let view = UITableView()
         view.backgroundColor = #colorLiteral(red: 0.2, green: 0.2, blue: 0.2, alpha: 1)
         view.separatorStyle = .none
+        view.isScrollEnabled = false
         view.showsVerticalScrollIndicator = false
         return view
     }()
@@ -52,7 +58,7 @@ class SeperateDayListView : UIView {
         } else {
             messageLabel.isHidden = true
             seperateListTableView.isHidden = false
-            updateTableViewHeight()  
+            updateTableViewHeight()
         }
         
     }
@@ -62,8 +68,8 @@ class SeperateDayListView : UIView {
             $0.translatesAutoresizingMaskIntoConstraints = false
             self.addSubview($0)
         }
-        
         tableViewHeightConstraint = seperateListTableView.heightAnchor.constraint(equalToConstant: calculateTableViewHeight())
+        
         NSLayoutConstraint.activate([
             messageLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             messageLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor),
@@ -71,8 +77,7 @@ class SeperateDayListView : UIView {
             seperateListTableView.topAnchor.constraint(equalTo: self.topAnchor,constant: 15),
             seperateListTableView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 9),
             seperateListTableView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -9),
-            seperateListTableView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-            
+            tableViewHeightConstraint!
         ])
     }
     
@@ -82,14 +87,32 @@ class SeperateDayListView : UIView {
         return totalCellHeight + totalFooterHeight
     }
     
-    // TableView 높이 업데이트 함수
+    // TableView 높이 업데이트
     private func updateTableViewHeight() {
+        tableViewHeightConstraint?.constant = calculateTableViewHeight()
+        
+        UIView.animate(withDuration: 0.3) {
+            self.layoutIfNeeded()
+            self.seperateListTableView.reloadData()
+        }
+    }
+    
+    private func calculateViewHeight() -> CGFloat {
+        let tableHeight = calculateTableViewHeight()
+        return topPadding + tableHeight  // 상단 여백 + 테이블뷰 높이
+    }
+    
+    // 높이 업데이트
+    private func updateViewHeight() {
+        let newHeight = calculateViewHeight()
+        viewHeightConstraint?.constant = newHeight
         tableViewHeightConstraint?.constant = calculateTableViewHeight()
         
         UIView.animate(withDuration: 0.3) {
             self.layoutIfNeeded()
         }
     }
+    
     func setTable(){
         seperateListTableView.delegate = self
         seperateListTableView.dataSource = self
@@ -146,12 +169,9 @@ extension SeperateDayListView : UITableViewDelegate, UITableViewDataSource {
             data.remove(at: indexPath.section)  // section을 사용하는 경우
             // 또는
             // data.remove(at: indexPath.row)  // row를 사용하는 경우
-            
-            // TableView 업데이트
             tableView.reloadData()
-            
-            // UI 업데이트가 필요한 경우
             updateUI()
+            updateViewHeight()
         }
     }
     
@@ -159,32 +179,8 @@ extension SeperateDayListView : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, titleForDeleteConfirmationButtonForRowAt indexPath: IndexPath) -> String? {
         return "삭제"
     }
-    
-    
-    
 }
 
-
-//extension SeperateDayListView: UITableViewDropDelegate {
-//    func tableView(_ tableView: UITableView, performDropWith coordinator: UITableViewDropCoordinator) {
-//        guard let destinationIndexPath = coordinator.destinationIndexPath else { return }
-//        
-//        coordinator.items.forEach { dropItem in
-//            guard let sourceItem = dropItem.dragItem.localObject as? String else { return }
-//            
-//            // 드롭된 아이템을 데이터 배열에 추가
-//            data.insert(sourceItem, at: destinationIndexPath.section)
-//            
-//            // UI 업데이트
-//            updateUI()
-//            tableView.reloadData()
-//        }
-//    }
-//    
-//    func tableView(_ tableView: UITableView, dropSessionDidUpdate session: UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UITableViewDropProposal {
-//        return UITableViewDropProposal(operation: .copy, intent: .insertAtDestinationIndexPath)
-//    }
-//}
 extension SeperateDayListView: UITableViewDropDelegate {
     func tableView(_ tableView: UITableView, performDropWith coordinator: UITableViewDropCoordinator) {
         guard let destinationIndexPath = coordinator.destinationIndexPath else { return }
@@ -194,9 +190,10 @@ extension SeperateDayListView: UITableViewDropDelegate {
             if let (sourceItem, _) = dropItem.dragItem.localObject as? (String, IndexPath) {
                 // 드롭된 아이템을 데이터 배열에 추가
                 data.insert(sourceItem, at: destinationIndexPath.section)
-                
+    
                 // UI 업데이트
                 updateUI()
+                updateViewHeight()
                 tableView.reloadData()
             }
         }
