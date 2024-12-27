@@ -1,9 +1,9 @@
 import UIKit
 
-class SecondViewController : UIViewController {
+class MainViewController : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .blue
+        view.backgroundColor = .gray
     }
 }
 
