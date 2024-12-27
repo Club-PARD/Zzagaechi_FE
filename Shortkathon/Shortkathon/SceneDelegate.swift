@@ -17,31 +17,25 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         let window = UIWindow(windowScene: windowScene)
-        let viewController = DetailPlanViewController()
-        let navigationController = UINavigationController(rootViewController: viewController)
+
         
-        
-        
-        
-        window.rootViewController = navigationController
-        window.makeKeyAndVisible()
         self.window = window
 //        
-//        if let _ = UserDefaults.standard.string(forKey: "userIdentifier") {
-//            // 이미 로그인된 상태라면 MainPageViewController로 이동
-//            print("이미 로그인")
-////            let mainVC = MainPageViewController()
+        if let _ = UserDefaults.standard.string(forKey: "userIdentifier") {
+            // 이미 로그인된 상태라면 MainPageViewController로 이동
+            print("이미 로그인")
+            let mainVC = ViewController()
 //            let mainVC = DetailPlanViewController()
-//            mainVC.modalPresentationStyle = .fullScreen
-//            window.rootViewController = mainVC
-//        } else {
-//            // 로그인하지 않은 상태라면 AppleLoginViewController로 이동
-//            print("아직 로그인")
-//            let loginVC = AppleLoginViewController()
-//            loginVC.modalPresentationStyle = .fullScreen
-//            window.rootViewController = loginVC
-//        }
-//        window.makeKeyAndVisible()
+            mainVC.modalPresentationStyle = .fullScreen
+            window.rootViewController = mainVC
+        } else {
+            // 로그인하지 않은 상태라면 AppleLoginViewController로 이동
+            print("아직 로그인")
+            let loginVC = AppleLoginViewController()
+            loginVC.modalPresentationStyle = .fullScreen
+            window.rootViewController = loginVC
+        }
+        window.makeKeyAndVisible()
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {

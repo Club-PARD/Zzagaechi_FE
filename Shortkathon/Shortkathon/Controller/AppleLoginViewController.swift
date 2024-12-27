@@ -107,10 +107,10 @@ class AppleLoginViewController: UIViewController {
     
     // 메인 화면으로 이동
     private func navigateToMainPage(with userIdentifier: String?) {
-        let mainVC = MainPageViewController()
+        let mainVC = ViewController()
         mainVC.modalPresentationStyle = .fullScreen
         guard let userIdentifier = userIdentifier else { return }
-        mainVC.uid = userIdentifier
+//        mainVC.uid = userIdentifier
         
         self.present(mainVC, animated: true, completion: nil)
         
