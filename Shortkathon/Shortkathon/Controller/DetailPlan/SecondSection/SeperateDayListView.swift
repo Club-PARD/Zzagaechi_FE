@@ -99,7 +99,7 @@ class SeperateDayListView : UIView {
     
     private func calculateViewHeight() -> CGFloat {
         let tableHeight = calculateTableViewHeight()
-        return topPadding + tableHeight  // 상단 여백 + 테이블뷰 높이
+        return topPadding + tableHeight
     }
     
     // 높이 업데이트
@@ -165,10 +165,7 @@ extension SeperateDayListView : UITableViewDelegate, UITableViewDataSource {
     // 삭제 액션 처리
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            // 데이터 소스에서 항목 삭제
-            data.remove(at: indexPath.section)  // section을 사용하는 경우
-            // 또는
-            // data.remove(at: indexPath.row)  // row를 사용하는 경우
+            data.remove(at: indexPath.section)
             tableView.reloadData()
             updateUI()
             updateViewHeight()
@@ -186,12 +183,9 @@ extension SeperateDayListView: UITableViewDropDelegate {
         guard let destinationIndexPath = coordinator.destinationIndexPath else { return }
         
         coordinator.items.forEach { dropItem in
-            // localObject에서 문자열만 추출
+            
             if let (sourceItem, _) = dropItem.dragItem.localObject as? (String, IndexPath) {
-                // 드롭된 아이템을 데이터 배열에 추가
                 data.insert(sourceItem, at: destinationIndexPath.section)
-    
-                // UI 업데이트
                 updateUI()
                 updateViewHeight()
                 tableView.reloadData()

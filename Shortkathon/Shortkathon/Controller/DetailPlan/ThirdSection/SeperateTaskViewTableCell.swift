@@ -40,7 +40,6 @@ class SeperateTaskViewTableCell : UITableViewCell {
         self.backgroundColor = .clear
         contentView.backgroundColor = .clear
         
-        
         self.isUserInteractionEnabled = true
         self.contentView.isUserInteractionEnabled = true
         setUI()

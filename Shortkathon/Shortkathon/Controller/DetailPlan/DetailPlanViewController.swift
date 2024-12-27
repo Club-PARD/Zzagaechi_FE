@@ -181,13 +181,11 @@ class DetailPlanViewController : UIViewController {
             seperateDayListView.topAnchor.constraint(equalTo: seperateLabel.bottomAnchor, constant: 5),
             seperateDayListView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: 24 ),
             seperateDayListView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant:  -24),
-//            seperateDayListView.heightAnchor.constraint(equalToConstant: 242), // 나중에 바꾸기
             seperateDayListView.viewHeightConstraint!,
             
             seperateTaskView.topAnchor.constraint(equalTo: seperateDayListView.bottomAnchor , constant: 22),
             seperateTaskView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: 24 ),
             seperateTaskView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant:  -24),
-//            seperateTaskView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -33),
             seperateTaskView.viewHeightConstraint!
         ])
     }

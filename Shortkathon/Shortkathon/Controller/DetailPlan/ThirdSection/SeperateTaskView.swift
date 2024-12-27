@@ -13,8 +13,6 @@ class SeperateTaskView : UIView {
     private let bottomPadding: CGFloat = 6.5  // 하단 여백
     
     
-    
-    
     let seperateLabel : UILabel = {
         let label = UILabel()
         label.textColor = .white
@@ -96,7 +94,6 @@ class SeperateTaskView : UIView {
             seperateTaskTableView.topAnchor.constraint(equalTo: seperateLabel.bottomAnchor , constant: 21),
             seperateTaskTableView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 9),
             seperateTaskTableView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -9),
-            //            seperateTaskTableView.heightAnchor.constraint(equalToConstant: 200),
             
             plusTaskButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             plusTaskButton.topAnchor.constraint(equalTo: seperateTaskTableView.bottomAnchor, constant: 6.5 ),
@@ -243,7 +240,6 @@ extension SeperateTaskView : UITextFieldDelegate {
         }
     }
     
-    // (선택사항) 삭제 버튼 텍스트 커스텀
     func tableView(_ tableView: UITableView, titleForDeleteConfirmationButtonForRowAt indexPath: IndexPath) -> String? {
         return "삭제"
     }
@@ -277,22 +273,3 @@ extension SeperateTaskView: UITableViewDragDelegate {
         }
     }
 }
-
-
-//extension SeperateTaskView: UITableViewDragDelegate {
-//    func tableView(_ tableView: UITableView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
-//        let dragItem = UIDragItem(itemProvider: NSItemProvider(object: task[indexPath.row] as NSString))
-//        dragItem.localObject = task[indexPath.row]
-//        return [dragItem]
-//    }
-//    
-//    func tableView(_ tableView: UITableView, dragSessionDidEnd session: UIDragSession) {
-//        
-//        if let sourceIndexPath = tableView.indexPathForRow(at: session.location(in: tableView)) {
-//            task.remove(at: sourceIndexPath.row)
-//            tableView.reloadData()
-////            updateTableViewHeight()
-//        }
-//    }
-//    
-//}
