@@ -99,7 +99,8 @@ class SeperateTaskView : UIView {
             //            seperateTaskTableView.heightAnchor.constraint(equalToConstant: 200),
             
             plusTaskButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            plusTaskButton.topAnchor.constraint(equalTo: seperateTaskTableView.bottomAnchor, constant: 6.5 )
+            plusTaskButton.topAnchor.constraint(equalTo: seperateTaskTableView.bottomAnchor, constant: 6.5 ),
+            plusTaskButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant:  -10),
         ])
     }
     

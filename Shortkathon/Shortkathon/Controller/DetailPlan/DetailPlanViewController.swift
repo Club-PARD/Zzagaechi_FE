@@ -149,6 +149,7 @@ class DetailPlanViewController : UIViewController {
         }
         
         seperateTaskView.viewHeightConstraint = seperateTaskView.heightAnchor.constraint(equalToConstant: 280)
+        seperateTaskView.viewHeightConstraint?.isActive = true
         
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.topAnchor),
