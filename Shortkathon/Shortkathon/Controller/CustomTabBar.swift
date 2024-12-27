@@ -2,6 +2,14 @@ import UIKit
 
 
 class CustomTabBar: UITabBar {
+    static let customHeight: CGFloat = 120
+
+    
+    override func sizeThatFits(_ size: CGSize) -> CGSize {
+           var sizeThatFits = super.sizeThatFits(size)
+           sizeThatFits.height = CustomTabBar.customHeight
+           return sizeThatFits
+       }
     
     override func draw(_ rect: CGRect) {
         // 탭바 배경색 설정
