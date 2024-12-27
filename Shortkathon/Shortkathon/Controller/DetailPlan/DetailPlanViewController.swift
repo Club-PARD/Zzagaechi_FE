@@ -148,6 +148,8 @@ class DetailPlanViewController : UIViewController {
             contentView.addSubview($0)
         }
         
+        seperateTaskView.viewHeightConstraint = seperateTaskView.heightAnchor.constraint(equalToConstant: 280)
+        
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -181,7 +183,8 @@ class DetailPlanViewController : UIViewController {
             seperateTaskView.topAnchor.constraint(equalTo: seperateDayListView.bottomAnchor , constant: 22),
             seperateTaskView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: 24 ),
             seperateTaskView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant:  -24),
-            seperateTaskView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -33),
+//            seperateTaskView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -33),
+            seperateTaskView.viewHeightConstraint!
         ])
     }
     

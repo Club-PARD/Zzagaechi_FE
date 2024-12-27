@@ -82,3 +82,4 @@ class SeperateTaskViewTableCell : UITableViewCell {
         taskTextField.isUserInteractionEnabled = true
     }
 }
+

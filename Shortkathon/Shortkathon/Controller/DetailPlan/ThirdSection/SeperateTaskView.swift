@@ -4,6 +4,17 @@ import UIKit
 class SeperateTaskView : UIView {
     //MARK: - property
     var task : [String] = [""]
+    
+    var viewHeightConstraint : NSLayoutConstraint?
+    private let cellHeight: CGFloat = 57  // 셀 하나의 높이
+    private let cellSpacing: CGFloat = 12  // 셀 사이 간격
+    private let topPadding: CGFloat = 18  // 상단 여백
+    private let tableViewTopPadding: CGFloat = 21  // 테이블뷰 상단 여백
+    private let bottomPadding: CGFloat = 6.5  // 하단 여백
+    
+    
+    
+    
     let seperateLabel : UILabel = {
         let label = UILabel()
         label.textColor = .white
@@ -85,7 +96,7 @@ class SeperateTaskView : UIView {
             seperateTaskTableView.topAnchor.constraint(equalTo: seperateLabel.bottomAnchor , constant: 21),
             seperateTaskTableView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 9),
             seperateTaskTableView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -9),
-            seperateTaskTableView.heightAnchor.constraint(equalToConstant: 200),
+            //            seperateTaskTableView.heightAnchor.constraint(equalToConstant: 200),
             
             plusTaskButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             plusTaskButton.topAnchor.constraint(equalTo: seperateTaskTableView.bottomAnchor, constant: 6.5 )
@@ -106,6 +117,30 @@ class SeperateTaskView : UIView {
         self.addGestureRecognizer(tapGesture)
     }
     
+    //view의 높이 계산
+    private func calculateViewHeight() -> CGFloat {
+        let tableViewHeight = calculateTableViewHeight()
+        let totalHeight = topPadding + seperateLabel.frame.height + tableViewTopPadding + tableViewHeight + plusTaskButton.frame.height + bottomPadding
+        print("seperateTaskView 높이 : \(totalHeight)")
+        return max(totalHeight, 270)
+    }
+    
+    //tableview 높이 계산
+    private func calculateTableViewHeight() -> CGFloat {
+        let totalCellHeight = CGFloat(task.count) * cellHeight
+        let totalSpacingHeight = CGFloat(max(0, task.count - 1)) * cellSpacing
+        return totalCellHeight + totalSpacingHeight
+    }
+    
+    // 높이 업데이트 함수
+    private func updateViewHeight() {
+            viewHeightConstraint?.constant = calculateViewHeight()
+            
+            UIView.animate(withDuration: 0.3) {
+                self.superview?.layoutIfNeeded()
+            }
+        }
+    
     @objc private func questionButtonTapped() {
         tipImage.isHidden = false
     }
@@ -120,6 +155,8 @@ class SeperateTaskView : UIView {
         task.append("")
         print(task)
         seperateTaskTableView.reloadData()
+        updateViewHeight()
+
     }
 }
 
@@ -201,6 +238,7 @@ extension SeperateTaskView : UITextFieldDelegate {
                 task.append("")
                 tableView.reloadData()
             }
+            updateViewHeight()
         }
     }
     
@@ -226,5 +264,5 @@ extension SeperateTaskView: UITableViewDragDelegate {
 //            updateTableViewHeight()
         }
     }
-
+    
 }

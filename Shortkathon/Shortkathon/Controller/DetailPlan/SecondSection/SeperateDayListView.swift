@@ -3,8 +3,8 @@ import UIKit
 
 class SeperateDayListView : UIView {
     //MARK: - property
-    //            var data: [String] = []
-    var data: [String] = ["레퍼런스 찾아보기","디자인 제작", "교수님께 피드백 받고 수정"]
+    var data: [String] = []
+//    var data: [String] = ["레퍼런스 찾아보기","디자인 제작", "교수님께 피드백 받고 수정"]
     
     private var tableViewHeightConstraint: NSLayoutConstraint?
     private let cellHeight: CGFloat = 45
