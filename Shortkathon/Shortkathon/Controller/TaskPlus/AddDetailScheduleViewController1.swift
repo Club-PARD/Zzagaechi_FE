@@ -102,6 +102,7 @@ class AddDetailScheduleViewController1 : UIViewController {
         button.backgroundColor = #colorLiteral(red: 0.5591031909, green: 0.571234405, blue: 0.5998923779, alpha: 1)
         button.layer.cornerRadius = 12
         button.tintColor = .white
+        button.isEnabled = false
         return button
     }()
     
@@ -114,7 +115,8 @@ class AddDetailScheduleViewController1 : UIViewController {
         
         setUI()
         buttonTapped()
-        setupKeyboardDismiss() 
+        setupKeyboardDismiss()
+        setupTextField()
     }
     
     
@@ -160,14 +162,37 @@ class AddDetailScheduleViewController1 : UIViewController {
         ])
     }
     
+    
+    func setupTextField(){
+        schedulTextField.addTarget(self, action: #selector(textFieldChanged(_:)), for: .editingChanged)
+    }
+    
+    @objc func textFieldChanged(_ textField: UITextField){
+        let isEmpty = textField.text?.isEmpty ?? true
+        updateNextButtonState(isEmpty: isEmpty)
+    }
+    
+    
+    func updateNextButtonState(isEmpty : Bool){
+        if isEmpty {
+                   nextButton.backgroundColor = #colorLiteral(red: 0.5591031909, green: 0.571234405, blue: 0.5998923779, alpha: 1)
+                   nextButton.isEnabled = false
+               } else {
+                   nextButton.backgroundColor = #colorLiteral(red: 0.7294117647, green: 0.8117647059, blue: 0.9568627451, alpha: 1)
+                   nextButton.isEnabled = true
+               }
+    }
+    
     private func setupKeyboardDismiss() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tapGesture)
     }
-
+    
     @objc private func dismissKeyboard() {
         view.endEditing(true)
     }
+    
+    
     
     func buttonTapped(){
         backButton.addTarget(self, action: #selector(dismissVC), for: .touchUpInside)
@@ -198,6 +223,8 @@ class AddDetailScheduleViewController1 : UIViewController {
     }
     
     @objc func movoToNext(){
+        guard nextButton.isEnabled else { return }
+
         let vc = AddDetailScheduleViewController2()
         vc.modalPresentationStyle = .fullScreen
         let transition = CATransition()
