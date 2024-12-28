@@ -2,9 +2,7 @@ import UIKit
 
 class MainViewController : UIViewController {
     //MARK: - property
-//    var doTask : Int = 2
-//    var allTask : Int = 5
-    
+    var toDayTask : [String] = ["로고 레퍼런스 찾기","로고 틀 짜기", "하나로 마트 가서 세제 사기"]
     
     var doTask: Int = 2 {
         didSet {
@@ -75,19 +73,26 @@ class MainViewController : UIViewController {
         return label
     }()
     
+    let taskTableView : UITableView = {
+        let view = UITableView()
+        view.showsVerticalScrollIndicator = false
+        view.separatorStyle = .none
+        return view
+    }()
     
     //MARK: - main
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = #colorLiteral(red: 0.137254902, green: 0.137254902, blue: 0.137254902, alpha: 1)
         setUI()
+        setTable()
         startFloatingAnimations()
         updateCountLabel()
     }
     
     //MARK: - function
     func setUI(){
-        [titleLabel, toDoLabel,image1,image2,image3,image4,countLabel].forEach{
+        [titleLabel, toDoLabel,image1,image2,image3,image4,countLabel,taskTableView].forEach{
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
@@ -135,8 +140,30 @@ class MainViewController : UIViewController {
         countLabel.text = "\(completedTasks)/\(totalTasks)개"
     }
     
-    
+    func setTable(){
+        taskTableView.delegate = self
+        taskTableView.dataSource = self
+        taskTableView.register(MainTableViewCell.self, forCellReuseIdentifier: "mainTableViewCell")
+    }
 }
+
+
+//MARK: - tableview Extension
+
+extension MainViewController: UITableViewDataSource, UITableViewDelegate {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return toDayTask.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "mainTableViewCell", for: indexPath) as? MainTableViewCell else {return UITableViewCell()}
+        
+        return cell
+    }
+}
+
+
+
 
 //MARK: - 이미지 애니메이션
 extension MainViewController {
@@ -180,3 +207,5 @@ extension MainViewController {
     }
 
 }
+
+
