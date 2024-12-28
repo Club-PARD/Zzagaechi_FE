@@ -46,7 +46,7 @@ class AddDetailScheduleViewController1 : UIViewController {
         
         label.text = combinedText
         label.font = .systemFont(ofSize: 30)
-        //        label.font = UIFont(name: "Pretendard-Regular", size: 30)//볼더임
+        label.font = UIFont(name: "Pretendard-Regular", size: 30)//볼더임
         label.textColor = #colorLiteral(red: 0.9999999881, green: 0.9999999881, blue: 0.9999999881, alpha: 1)
         label.numberOfLines = 0 // 여러 줄 지원
         label.lineBreakMode = .byWordWrapping // 단어 단위로 줄바꿈
@@ -78,7 +78,7 @@ class AddDetailScheduleViewController1 : UIViewController {
         textField.borderStyle = .roundedRect
         textField.layer.cornerRadius = 12
         textField.font = .systemFont(ofSize: 14)
-        //        textField.font = UIFont(name: "Pretendard-Regular", size: 14)
+        textField.font = UIFont(name: "Pretendard-Regular", size: 14)
         
         textField.backgroundColor = #colorLiteral(red: 0.137254902, green: 0.137254902, blue: 0.137254902, alpha: 1)
         textField.textColor = #colorLiteral(red: 0.9999999881, green: 0.9999999881, blue: 0.9999999881, alpha: 1)
@@ -107,28 +107,22 @@ class AddDetailScheduleViewController1 : UIViewController {
     
     
     
-    
+    //MARK: - main
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = #colorLiteral(red: 0.1372549087, green: 0.1372549087, blue: 0.1372549087, alpha: 1)
+        
         setUI()
+        
     }
     
+    
+    //MARK: - function
     func setUI(){
-        [nextButton].forEach{
+        [nextButton,mainLabel,backButton,cancelButton,progessbarImage,headerLabel,subLabel,titleLabel,schedulTextField].forEach{
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
-        setupBackButton()
-        view.addSubview(mainLabel)
-        view.addSubview(backButton)
-        view.addSubview(cancelButton)
-        view.addSubview(progessbarImage)
-        
-        view.addSubview(headerLabel)
-        view.addSubview(subLabel)
-        view.addSubview(titleLabel)
-        view.addSubview(schedulTextField)
         
         NSLayoutConstraint.activate([
             mainLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -165,20 +159,7 @@ class AddDetailScheduleViewController1 : UIViewController {
         ])
     }
     
-    func setupBackButton() {
-        let backButton = UIButton(type: .custom)
-        backButton.setImage(UIImage(named: "back"), for: .normal)
-        backButton.addTarget(self, action: #selector(dismissVC), for: .touchUpInside)
-        
-        view.addSubview(backButton)
-        backButton.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            backButton.widthAnchor.constraint(equalToConstant: 30),
-            backButton.heightAnchor.constraint(equalToConstant: 37),
-            backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 17),
-            backButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 40),
-        ])
-    }
+   
     
     @objc func dismissVC() {
         let transition = CATransition()

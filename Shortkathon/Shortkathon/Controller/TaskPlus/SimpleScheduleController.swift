@@ -105,8 +105,8 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
         let label = UILabel()
         label.text = "시간"
         label.textColor = #colorLiteral(red: 0.9999999881, green: 0.9999999881, blue: 0.9999999881, alpha: 1)
-        label.font = .systemFont(ofSize: 19)
-        //        label.font = UIFont(name: "Pretendard-Regular", size: 30)//미디움
+        //        label.font = .systemFont(ofSize: 19)
+        label.font = UIFont(name: "Pretendard-Regular", size: 30)//미디움
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -203,7 +203,7 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
         
         schedulTextField.delegate = self
         schedulTextField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
-        
+        backButton.addTarget(self, action: #selector(moveBack), for: .touchUpInside)
         saveButton.addTarget(self, action: #selector(didtap), for: .touchUpInside)
         
         setupScrollView()
@@ -254,7 +254,7 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
             contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             contentView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor),
-
+            
         ])
     }
     
@@ -299,20 +299,20 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
             
             mainLabel.topAnchor.constraint(equalTo: centerLabel.bottomAnchor, constant: 52),
             mainLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 31),
-//            mainLabel.heightAnchor.constraint(equalToConstant: 68),
+            //            mainLabel.heightAnchor.constraint(equalToConstant: 68),
             
             subLabel.topAnchor.constraint(equalTo: mainLabel.bottomAnchor, constant: 16),
             subLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 31),
-//            subLabel.heightAnchor.constraint(equalToConstant: 18),
+            //            subLabel.heightAnchor.constraint(equalToConstant: 18),
             
             titleLabel.topAnchor.constraint(equalTo: subLabel.bottomAnchor, constant: 60),
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 44),
-//            titleLabel.heightAnchor.constraint(equalToConstant: 25),
+            //            titleLabel.heightAnchor.constraint(equalToConstant: 25),
             
             schedulTextField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
             schedulTextField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 31),
             schedulTextField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -31),
-//            schedulTextField.heightAnchor.constraint(equalToConstant: 50),
+            //            schedulTextField.heightAnchor.constraint(equalToConstant: 50),
             
             startLabel.topAnchor.constraint(equalTo: schedulTextField.bottomAnchor, constant: 50),
             startLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 44),
@@ -399,6 +399,17 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
         present(vc, animated: true)
     }
     
-    
+    @objc func moveBack(){
+        
+        let mainVC = ViewController()
+        mainVC.modalPresentationStyle = .fullScreen
+        let transition = CATransition()
+        transition.duration = 0.4
+        transition.type = .push
+        transition.subtype = .fromLeft
+        transition.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        view.window?.layer.add(transition, forKey: kCATransition)
+        dismiss(animated: true )
+    }
     
 }
