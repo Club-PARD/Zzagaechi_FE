@@ -36,8 +36,7 @@ class SchedulemodalController: UIViewController {
         let secondPart = "오늘 하루도 열심히 해봐요!"
         let combinedText = "\(firstPart)!\n\(secondPart)"
         label.text = combinedText
-        label.font = .systemFont(ofSize: 13)
-//        label.font = UIFont(name: "Pretendard-Regular", size: 13)
+        label.font = UIFont(name: "Pretendard-Regular", size: 13)
         label.textColor = #colorLiteral(red: 0.9568627451, green: 0.9568627451, blue: 0.9568627451, alpha: 1)
         label.numberOfLines = 0 // 여러 줄 지원
         label.lineBreakMode = .byWordWrapping // 단어 단위로 줄바꿈
@@ -77,7 +76,9 @@ class SchedulemodalController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .black.withAlphaComponent(0.5)
         setupUI()
-        setupActions()
+        [closeButton,confirmButton].forEach{
+            $0.addTarget(self, action: #selector(didTapped), for: .touchUpInside)
+        }
     }
     
     private func setupUI() {
@@ -119,12 +120,26 @@ class SchedulemodalController: UIViewController {
         ])
     }
     
-    private func setupActions() {
-        closeButton.addTarget(self, action: #selector(dismissModal), for: .touchUpInside)
-        confirmButton.addTarget(self, action: #selector(dismissModal), for: .touchUpInside)
+//    private func setupActions() {
+//        closeButton.addTarget(self, action: #selector(dismissModal), for: .touchUpInside)
+//        confirmButton.addTarget(self, action: #selector(dismissModal), for: .touchUpInside)
+//    }
+//    
+//    @objc private func dismissModal() {
+//        dismiss(animated: true)
+//    }
+    
+    
+    @objc func didTapped(){
+        let mainVC = ViewController()
+        mainVC.modalPresentationStyle = .fullScreen
+        let transition = CATransition()
+        transition.duration = 0.4
+        transition.type = .push
+        transition.subtype = .fromLeft
+        transition.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        view.window?.layer.add(transition, forKey: kCATransition)
+        present(mainVC, animated: false)
     }
     
-    @objc private func dismissModal() {
-        dismiss(animated: true)
-    }
 }
