@@ -11,7 +11,12 @@ class MainViewController : UIViewController {
         return label
     }()
     
-    
+    let toDoLabel : UILabel = {
+        let label = UILabel()
+        label.font = UIFont(name: "Pretendard-Regular", size: 24)
+        label.text = "오늘의 할 일"
+        return label
+    }()
     
     //MARK: - main
     override func viewDidLoad() {
@@ -22,14 +27,21 @@ class MainViewController : UIViewController {
     
     //MARK: - function
     func setUI(){
-        [titleLabel].forEach{
+        [titleLabel, toDoLabel].forEach{
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
         
+        view.bringSubviewToFront(titleLabel) // titleLabel을 항상 위로
+
+        
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor ,constant: 75),
+            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor ,constant: 50),
             titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 29),
+            
+            toDoLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 150 ),
+            toDoLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant:   26),
+            
         ])
     }
 }
