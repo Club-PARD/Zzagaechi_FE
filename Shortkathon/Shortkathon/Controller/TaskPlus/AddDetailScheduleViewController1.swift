@@ -113,6 +113,7 @@ class AddDetailScheduleViewController1 : UIViewController {
         view.backgroundColor = #colorLiteral(red: 0.1372549087, green: 0.1372549087, blue: 0.1372549087, alpha: 1)
         
         setUI()
+        buttonTapped()
         
     }
     
@@ -159,7 +160,11 @@ class AddDetailScheduleViewController1 : UIViewController {
         ])
     }
     
-   
+    func buttonTapped(){
+        backButton.addTarget(self, action: #selector(dismissVC), for: .touchUpInside)
+        cancelButton.addTarget(self, action: #selector(moveToMain), for: .touchUpInside)
+        nextButton.addTarget(self, action: #selector(movoToNext), for: .touchUpInside)
+    }
     
     @objc func dismissVC() {
         let transition = CATransition()
@@ -170,4 +175,29 @@ class AddDetailScheduleViewController1 : UIViewController {
         view.window?.layer.add(transition, forKey: kCATransition)
         dismiss(animated: false, completion: nil)
     }
+    
+    @objc func moveToMain() {
+        let vc = ViewController()
+        vc.modalPresentationStyle = .fullScreen
+        let transition = CATransition()
+        transition.duration = 0.4
+        transition.type = .push
+        transition.subtype = .fromLeft
+        transition.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        view.window?.layer.add(transition, forKey: kCATransition)
+        present(vc,animated: false)
+    }
+    
+    @objc func movoToNext(){
+        let vc = AddDetailScheduleViewController2()
+        vc.modalPresentationStyle = .fullScreen
+        let transition = CATransition()
+        transition.duration = 0.4
+        transition.type = .push
+        transition.subtype = .fromRight
+        transition.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        view.window?.layer.add(transition, forKey: kCATransition)
+        present(vc,animated: false)
+    }
+    
 }
