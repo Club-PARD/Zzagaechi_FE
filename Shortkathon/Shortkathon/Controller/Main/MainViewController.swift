@@ -18,6 +18,41 @@ class MainViewController : UIViewController {
         return label
     }()
     
+    
+    let image1 : UIImageView = {
+        let image = UIImageView()
+        image.image = UIImage(named: "N1")
+        image.contentMode = .scaleAspectFill
+        image.clipsToBounds = true
+        return image
+    }()
+    
+    let image2 : UIImageView = {
+        let image = UIImageView()
+        image.image = UIImage(named: "O")
+        image.contentMode = .scaleAspectFill
+        image.clipsToBounds = true
+        return image
+    }()
+
+    let image3 : UIImageView = {
+        let image = UIImageView()
+        image.image = UIImage(named: "N2")
+        image.contentMode = .scaleAspectFill
+        image.clipsToBounds = true
+        return image
+    }()
+    
+    let image4 : UIImageView = {
+        let image = UIImageView()
+        image.image = UIImage(named: "A")
+        image.contentMode = .scaleAspectFill
+        image.clipsToBounds = true
+        return image
+    }()
+    
+    
+    
     //MARK: - main
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,7 +62,7 @@ class MainViewController : UIViewController {
     
     //MARK: - function
     func setUI(){
-        [titleLabel, toDoLabel].forEach{
+        [titleLabel, toDoLabel,image1,image2,image3,image4].forEach{
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
@@ -39,8 +74,29 @@ class MainViewController : UIViewController {
             titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor ,constant: 50),
             titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 29),
             
-            toDoLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 150 ),
+            toDoLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 140 ),
             toDoLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant:   26),
+            
+            image1.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            image1.topAnchor.constraint(equalTo: view.topAnchor, constant: 207),
+            image1.widthAnchor.constraint(equalToConstant: 109),
+            image1.heightAnchor.constraint(equalToConstant: 147),
+            
+            image2.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 132),
+            image2.topAnchor.constraint(equalTo: view.topAnchor, constant: 336),
+            image2.widthAnchor.constraint(equalToConstant: 98),
+            image2.heightAnchor.constraint(equalToConstant: 71),
+
+            
+            image3.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -13),
+            image3.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 197),
+            image3.widthAnchor.constraint(equalToConstant: 99),
+            image3.heightAnchor.constraint(equalToConstant: 96),
+            
+            image4.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -26),
+            image4.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 25),
+            image4.widthAnchor.constraint(equalToConstant: 100),
+            image4.heightAnchor.constraint(equalToConstant: 101),
             
         ])
     }
