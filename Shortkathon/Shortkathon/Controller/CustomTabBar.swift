@@ -1,48 +1,65 @@
 import UIKit
 
-
 class CustomTabBar: UITabBar {
-    static let customHeight: CGFloat = 120
+    static let customHeight: CGFloat = 110 // 탭바 높이 조정
 
-    
     override func sizeThatFits(_ size: CGSize) -> CGSize {
-           var sizeThatFits = super.sizeThatFits(size)
-           sizeThatFits.height = CustomTabBar.customHeight
-           return sizeThatFits
-       }
-    
-    override func draw(_ rect: CGRect) {
-        // 탭바 배경색 설정
-        self.backgroundColor = .black
-        
-        // 라운딩 처리를 위한 path
-        let path = UIBezierPath(
-            roundedRect: rect,
-            byRoundingCorners: [.topLeft, .topRight],
-            cornerRadii: CGSize(width: 20, height: 20)
-        )
-        
-        // 라운딩된 마스크 레이어 생성
-        let maskLayer = CAShapeLayer()
-        maskLayer.path = path.cgPath
-        self.layer.mask = maskLayer
-        
-        // 그림자 설정
-        self.layer.masksToBounds = false
-        self.layer.shadowColor = UIColor.white.withAlphaComponent(0.3).cgColor
-        self.layer.shadowOffset = CGSize(width: 0, height: -4)
-        self.layer.shadowOpacity = 0.4
-        self.layer.shadowRadius = 10
+        var sizeThatFits = super.sizeThatFits(size)
+        sizeThatFits.height = CustomTabBar.customHeight
+        return sizeThatFits
     }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        // 그림자를 위한 path 설정
-        self.layer.shadowPath = UIBezierPath(
+
+    override func draw(_ rect: CGRect) {
+        super.draw(rect)
+        self.backgroundColor = .clear
+        let backgroundLayer = CAShapeLayer()
+        let path = UIBezierPath(
             roundedRect: bounds,
             byRoundingCorners: [.topLeft, .topRight],
-            cornerRadii: CGSize(width: 20, height: 20)
-        ).cgPath
+            cornerRadii: CGSize(width: 30, height: 30) // 둥근 모서리 크기
+        )
+        
+        // 배경색 적용
+        backgroundLayer.path = path.cgPath
+        backgroundLayer.fillColor = #colorLiteral(red: 0.137254902, green: 0.137254902, blue: 0.137254902, alpha: 1)
+        layer.insertSublayer(backgroundLayer, at: 0)
+        
+        // 그림자 추가
+        backgroundLayer.shadowColor = UIColor.white.cgColor
+        backgroundLayer.shadowOffset = CGSize(width: 0, height: -2) // 그림자 위치 조정
+        backgroundLayer.shadowOpacity = 0.2 // 그림자 투명도
+        backgroundLayer.shadowRadius = 6 // 그림자 퍼짐 정도
+        
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+    
+        // TabBar 아이템들의 위치 및 크기 조정
+        let tabBarItems = self.subviews.filter({ $0 is UIControl })
+        let tabBarItemWidth = self.bounds.width / CGFloat(tabBarItems.count)
+        for (index, tabBarItem) in tabBarItems.enumerated() {
+            let xPosition = tabBarItemWidth * CGFloat(index)
+            tabBarItem.frame = CGRect(
+                x: xPosition,
+                y: 10, // 탭바 아이템을 조금 위로 올림
+                width: tabBarItemWidth,
+                height: self.bounds.height - 20
+            )
+        }
+        
+        // 아이템 위치 조정
+          if let items = self.items {
+              items.forEach { item in
+                  // 타이틀을 더 위로 올림 (vertical 값을 더 작게(음수) 조정)
+                  item.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: -16)
+                  
+                  // 이미지도 함께 조정하고 싶다면
+                  item.imageInsets = UIEdgeInsets(top: -8, left: 0, bottom: 8, right: 0)
+              }
+          }
+        
+        
     }
 }
+
