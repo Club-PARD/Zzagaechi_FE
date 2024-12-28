@@ -2,6 +2,23 @@ import UIKit
 
 class MainViewController : UIViewController {
     //MARK: - property
+//    var doTask : Int = 2
+//    var allTask : Int = 5
+    
+    
+    var doTask: Int = 2 {
+        didSet {
+            updateCountLabel()
+        }
+    }
+//
+    var allTask: Int = 5 {
+        didSet {
+            updateCountLabel()
+        }
+    }
+
+    
     let titleLabel : UILabel = {
         let label = UILabel()
         label.font = UIFont(name: "Pretendard-Medium", size: 35)
@@ -51,6 +68,12 @@ class MainViewController : UIViewController {
         return image
     }()
     
+    lazy var countLabel : UILabel = {
+        let label = UILabel()
+        label.font = UIFont(name: "Pretendard-Regular", size: 17)
+        label.textColor = #colorLiteral(red: 0.7540719509, green: 0.7540718913, blue: 0.7540718913, alpha: 1)
+        return label
+    }()
     
     
     //MARK: - main
@@ -59,11 +82,12 @@ class MainViewController : UIViewController {
         view.backgroundColor = #colorLiteral(red: 0.137254902, green: 0.137254902, blue: 0.137254902, alpha: 1)
         setUI()
         startFloatingAnimations()
+        updateCountLabel()
     }
     
     //MARK: - function
     func setUI(){
-        [titleLabel, toDoLabel,image1,image2,image3,image4].forEach{
+        [titleLabel, toDoLabel,image1,image2,image3,image4,countLabel].forEach{
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
@@ -77,6 +101,9 @@ class MainViewController : UIViewController {
             
             toDoLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 140 ),
             toDoLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant:   26),
+            
+            countLabel.leadingAnchor.constraint(equalTo: toDoLabel.trailingAnchor, constant: 4),
+            countLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 147),
             
             image1.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             image1.topAnchor.constraint(equalTo: view.topAnchor, constant: 207),
@@ -100,6 +127,12 @@ class MainViewController : UIViewController {
             image4.heightAnchor.constraint(equalToConstant: 101),
             
         ])
+    }
+    
+    private func updateCountLabel() {
+        let completedTasks = doTask ?? 0
+        let totalTasks = allTask ?? 0
+        countLabel.text = "\(completedTasks)/\(totalTasks)개"
     }
     
     

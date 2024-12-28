@@ -6,7 +6,6 @@ class SeparateTaskViewController : UIViewController {
     
     private let gradientLayer: CAGradientLayer = {
         let layer = CAGradientLayer()
-//        layer.colors = [#colorLiteral(red: 0.6681636572, green: 0.8001118898, blue: 1, alpha: 1),#colorLiteral(red: 0.2613130808, green: 0.5387120247, blue: 0.9352477789, alpha: 1)]
         layer.colors = [
                    UIColor(red: 0.668, green: 0.800, blue: 1.0, alpha: 1.0).cgColor,
                    UIColor(red: 0.261, green: 0.539, blue: 0.935, alpha: 1.0).cgColor
