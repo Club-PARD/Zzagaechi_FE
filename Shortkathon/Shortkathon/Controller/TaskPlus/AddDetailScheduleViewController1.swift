@@ -114,7 +114,7 @@ class AddDetailScheduleViewController1 : UIViewController {
         
         setUI()
         buttonTapped()
-        
+        setupKeyboardDismiss() 
     }
     
     
@@ -160,6 +160,15 @@ class AddDetailScheduleViewController1 : UIViewController {
         ])
     }
     
+    private func setupKeyboardDismiss() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tapGesture)
+    }
+
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
     func buttonTapped(){
         backButton.addTarget(self, action: #selector(dismissVC), for: .touchUpInside)
         cancelButton.addTarget(self, action: #selector(moveToMain), for: .touchUpInside)
@@ -199,5 +208,7 @@ class AddDetailScheduleViewController1 : UIViewController {
         view.window?.layer.add(transition, forKey: kCATransition)
         present(vc,animated: false)
     }
+    
+    
     
 }

@@ -63,6 +63,7 @@ class AddDetailScheduleViewController3 : UIViewController {
         view.backgroundColor = #colorLiteral(red: 0.1372549087, green: 0.1372549087, blue: 0.1372549087, alpha: 1)
         setUI()
         buttonTapped()
+        setupKeyboardDismiss()
     }
     
     func setUI(){
@@ -136,4 +137,14 @@ class AddDetailScheduleViewController3 : UIViewController {
         view.window?.layer.add(transition, forKey: kCATransition)
         present(vc,animated: false)
     }
+    
+    private func setupKeyboardDismiss() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tapGesture)
+    }
+
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
 }
