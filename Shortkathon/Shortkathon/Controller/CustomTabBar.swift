@@ -1,7 +1,7 @@
 import UIKit
 
 class CustomTabBar: UITabBar {
-    static let customHeight: CGFloat = 120 // 탭바 높이 조정
+    static let customHeight: CGFloat = 110 // 탭바 높이 조정
 
     override func sizeThatFits(_ size: CGSize) -> CGSize {
         var sizeThatFits = super.sizeThatFits(size)

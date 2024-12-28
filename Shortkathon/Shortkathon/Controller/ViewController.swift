@@ -17,9 +17,9 @@ class ViewController: UITabBarController {
     }
 
     func setTabbar() {
-        let vc1 = UINavigationController(rootViewController: CalendarViewController())
-        let vc2 = UINavigationController(rootViewController: MainViewController())
-        let vc3 = UINavigationController(rootViewController: SeparateTaskViewController())
+        let vc1 = UINavigationController(rootViewController: MainViewController())
+        let vc2 = UINavigationController(rootViewController: SeparateTaskViewController())
+        let vc3 = UINavigationController(rootViewController: CalendarViewController())
         
         self.viewControllers = [vc1, vc2, vc3]
     
@@ -30,11 +30,12 @@ class ViewController: UITabBarController {
         guard let tabBarItem = self.tabBar.items else { return }
         
         // 탭바 아이템 설정
-        tabBarItem[0].image = UIImage(named: "calender")
-        tabBarItem[1].image = UIImage(named: "home")
-        tabBarItem[2].image = UIImage(named: "plus")
-        tabBarItem[0].title = "캘린더"
-        tabBarItem[1].title = "홈"
-        tabBarItem[2].title = "추가"
+        tabBarItem[0].image = UIImage(named: "home")
+        tabBarItem[1].image = UIImage(named: "plus")
+        tabBarItem[2].image = UIImage(named: "calender")
+    
+        tabBarItem[0].title = "홈"
+        tabBarItem[1].title = "추가"
+        tabBarItem[2].title = "캘린더"
     }
 }
