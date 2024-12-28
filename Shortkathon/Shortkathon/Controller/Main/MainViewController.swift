@@ -58,6 +58,7 @@ class MainViewController : UIViewController {
         super.viewDidLoad()
         view.backgroundColor = #colorLiteral(red: 0.137254902, green: 0.137254902, blue: 0.137254902, alpha: 1)
         setUI()
+        startFloatingAnimations()
     }
     
     //MARK: - function
@@ -100,5 +101,49 @@ class MainViewController : UIViewController {
             
         ])
     }
+    
+    
 }
 
+//MARK: - 이미지 애니메이션
+extension MainViewController {
+    private func startFloatingAnimations(repeatCount: Int = 3) {
+        guard repeatCount > 0 else { return }
+        
+        let duration: TimeInterval = 1.0
+        let delay: TimeInterval = 0.2
+        let totalDuration: TimeInterval = 5.0
+        
+        [image1, image2, image3, image4].enumerated().forEach { index, imageView in
+            // 초기 위로 떠오르는 애니메이션
+            UIView.animate(withDuration: duration,
+                           delay: delay * Double(index),
+                           options: [.curveEaseInOut],
+                           animations: {
+                imageView.transform = CGAffineTransform(translationX: 0, y: -20)
+            }) { _ in
+                // 5초 후에 점점 느려지면서 원위치로
+                UIView.animate(withDuration: totalDuration,
+                               delay: 0,
+                               options: [.curveEaseOut],
+                               animations: {
+                    // dampingRatio를 사용하여 스프링 효과 추가
+                    UIView.animate(withDuration: 4.0,
+                                   delay: 0,
+                                   usingSpringWithDamping: 0.5,
+                                   initialSpringVelocity: 0.5,
+                                   options: [],
+                                   animations: {
+                        imageView.transform = .identity
+                    }, completion: nil)
+                }, completion: nil)
+            }
+        }
+        
+        // 다음 실행을 위한 재귀 호출 (딜레이 포함)
+        DispatchQueue.main.asyncAfter(deadline: .now() + totalDuration - 2.0) {
+            self.startFloatingAnimations(repeatCount: repeatCount - 1)
+        }
+    }
+
+}
