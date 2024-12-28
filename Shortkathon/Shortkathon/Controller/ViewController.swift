@@ -46,15 +46,17 @@ class ViewController: UITabBarController, UITabBarControllerDelegate {
            if viewControllers?.firstIndex(of: viewController) == 1 {
                // 모달 표시
                let modalVC = SeparateTaskViewController()  // 여기에 실제 모달 뷰컨트롤러를 생성
+               let navigationController = UINavigationController(rootViewController: modalVC)
                
-               modalVC.modalPresentationStyle = .pageSheet
-               if let sheet = modalVC.sheetPresentationController {
+               navigationController.modalPresentationStyle = .pageSheet
+
+               
+               if let sheet = navigationController.sheetPresentationController {
                    sheet.detents = [.medium()]
                    sheet.prefersGrabberVisible = true
                }
-               
-               
-               present(modalVC, animated: true, completion: nil)
+
+               present(navigationController, animated: true, completion: nil)
                return false  // 탭 선택을 막음
            }
            

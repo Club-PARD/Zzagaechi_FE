@@ -9,25 +9,23 @@ import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
-    var window: UIWindow?
-    
+    var window : UIWindow?
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         
         guard let windowScene = (scene as? UIWindowScene) else { return }
-        
         let window = UIWindow(windowScene: windowScene)
 
-        
-        self.window = window
+
 //        
         if let _ = UserDefaults.standard.string(forKey: "userIdentifier") {
             // 이미 로그인된 상태라면 MainPageViewController로 이동
             print("이미 로그인")
             let mainVC = ViewController()
-//            let mainVC = DetailPlanViewController()
-            mainVC.modalPresentationStyle = .fullScreen
-            window.rootViewController = mainVC
+            let navigationController = UINavigationController(rootViewController: mainVC)
+//            mainVC.modalPresentationStyle = .fullScreen
+            window.rootViewController = navigationController
+            self.window = window
         } else {
             // 로그인하지 않은 상태라면 AppleLoginViewController로 이동
             print("아직 로그인")
@@ -35,6 +33,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             loginVC.modalPresentationStyle = .fullScreen
             window.rootViewController = loginVC
         }
+        self.window = window
         window.makeKeyAndVisible()
     }
     

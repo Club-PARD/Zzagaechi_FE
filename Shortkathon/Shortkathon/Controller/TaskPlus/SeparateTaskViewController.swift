@@ -166,6 +166,10 @@ class SeparateTaskViewController : UIViewController {
     
     @objc func didTap() {
         print("누가 세분화 일정 눌렀디")
+        let vc = AddDetailScheduleViewController1()
+        vc.modalPresentationStyle = .fullScreen
+        present(vc,animated: true)
+        
     }
     
     @objc func doTap() {
