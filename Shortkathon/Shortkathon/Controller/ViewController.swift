@@ -19,7 +19,7 @@ class ViewController: UITabBarController, UITabBarControllerDelegate {
     
     func setTabbar() {
         let vc1 = UINavigationController(rootViewController: MainViewController())
-        let vc2 = UINavigationController(rootViewController: SeparateTaskViewController1())
+        let vc2 = UINavigationController(rootViewController: SeparateTaskViewController())
         let vc3 = UINavigationController(rootViewController: CalendarViewController())
         
         self.viewControllers = [vc1, vc2, vc3]
@@ -45,7 +45,7 @@ class ViewController: UITabBarController, UITabBarControllerDelegate {
            // 가운데 탭(인덱스 1)이 선택되었을 때
            if viewControllers?.firstIndex(of: viewController) == 1 {
                // 모달 표시
-               let modalVC = SeparateTaskViewController1()  // 여기에 실제 모달 뷰컨트롤러를 생성
+               let modalVC = SeparateTaskViewController()  // 여기에 실제 모달 뷰컨트롤러를 생성
                
                modalVC.modalPresentationStyle = .pageSheet
                if let sheet = modalVC.sheetPresentationController {

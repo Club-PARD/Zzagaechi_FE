@@ -2,7 +2,7 @@
 
 import UIKit
 
-class SeparateTaskViewController1 : UIViewController {
+class SeparateTaskViewController : UIViewController {
     
     
     
