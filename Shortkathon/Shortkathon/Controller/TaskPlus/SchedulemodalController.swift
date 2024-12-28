@@ -119,16 +119,7 @@ class SchedulemodalController: UIViewController {
             confirmButton.heightAnchor.constraint(equalToConstant: 44)
         ])
     }
-    
-//    private func setupActions() {
-//        closeButton.addTarget(self, action: #selector(dismissModal), for: .touchUpInside)
-//        confirmButton.addTarget(self, action: #selector(dismissModal), for: .touchUpInside)
-//    }
-//    
-//    @objc private func dismissModal() {
-//        dismiss(animated: true)
-//    }
-    
+
     
     @objc func didTapped(){
         let mainVC = ViewController()

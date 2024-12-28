@@ -194,6 +194,7 @@ class AddDetailScheduleViewController2 : UIViewController {
         endsetupDatePicker()
         timesetDatePicker()
         setupKeyboardDismiss()
+        buttonTapped()
         setUI()
         
         // 오늘 날짜를 텍스트 필드에 설정
@@ -243,7 +244,7 @@ class AddDetailScheduleViewController2 : UIViewController {
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
-        setupBackButton()
+
         
         view.addSubview(mainLabel)
         view.addSubview(backButton)
@@ -310,20 +311,12 @@ class AddDetailScheduleViewController2 : UIViewController {
             nextButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 31),
         ])
     }
+
     
-    func setupBackButton() {
-        let backButton = UIButton(type: .custom)
-        backButton.setImage(UIImage(named: "back"), for: .normal)
+    func buttonTapped(){
         backButton.addTarget(self, action: #selector(dismissVC), for: .touchUpInside)
-        
-        view.addSubview(backButton)
-        backButton.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            backButton.widthAnchor.constraint(equalToConstant: 30),
-            backButton.heightAnchor.constraint(equalToConstant: 37),
-            backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 17),
-            backButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 40),
-        ])
+        cancelButton.addTarget(self, action: #selector(moveToMain), for: .touchUpInside)
+        nextButton.addTarget(self, action: #selector(movoToNext), for: .touchUpInside)
     }
     
     @objc func dismissVC() {
@@ -335,6 +328,32 @@ class AddDetailScheduleViewController2 : UIViewController {
         view.window?.layer.add(transition, forKey: kCATransition)
         dismiss(animated: false, completion: nil)
     }
+    
+    @objc func moveToMain() {
+        let vc = ViewController()
+        vc.modalPresentationStyle = .fullScreen
+        let transition = CATransition()
+        transition.duration = 0.4
+        transition.type = .push
+        transition.subtype = .fromLeft
+        transition.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        view.window?.layer.add(transition, forKey: kCATransition)
+        present(vc,animated: false)
+    }
+    
+    @objc func movoToNext(){
+        let vc = AddDetailScheduleViewController3()
+        vc.modalPresentationStyle = .fullScreen
+        let transition = CATransition()
+        transition.duration = 0.4
+        transition.type = .push
+        transition.subtype = .fromRight
+        transition.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        view.window?.layer.add(transition, forKey: kCATransition)
+        present(vc,animated: false)
+    }
+    
+    
     
     @objc private func startdateChanged(_ sender: UIDatePicker) {
         let formatter = DateFormatter()

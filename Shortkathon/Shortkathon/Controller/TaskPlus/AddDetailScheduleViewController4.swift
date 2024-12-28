@@ -61,6 +61,7 @@ class AddDetailScheduleViewController4 : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = #colorLiteral(red: 0.1372549087, green: 0.1372549087, blue: 0.1372549087, alpha: 1)
+        buttonTapped()
         setUI()
     }
     
@@ -69,7 +70,7 @@ class AddDetailScheduleViewController4 : UIViewController {
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
-        setupBackButton()
+        
         view.addSubview(mainLabel)
         view.addSubview(backButton)
         view.addSubview(cancelButton)
@@ -96,19 +97,10 @@ class AddDetailScheduleViewController4 : UIViewController {
         ])
     }
     
-    func setupBackButton() {
-        let backButton = UIButton(type: .custom)
-        backButton.setImage(UIImage(named: "back"), for: .normal)
+    func buttonTapped(){
         backButton.addTarget(self, action: #selector(dismissVC), for: .touchUpInside)
-        
-        view.addSubview(backButton)
-        backButton.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            backButton.widthAnchor.constraint(equalToConstant: 30),
-            backButton.heightAnchor.constraint(equalToConstant: 37),
-            backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 17),
-            backButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 40),
-        ])
+        cancelButton.addTarget(self, action: #selector(moveToMain), for: .touchUpInside)
+        nextButton.addTarget(self, action: #selector(movoToNext), for: .touchUpInside)
     }
     
     @objc func dismissVC() {
@@ -119,5 +111,24 @@ class AddDetailScheduleViewController4 : UIViewController {
         transition.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
         view.window?.layer.add(transition, forKey: kCATransition)
         dismiss(animated: false, completion: nil)
+    }
+    
+    @objc func moveToMain() {
+        let vc = ViewController()
+        vc.modalPresentationStyle = .fullScreen
+        let transition = CATransition()
+        transition.duration = 0.4
+        transition.type = .push
+        transition.subtype = .fromLeft
+        transition.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        view.window?.layer.add(transition, forKey: kCATransition)
+        present(vc,animated: false)
+    }
+    
+    @objc func movoToNext(){
+        let vc = SchedulemodalController()
+        vc.modalPresentationStyle = .overFullScreen
+        vc.modalTransitionStyle = .crossDissolve
+        present(vc, animated: true)
     }
 }
