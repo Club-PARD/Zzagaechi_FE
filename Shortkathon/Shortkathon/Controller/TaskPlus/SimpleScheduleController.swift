@@ -1,27 +1,21 @@
-//
-//  AddDetailScheduleViewController1.swift
-//  Sergei
-//
 //  Created by 김사랑 on 12/28/24.
 //
 
-
-
 import UIKit
 
-class AddDetailScheduleViewController2 : UIViewController {
+class SimpleScheduleController: UIViewController, UITextFieldDelegate {
     
-    let mainLabel : UILabel = {
+    var uid3: String?
+    
+    let centerLabel: UILabel = {
         let label = UILabel()
-        label.text = "세분화 일정 등록"
-        label.font = UIFont(name: "Pretendard-Bold", size: 20)
-        label.textColor = .white
-        label.textAlignment = .center
+        label.text = "간단한 일정 등록"
+        label.font = .systemFont(ofSize: 16)
+        label.textColor = #colorLiteral(red: 0.9999999881, green: 0.9999999881, blue: 0.9999999881, alpha: 1)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
-    let backButton : UIButton = {
+    let backButton: UIButton = {
         let button = UIButton()
         let image = UIImage(named: "Icon-3")
         button.setImage(image, for: .normal)
@@ -29,26 +23,10 @@ class AddDetailScheduleViewController2 : UIViewController {
         return button
     }()
     
-    let cancelButton : UIButton = {
-        let button = UIButton()
-        button.setTitle("취소", for: .normal)
-        button.titleLabel?.font = UIFont(name: "Pretendard-Bold", size: 15)
-        button.tintColor = #colorLiteral(red: 1, green: 0.2745098039, blue: 0.2745098039, alpha: 1)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-    
-    let progessbarImage : UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "progess2")
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
-    }()
-    
-    let headerLabel: UILabel = {
+    let mainLabel: UILabel = {
         let label = UILabel()
-        let firstPart = "할 일의 날짜와 시간을 "
-        let secondPart = "선택해보세요!"
+        let firstPart = "간단한 일에 대한"
+        let secondPart = "일정을 입력하세요"
         let combinedText = "\(firstPart)!\n\(secondPart)"
         
         label.text = combinedText
@@ -63,11 +41,35 @@ class AddDetailScheduleViewController2 : UIViewController {
     
     let subLabel: UILabel = {
         let label = UILabel()
-        label.text = "언제부터 언제까지 진행하실건가요?"
-        label.font = .systemFont(ofSize: 15)
+        label.text = "(문구 수정 요망 여기 부가적으로 들가는 글)"
         label.textColor = #colorLiteral(red: 0.6901960784, green: 0.6901960784, blue: 0.6901960784, alpha: 1)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
+    }()
+    
+    let titleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "제목"
+        label.textColor = #colorLiteral(red: 0.9999999881, green: 0.9999999881, blue: 0.9999999881, alpha: 1)
+        label.font = .systemFont(ofSize: 19)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    let schedulTextField: UITextField = {
+        let textField = UITextField()
+        textField.placeholder = "제목을 입력하세요"
+        textField.borderStyle = .roundedRect
+        textField.layer.cornerRadius = 12
+        textField.font = .systemFont(ofSize: 14)
+        //        textField.font = UIFont(name: "Pretendard-Regular", size: 14)
+        
+        textField.backgroundColor = #colorLiteral(red: 0.137254902, green: 0.137254902, blue: 0.137254902, alpha: 1)
+        textField.textColor = #colorLiteral(red: 0.9999999881, green: 0.9999999881, blue: 0.9999999881, alpha: 1)
+        textField.layer.borderColor = #colorLiteral(red: 0.7294117647, green: 0.8117647059, blue: 0.9568627451, alpha: 1)
+        textField.layer.borderWidth = 2
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        return textField
     }()
     
     let startLabel: UILabel = {
@@ -141,7 +143,6 @@ class AddDetailScheduleViewController2 : UIViewController {
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
-    
     private let endDatePicker: UIDatePicker = {
         let picker = UIDatePicker()
         picker.datePickerMode = .date
@@ -162,7 +163,6 @@ class AddDetailScheduleViewController2 : UIViewController {
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
-    
     private let timeDatePicker: UIDatePicker = {
         let picker = UIDatePicker()
         picker.datePickerMode = .time
@@ -172,31 +172,47 @@ class AddDetailScheduleViewController2 : UIViewController {
         return picker
     }()
     
-    
-    let nextButton : UIButton = {
+    let saveButton: UIButton = {
         let button = UIButton()
-        button.setTitle("다음", for: .normal)
-        button.titleLabel?.font = UIFont(name: "Pretendard-Bold", size: 15)
-        button.backgroundColor = #colorLiteral(red: 0.5591031909, green: 0.571234405, blue: 0.5998923779, alpha: 1)
+        button.setTitle("저장", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = .clear
         button.layer.cornerRadius = 12
-        button.tintColor = .white
+        button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
+    // ScrollView 및 ContentView 추가
+    private let scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.backgroundColor = .clear
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        return scrollView
+    }()
     
-    
+    private let contentView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .clear
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = #colorLiteral(red: 0.1372549087, green: 0.1372549087, blue: 0.1372549087, alpha: 1)
+        view.backgroundColor = #colorLiteral(red: 0.137254902, green: 0.137254902, blue: 0.137254902, alpha: 1)
         
+        schedulTextField.delegate = self
+        schedulTextField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
+        
+        saveButton.addTarget(self, action: #selector(didtap), for: .touchUpInside)
+        
+        setupScrollView()
         setupDatePicker()
         endsetupDatePicker()
         timesetDatePicker()
         setupKeyboardDismiss()
         setUI()
         
-        // 오늘 날짜를 텍스트 필드에 설정
         let formatter = DateFormatter()
         formatter.dateFormat = "M월 dd, yyyy"
         formatter.locale = Locale(identifier: "ko_KR")
@@ -219,16 +235,38 @@ class AddDetailScheduleViewController2 : UIViewController {
         timeTextField.text = timeformatter.string(from: Date())
         timeTextField.textColor = .black
         timeDatePicker.date = Date()
+    }
+    
+    private func setupScrollView() {
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentView)
         
+        NSLayoutConstraint.activate([
+            // ScrollView Constraints
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            // ContentView Constraints
+            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            contentView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor),
+
+        ])
     }
     
     private func setupDatePicker() {
         startTextField.inputView = startDatePicker
+        
         startDatePicker.addTarget(self, action: #selector(startdateChanged), for: .valueChanged)
     }
     
     private func endsetupDatePicker() {
         endTextField.inputView = endDatePicker
+        
         endDatePicker.addTarget(self, action: #selector(enddateChanged), for: .valueChanged)
     }
     
@@ -237,103 +275,73 @@ class AddDetailScheduleViewController2 : UIViewController {
         timeDatePicker.addTarget(self, action: #selector(timeChanged), for: .valueChanged)
     }
     
-    
-    func setUI(){
-        [nextButton].forEach{
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview($0)
-        }
-        setupBackButton()
-        
-        view.addSubview(mainLabel)
-        view.addSubview(backButton)
-        view.addSubview(cancelButton)
-        view.addSubview(progessbarImage)
-        
-        view.addSubview(headerLabel)
-        view.addSubview(subLabel)
-        view.addSubview(startLabel)
-        view.addSubview(endLabel)
-        view.addSubview(timeLabel)
-        view.addSubview(startTextField)
-        view.addSubview(endTextField)
-        view.addSubview(timeTextField)
+    func setUI() {
+        contentView.addSubview(centerLabel)
+        contentView.addSubview(backButton)
+        contentView.addSubview(mainLabel)
+        contentView.addSubview(subLabel)
+        contentView.addSubview(titleLabel)
+        contentView.addSubview(schedulTextField)
+        contentView.addSubview(startLabel)
+        contentView.addSubview(endLabel)
+        contentView.addSubview(timeLabel)
+        contentView.addSubview(startTextField)
+        contentView.addSubview(endTextField)
+        contentView.addSubview(timeTextField)
+        contentView.addSubview(saveButton)
         
         NSLayoutConstraint.activate([
-            mainLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            mainLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor , constant: 15),
+            centerLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            centerLabel.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 15),
             
-            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor , constant: 15),
-            backButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 33),
+            backButton.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 15),
+            backButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 33),
             
-            cancelButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor , constant: 15),
-            cancelButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,constant: -28),
+            mainLabel.topAnchor.constraint(equalTo: centerLabel.bottomAnchor, constant: 52),
+            mainLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 31),
+//            mainLabel.heightAnchor.constraint(equalToConstant: 68),
             
-            progessbarImage.topAnchor.constraint(equalTo: mainLabel.bottomAnchor, constant: 57),
-            progessbarImage.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 31),
+            subLabel.topAnchor.constraint(equalTo: mainLabel.bottomAnchor, constant: 16),
+            subLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 31),
+//            subLabel.heightAnchor.constraint(equalToConstant: 18),
             
-            headerLabel.topAnchor.constraint(equalTo: progessbarImage.bottomAnchor , constant: 12),
-            headerLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 31),
+            titleLabel.topAnchor.constraint(equalTo: subLabel.bottomAnchor, constant: 60),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 44),
+//            titleLabel.heightAnchor.constraint(equalToConstant: 25),
             
-            subLabel.topAnchor.constraint(equalTo: headerLabel.bottomAnchor , constant: 16),
-            subLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 32),
+            schedulTextField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
+            schedulTextField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 31),
+            schedulTextField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -31),
+//            schedulTextField.heightAnchor.constraint(equalToConstant: 50),
             
-            startLabel.topAnchor.constraint(equalTo: subLabel.bottomAnchor , constant: 98),
-            startLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 44),
+            startLabel.topAnchor.constraint(equalTo: schedulTextField.bottomAnchor, constant: 50),
+            startLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 44),
             
-            endLabel.topAnchor.constraint(equalTo: startLabel.bottomAnchor , constant: 55),
-            endLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 44),
+            endLabel.topAnchor.constraint(equalTo: startLabel.bottomAnchor, constant: 55),
+            endLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 44),
             
-            timeLabel.topAnchor.constraint(equalTo: endLabel.bottomAnchor , constant: 55),
-            timeLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 44),
+            timeLabel.topAnchor.constraint(equalTo: endLabel.bottomAnchor, constant: 55),
+            timeLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 44),
             
-            startTextField.topAnchor.constraint(equalTo: subLabel.bottomAnchor , constant: 91),
-            startTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 262),
-            startTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor , constant: -44),
+            startTextField.topAnchor.constraint(equalTo: schedulTextField.bottomAnchor, constant: 48),
+            //            startTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 262),
+            startTextField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -31),
             startTextField.heightAnchor.constraint(equalToConstant: 39),
             
-            endTextField.topAnchor.constraint(equalTo: startTextField.bottomAnchor , constant: 41),
-            endTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 262),
-            endTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor , constant: -44),
+            endTextField.topAnchor.constraint(equalTo: startTextField.bottomAnchor, constant: 41),
+            endTextField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -31),
             endTextField.heightAnchor.constraint(equalToConstant: 39),
             
-            timeTextField.topAnchor.constraint(equalTo: endTextField.bottomAnchor , constant: 41),
-            timeTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 262),
-            timeTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor , constant: -44),
+            timeTextField.topAnchor.constraint(equalTo: endTextField.bottomAnchor, constant: 41),
+            timeTextField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -31),
             timeTextField.heightAnchor.constraint(equalToConstant: 39),
             
-            
-            
-            nextButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            nextButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor , constant: -49),
-            nextButton.heightAnchor.constraint(equalToConstant: 46),
-            nextButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 31),
+            saveButton.topAnchor.constraint(equalTo: schedulTextField.bottomAnchor, constant: 354),
+            saveButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 31),
+            saveButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -31),
+            saveButton.heightAnchor.constraint(equalToConstant: 46),
+            saveButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -49)
         ])
-    }
-    
-    func setupBackButton() {
-        let backButton = UIButton(type: .custom)
-        backButton.setImage(UIImage(named: "back"), for: .normal)
-        backButton.addTarget(self, action: #selector(dismissVC), for: .touchUpInside)
-        
-        view.addSubview(backButton)
-        backButton.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            backButton.widthAnchor.constraint(equalToConstant: 30),
-            backButton.heightAnchor.constraint(equalToConstant: 37),
-            backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 17),
-            backButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 40),
-        ])
-    }
-    
-    @objc func dismissVC() {
-        let transition = CATransition()
-        transition.duration = 0.4
-        transition.type = .push
-        transition.subtype = .fromLeft
-        transition.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-        view.window?.layer.add(transition, forKey: kCATransition)
-        dismiss(animated: false, completion: nil)
     }
     
     @objc private func startdateChanged(_ sender: UIDatePicker) {
@@ -344,7 +352,7 @@ class AddDetailScheduleViewController2 : UIViewController {
         startTextField.textColor = .systemBlue  // 선택된 날짜는 파란색으로 표시
         startTextField.resignFirstResponder()
     }
-
+    
     @objc private func enddateChanged(_ sender: UIDatePicker) {
         let formatter = DateFormatter()
         formatter.dateFormat = "M월 dd,yyyy"
@@ -353,7 +361,7 @@ class AddDetailScheduleViewController2 : UIViewController {
         endTextField.textColor = .systemBlue  // 선택된 날짜는 파란색으로 표시
         endTextField.resignFirstResponder()
     }
-
+    
     @objc private func timeChanged(_ sender: UIDatePicker) {
         let formatter = DateFormatter()
         formatter.dateFormat = "a hh:mm"
@@ -362,14 +370,35 @@ class AddDetailScheduleViewController2 : UIViewController {
         timeTextField.textColor = .systemBlue
         timeTextField.resignFirstResponder()
     }
-
+    
     private func setupKeyboardDismiss() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tapGesture)
     }
-
+    
     @objc private func dismissKeyboard() {
         view.endEditing(true)
     }
-
+    
+    @objc private func textFieldDidChange(_ textField: UITextField) {
+        guard let text = textField.text else { return }
+        if text.isEmpty {
+            saveButton.isEnabled = false
+            saveButton.backgroundColor = #colorLiteral(red: 0.4862745098, green: 0.4980392157, blue: 0.5294117647, alpha: 1) // 비활성화 색상
+        } else {
+            saveButton.isEnabled = true
+            saveButton.backgroundColor = #colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1) // 활성화 색상 (파란색)
+        }
+    }
+    
+    @objc func didtap() {
+        print("간단한 일정 다 등록했디~!")
+        let vc = SchedulemodalController()
+        vc.modalPresentationStyle = .overFullScreen
+        vc.modalTransitionStyle = .crossDissolve
+        present(vc, animated: true)
+    }
+    
+    
+    
 }
