@@ -28,7 +28,7 @@ class SeperateTaskViewTableCell : UITableViewCell {
         textField.placeholder = "어떤 걸 준비해야 하나요?"
         textField.font = UIFont(name: "Pretendard-Regular", size: 15)
         
-        textField.textColor = .black
+        textField.textColor = .white
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.isUserInteractionEnabled = true
         textField.backgroundColor = .clear

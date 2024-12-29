@@ -99,9 +99,10 @@ class SeperateTaskView : UIView {
     
     
     func updateHeight() {
-            let newHeight = seperateTaskTableView.contentSize.height
-            viewHeightConstraint?.constant = newHeight
+            let tableHeight = seperateTaskTableView.contentSize.height
             
+            let totalHeight = tableHeight + 54 // 버튼 높이(44) + 여백(10) 포함
+            viewHeightConstraint?.constant = totalHeight
             // 상위 스크롤뷰에 레이아웃 업데이트 알림
             superview?.layoutIfNeeded()
         }
