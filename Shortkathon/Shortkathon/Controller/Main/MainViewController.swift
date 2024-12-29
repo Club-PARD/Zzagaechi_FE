@@ -76,6 +76,7 @@ class MainViewController : UIViewController {
     let taskTableView : UITableView = {
         let view = UITableView()
         view.showsVerticalScrollIndicator = false
+        view.backgroundColor = #colorLiteral(red: 0.137254902, green: 0.137254902, blue: 0.137254902, alpha: 1)
         view.separatorStyle = .none
         return view
     }()
@@ -131,6 +132,11 @@ class MainViewController : UIViewController {
             image4.widthAnchor.constraint(equalToConstant: 100),
             image4.heightAnchor.constraint(equalToConstant: 101),
             
+            taskTableView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            taskTableView.widthAnchor.constraint(equalToConstant: 345),
+            taskTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            taskTableView.topAnchor.constraint(equalTo: toDoLabel.bottomAnchor, constant: 27 ),
+            
         ])
     }
     
@@ -157,9 +163,16 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "mainTableViewCell", for: indexPath) as? MainTableViewCell else {return UITableViewCell()}
-        
+        cell.taskLabel.text = toDayTask[indexPath.row]
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 100
+    }
+    
+    
+    
 }
 
 
