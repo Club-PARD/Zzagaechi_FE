@@ -11,6 +11,7 @@ import UIKit
 
 class AddDetailScheduleViewController3 : UIViewController {
     
+    //MARK: - property
     let mainLabel : UILabel = {
         let label = UILabel()
         label.text = "세분화 일정 등록"
@@ -56,8 +57,16 @@ class AddDetailScheduleViewController3 : UIViewController {
     }()
     
     
+    let titleLabel : UILabel = {
+        let label = UILabel()
+        label.text = "할 일들을 나눠서\n적어보세요!"
+        label.font = UIFont(name: "Pretendard-SemiBold", size: 30)
+        label.numberOfLines = 0
+        return label
+    }()
     
     
+    //MARK: - main
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = #colorLiteral(red: 0.1372549087, green: 0.1372549087, blue: 0.1372549087, alpha: 1)
@@ -66,16 +75,14 @@ class AddDetailScheduleViewController3 : UIViewController {
         setupKeyboardDismiss()
     }
     
+    
+    //MARK: - function
     func setUI(){
-        [nextButton].forEach{
+        [nextButton,mainLabel,backButton,cancelButton,progessbarImage].forEach{
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
         
-        view.addSubview(mainLabel)
-        view.addSubview(backButton)
-        view.addSubview(cancelButton)
-        view.addSubview(progessbarImage)
         
         NSLayoutConstraint.activate([
             mainLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -89,7 +96,6 @@ class AddDetailScheduleViewController3 : UIViewController {
             
             progessbarImage.topAnchor.constraint(equalTo: mainLabel.bottomAnchor, constant: 60),
             progessbarImage.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 31),
-            
             
             nextButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             nextButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor , constant: -49),
@@ -142,7 +148,7 @@ class AddDetailScheduleViewController3 : UIViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tapGesture)
     }
-
+    
     @objc private func dismissKeyboard() {
         view.endEditing(true)
     }

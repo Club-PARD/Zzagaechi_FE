@@ -47,9 +47,9 @@ class AddDetailScheduleViewController2 : UIViewController {
     
     let headerLabel: UILabel = {
         let label = UILabel()
-        let firstPart = "할 일의 날짜와 시간을 "
+        let firstPart = "할 일의 날짜와 시간을"
         let secondPart = "선택해보세요!"
-        let combinedText = "\(firstPart)!\n\(secondPart)"
+        let combinedText = "\(firstPart)\n\(secondPart)"
         
         label.text = combinedText
         label.font = .systemFont(ofSize: 30)

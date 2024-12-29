@@ -18,10 +18,9 @@ class SeparateTaskViewController : UIViewController {
     
     let mainLabel: UILabel = {
         let label = UILabel()
-        label.text = "일정을 등록해보세요!"
-        label.font = .systemFont(ofSize: 20)
+        label.text = "어떤 새로운 일정을 등록할래요?"
         label.font = UIFont(name: "Pretendard-Regular", size: 20)
-        label.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        label.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
