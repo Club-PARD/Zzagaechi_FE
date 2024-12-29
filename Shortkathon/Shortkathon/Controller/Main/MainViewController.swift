@@ -36,7 +36,7 @@ class MainViewController : UIViewController {
     
     let image1 : UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(named: "N1")
+        image.image = UIImage(named: "n1-1")
         image.contentMode = .scaleAspectFill
         image.clipsToBounds = true
         return image
@@ -44,7 +44,7 @@ class MainViewController : UIViewController {
     
     let image2 : UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(named: "O")
+        image.image = UIImage(named: "o1")
         image.contentMode = .scaleAspectFill
         image.clipsToBounds = true
         return image
@@ -52,7 +52,7 @@ class MainViewController : UIViewController {
 
     let image3 : UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(named: "N2")
+        image.image = UIImage(named: "n2-1")
         image.contentMode = .scaleAspectFill
         image.clipsToBounds = true
         return image
@@ -60,7 +60,7 @@ class MainViewController : UIViewController {
     
     let image4 : UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(named: "A")
+        image.image = UIImage(named: "a1")
         image.contentMode = .scaleAspectFill
         image.clipsToBounds = true
         return image
