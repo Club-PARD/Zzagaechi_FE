@@ -12,6 +12,19 @@ import UIKit
 class AddDetailScheduleViewController3 : UIViewController {
     
     //MARK: - property
+    
+    let scrollView : UIScrollView = {
+        let view = UIScrollView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    let contentView : UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     let mainLabel : UILabel = {
         let label = UILabel()
         label.text = "세분화 일정 등록"
@@ -65,11 +78,18 @@ class AddDetailScheduleViewController3 : UIViewController {
         return label
     }()
     
+    let tableUIView : SeperateTaskView = {
+        let view = SeperateTaskView()
+        view.backgroundColor =  #colorLiteral(red: 0.1372549087, green: 0.1372549087, blue: 0.1372549087, alpha: 1)
+        return view
+    }()
+    
     
     //MARK: - main
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = #colorLiteral(red: 0.1372549087, green: 0.1372549087, blue: 0.1372549087, alpha: 1)
+        setupScrollView()
         setUI()
         buttonTapped()
         setupKeyboardDismiss()
@@ -77,30 +97,62 @@ class AddDetailScheduleViewController3 : UIViewController {
     
     
     //MARK: - function
+    
+    private func setupScrollView() {
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentView)
+        
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
+        ])
+    }
+    
     func setUI(){
-        [nextButton,mainLabel,backButton,cancelButton,progessbarImage].forEach{
+        [nextButton,mainLabel,backButton,cancelButton,progessbarImage,titleLabel,tableUIView].forEach{
             $0.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview($0)
+            contentView.addSubview($0)
         }
+        
+        tableUIView.viewHeightConstraint = tableUIView.heightAnchor.constraint(equalToConstant: 280)
+        tableUIView.viewHeightConstraint?.isActive = true
         
         
         NSLayoutConstraint.activate([
-            mainLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            mainLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor , constant: 15),
+            mainLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            mainLabel.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor , constant: 15),
             
-            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor , constant: 15),
-            backButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 33),
+            backButton.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor , constant: 15),
+            backButton.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor , constant: 33),
             
-            cancelButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor , constant: 15),
-            cancelButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,constant: -28),
+            cancelButton.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor , constant: 15),
+            cancelButton.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor,constant: -28),
             
             progessbarImage.topAnchor.constraint(equalTo: mainLabel.bottomAnchor, constant: 60),
-            progessbarImage.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 31),
+            progessbarImage.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor , constant: 31),
             
-            nextButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            nextButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor , constant: -49),
+            titleLabel.topAnchor.constraint(equalTo: progessbarImage.bottomAnchor, constant: 15),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 31),
+            
+            tableUIView.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 31),
+            tableUIView.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant:  -31),
+            tableUIView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 98),
+            tableUIView.viewHeightConstraint!,
+            
+            nextButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            nextButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor , constant: -49),
             nextButton.heightAnchor.constraint(equalToConstant: 46),
-            nextButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 31),
+            nextButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 31),
+            
+            contentView.bottomAnchor.constraint(greaterThanOrEqualTo: nextButton.bottomAnchor, constant: 20)
         ])
     }
     
