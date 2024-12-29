@@ -52,8 +52,7 @@ class AddDetailScheduleViewController2 : UIViewController {
         let combinedText = "\(firstPart)\n\(secondPart)"
         
         label.text = combinedText
-        label.font = .systemFont(ofSize: 30)
-        //        label.font = UIFont(name: "Pretendard-Regular", size: 30)//볼더임
+        label.font = UIFont(name: "Pretendard-Regular", size: 30)//볼더임
         label.textColor = #colorLiteral(red: 0.9999999881, green: 0.9999999881, blue: 0.9999999881, alpha: 1)
         label.numberOfLines = 0 // 여러 줄 지원
         label.lineBreakMode = .byWordWrapping // 단어 단위로 줄바꿈
@@ -74,8 +73,7 @@ class AddDetailScheduleViewController2 : UIViewController {
         let label = UILabel()
         label.text = "시작일"
         label.textColor = #colorLiteral(red: 0.9999999881, green: 0.9999999881, blue: 0.9999999881, alpha: 1)
-        label.font = .systemFont(ofSize: 19)
-        //        label.font = UIFont(name: "Pretendard-Regular", size: 30)//미디움
+        label.font = UIFont(name: "Pretendard-Regular", size: 19)//미디움
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -84,8 +82,7 @@ class AddDetailScheduleViewController2 : UIViewController {
         let label = UILabel()
         label.text = "종료일"
         label.textColor = #colorLiteral(red: 0.9999999881, green: 0.9999999881, blue: 0.9999999881, alpha: 1)
-        label.font = .systemFont(ofSize: 19)
-        //        label.font = UIFont(name: "Pretendard-Regular", size: 30)//미디움
+        label.font = UIFont(name: "Pretendard-Regular", size: 19)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -94,7 +91,7 @@ class AddDetailScheduleViewController2 : UIViewController {
         let label = UILabel()
         label.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         label.text = ""
-        label.font = .systemFont(ofSize: 16)
+        label.font = .systemFont(ofSize: 14)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -103,8 +100,7 @@ class AddDetailScheduleViewController2 : UIViewController {
         let label = UILabel()
         label.text = "시간"
         label.textColor = #colorLiteral(red: 0.9999999881, green: 0.9999999881, blue: 0.9999999881, alpha: 1)
-        label.font = .systemFont(ofSize: 19)
-        //        label.font = UIFont(name: "Pretendard-Regular", size: 30)//미디움
+        label.font = UIFont(name: "Pretendard-Regular", size: 19)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -114,7 +110,7 @@ class AddDetailScheduleViewController2 : UIViewController {
         textField.placeholder = "할일을 적어보세요!"
         textField.borderStyle = .roundedRect
         textField.layer.cornerRadius = 10
-        textField.font = .systemFont(ofSize: 14)
+        textField.font = UIFont(name: "Pretendard-Regular", size: 14)
         textField.textAlignment = .center
         textField.backgroundColor = #colorLiteral(red: 0.8274509804, green: 0.8274509804, blue: 0.8274509804, alpha: 1)
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -135,7 +131,7 @@ class AddDetailScheduleViewController2 : UIViewController {
         textField.placeholder = "날짜를 선택하세요"
         textField.borderStyle = .roundedRect
         textField.layer.cornerRadius = 10
-        textField.font = .systemFont(ofSize: 14)
+        textField.font = UIFont(name: "Pretendard-Regular", size: 14)
         textField.textAlignment = .center
         textField.backgroundColor = #colorLiteral(red: 0.8274509804, green: 0.8274509804, blue: 0.8274509804, alpha: 1)
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -156,7 +152,7 @@ class AddDetailScheduleViewController2 : UIViewController {
         textField.placeholder = "시간을 선택하세요"
         textField.borderStyle = .roundedRect
         textField.layer.cornerRadius = 10
-        textField.font = .systemFont(ofSize: 14)
+        textField.font = UIFont(name: "Pretendard-Regular", size: 14)
         textField.textAlignment = .center
         textField.backgroundColor = #colorLiteral(red: 0.8274509804, green: 0.8274509804, blue: 0.8274509804, alpha: 1)
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -297,17 +293,17 @@ class AddDetailScheduleViewController2 : UIViewController {
             
             startTextField.topAnchor.constraint(equalTo: subLabel.bottomAnchor , constant: 91),
             startTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 262),
-            startTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor , constant: -44),
+            startTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor , constant: -28),
             startTextField.heightAnchor.constraint(equalToConstant: 39),
             
             endTextField.topAnchor.constraint(equalTo: startTextField.bottomAnchor , constant: 41),
             endTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 262),
-            endTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor , constant: -44),
+            endTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor , constant: -28),
             endTextField.heightAnchor.constraint(equalToConstant: 39),
             
             timeTextField.topAnchor.constraint(equalTo: endTextField.bottomAnchor , constant: 41),
             timeTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 262),
-            timeTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor , constant: -44),
+            timeTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor , constant: -28),
             timeTextField.heightAnchor.constraint(equalToConstant: 39),
             
             
@@ -445,4 +441,5 @@ class AddDetailScheduleViewController2 : UIViewController {
     }
 
 }
+
 

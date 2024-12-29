@@ -99,7 +99,7 @@ class AddDetailScheduleViewController1 : UIViewController {
         let button = UIButton()
         button.setTitle("다음", for: .normal)
         button.titleLabel?.font = UIFont(name: "Pretendard-Bold", size: 15)
-        button.backgroundColor = #colorLiteral(red: 0.5591031909, green: 0.571234405, blue: 0.5998923779, alpha: 1)
+        button.backgroundColor = #colorLiteral(red: 0.4862745098, green: 0.4980392157, blue: 0.5294117647, alpha: 1)
         button.layer.cornerRadius = 12
         button.tintColor = .white
         button.isEnabled = false
@@ -175,12 +175,36 @@ class AddDetailScheduleViewController1 : UIViewController {
     
     func updateNextButtonState(isEmpty : Bool){
         if isEmpty {
-                   nextButton.backgroundColor = #colorLiteral(red: 0.5591031909, green: 0.571234405, blue: 0.5998923779, alpha: 1)
-                   nextButton.isEnabled = false
-               } else {
-                   nextButton.backgroundColor = #colorLiteral(red: 0.7294117647, green: 0.8117647059, blue: 0.9568627451, alpha: 1)
-                   nextButton.isEnabled = true
-               }
+            nextButton.backgroundColor = #colorLiteral(red: 0.5591031909, green: 0.571234405, blue: 0.5998923779, alpha: 1)
+            // 비활성화 상태에서는 그라데이션 레이어 제거
+            nextButton.layer.sublayers?.forEach { layer in
+                if layer is CAGradientLayer {
+                    layer.removeFromSuperlayer()
+                }
+            }
+            nextButton.isEnabled = false
+        } else {
+            // 그라데이션 레이어 생성
+            let gradientLayer = CAGradientLayer()
+            gradientLayer.frame = nextButton.bounds
+            gradientLayer.colors = [
+                #colorLiteral(red: 0.5294117647, green: 0.6745098039, blue: 0.9411764706, alpha: 1).cgColor,
+                #colorLiteral(red: 0.3098039216, green: 0.5019607843, blue: 0.8431372549, alpha: 1).cgColor,
+            ]
+            gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.5)
+            gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
+            gradientLayer.cornerRadius = 12
+            
+            // 기존 그라데이션 레이어 제거
+            nextButton.layer.sublayers?.forEach { layer in
+                if layer is CAGradientLayer {
+                    layer.removeFromSuperlayer()
+                }
+            }
+            
+            nextButton.layer.insertSublayer(gradientLayer, at: 0)
+            nextButton.isEnabled = true
+        }
     }
     
     private func setupKeyboardDismiss() {
@@ -236,6 +260,16 @@ class AddDetailScheduleViewController1 : UIViewController {
         present(vc,animated: false)
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        nextButton.layer.sublayers?.forEach { layer in
+            if layer is CAGradientLayer {
+                layer.frame = nextButton.bounds
+            }
+        }
+    }
+    
     
     
 }
+
