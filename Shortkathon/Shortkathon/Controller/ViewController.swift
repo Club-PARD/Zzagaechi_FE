@@ -20,7 +20,7 @@ class ViewController: UITabBarController, UITabBarControllerDelegate {
     func setTabbar() {
         let vc1 = UINavigationController(rootViewController: MainViewController())
         let vc2 = UINavigationController(rootViewController: SeparateTaskViewController())
-        let vc3 = UINavigationController(rootViewController: CalendarViewController())
+        let vc3 = CalendarViewController()
         
         self.viewControllers = [vc1, vc2, vc3]
         
