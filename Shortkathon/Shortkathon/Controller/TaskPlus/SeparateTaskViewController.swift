@@ -4,14 +4,23 @@ import UIKit
 
 class SeparateTaskViewController : UIViewController {
     
-    
+    private let gradientLayer: CAGradientLayer = {
+        let layer = CAGradientLayer()
+        layer.colors = [
+                   UIColor(red: 0.668, green: 0.800, blue: 1.0, alpha: 1.0).cgColor,
+                   UIColor(red: 0.261, green: 0.539, blue: 0.935, alpha: 1.0).cgColor
+               ]
+        layer.locations = [0.0, 1.0]
+        layer.startPoint = CGPoint(x: 0.0, y: 0.0)  // 왼쪽 상단
+        layer.endPoint = CGPoint(x: 0.5, y: 1.0)    // 가운데 하단
+        return layer
+    }()
     
     let mainLabel: UILabel = {
         let label = UILabel()
-        label.text = "일정을 등록해보세요!"
-        label.font = .systemFont(ofSize: 20)
+        label.text = "어떤 새로운 일정을 등록할래요?"
         label.font = UIFont(name: "Pretendard-Regular", size: 20)
-        label.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        label.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -113,10 +122,10 @@ class SeparateTaskViewController : UIViewController {
     }()
     
     override func viewDidLoad() {
-        view.backgroundColor = #colorLiteral(red: 0.7294117647, green: 0.8078431373, blue: 0.9568627451, alpha: 1)
+        //        view.backgroundColor = #colorLiteral(red: 0.7294117647, green: 0.8078431373, blue: 0.9568627451, alpha: 1)
         super.viewDidLoad()
         
-        
+        setupGradientBackground()
         Button.addTarget(self, action: #selector(didTap), for:  .touchUpInside)
         Button2.addTarget(self, action: #selector(doTap), for: .touchUpInside)
         setUI()
@@ -178,5 +187,18 @@ class SeparateTaskViewController : UIViewController {
         vc.modalPresentationStyle = .fullScreen
         present(vc,animated: true)
     }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        // 뷰의 크기가 결정된 후 그라데이션 레이어의 프레임 설정
+        gradientLayer.frame = view.bounds
+    }
+    
+    private func setupGradientBackground() {
+        // 그라데이션 레이어를 뷰의 가장 아래 레이어로 삽입
+        view.layer.insertSublayer(gradientLayer, at: 0)
+    }
+    
+    
 }
 

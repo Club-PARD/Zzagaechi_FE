@@ -33,7 +33,7 @@ class AddDetailScheduleViewController2 : UIViewController {
         let button = UIButton()
         button.setTitle("취소", for: .normal)
         button.titleLabel?.font = UIFont(name: "Pretendard-Bold", size: 15)
-        button.tintColor = #colorLiteral(red: 1, green: 0.2745098039, blue: 0.2745098039, alpha: 1)
+        button.setTitleColor(#colorLiteral(red: 1, green: 0.2745098039, blue: 0.2745098039, alpha: 1), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -47,9 +47,9 @@ class AddDetailScheduleViewController2 : UIViewController {
     
     let headerLabel: UILabel = {
         let label = UILabel()
-        let firstPart = "할 일의 날짜와 시간을 "
+        let firstPart = "할 일의 날짜와 시간을"
         let secondPart = "선택해보세요!"
-        let combinedText = "\(firstPart)!\n\(secondPart)"
+        let combinedText = "\(firstPart)\n\(secondPart)"
         
         label.text = combinedText
         label.font = .systemFont(ofSize: 30)
@@ -176,15 +176,17 @@ class AddDetailScheduleViewController2 : UIViewController {
     let nextButton : UIButton = {
         let button = UIButton()
         button.setTitle("다음", for: .normal)
-        button.titleLabel?.font = UIFont(name: "Pretendard-Bold", size: 15)
-        button.backgroundColor = #colorLiteral(red: 0.5591031909, green: 0.571234405, blue: 0.5998923779, alpha: 1)
+        button.setTitleColor(#colorLiteral(red: 0.9999999881, green: 0.9999999881, blue: 0.9999999881, alpha: 1), for: .normal)
+        button.backgroundColor = .clear
         button.layer.cornerRadius = 12
-        button.tintColor = .white
+        button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
-    
-    
+    // 날짜 선택 상태를 추적하는 변수 추가
+    private var isStartDateSelected = false
+    private var isEndDateSelected = false
+    private var isTimeSelected = false    // 추가
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -221,6 +223,11 @@ class AddDetailScheduleViewController2 : UIViewController {
         timeTextField.textColor = .black
         timeDatePicker.date = Date()
         
+        nextButton.isEnabled = false
+        nextButton.setTitleColor(.white, for: .normal)
+        nextButton.backgroundColor = .clear
+        
+        checkTextFieldsAndUpdateButton()
     }
     
     private func setupDatePicker() {
@@ -319,6 +326,9 @@ class AddDetailScheduleViewController2 : UIViewController {
         nextButton.addTarget(self, action: #selector(movoToNext), for: .touchUpInside)
     }
     
+    
+    
+    
     @objc func dismissVC() {
         let transition = CATransition()
         transition.duration = 0.4
@@ -360,8 +370,9 @@ class AddDetailScheduleViewController2 : UIViewController {
         formatter.dateFormat = "M월 dd,yyyy"
         formatter.locale = Locale(identifier: "ko_KR")
         startTextField.text = formatter.string(from: sender.date)
-        startTextField.textColor = .systemBlue  // 선택된 날짜는 파란색으로 표시
-        startTextField.resignFirstResponder()
+        startTextField.textColor = .systemBlue
+        isStartDateSelected = true  // 날짜 선택 상태 업데이트
+        checkTextFieldsAndUpdateButton()
     }
 
     @objc private func enddateChanged(_ sender: UIDatePicker) {
@@ -369,8 +380,9 @@ class AddDetailScheduleViewController2 : UIViewController {
         formatter.dateFormat = "M월 dd,yyyy"
         formatter.locale = Locale(identifier: "ko_KR")
         endTextField.text = formatter.string(from: sender.date)
-        endTextField.textColor = .systemBlue  // 선택된 날짜는 파란색으로 표시
-        endTextField.resignFirstResponder()
+        endTextField.textColor = .systemBlue
+        isEndDateSelected = true  // 날짜 선택 상태 업데이트
+        checkTextFieldsAndUpdateButton()
     }
 
     @objc private func timeChanged(_ sender: UIDatePicker) {
@@ -379,6 +391,8 @@ class AddDetailScheduleViewController2 : UIViewController {
         formatter.locale = Locale(identifier: "ko_KR")
         timeTextField.text = formatter.string(from: sender.date)
         timeTextField.textColor = .systemBlue
+        isTimeSelected = true    // 시간 선택 상태 업데이트
+        checkTextFieldsAndUpdateButton()  // 버튼 상태 체크 추가
         timeTextField.resignFirstResponder()
     }
 
@@ -391,4 +405,44 @@ class AddDetailScheduleViewController2 : UIViewController {
         view.endEditing(true)
     }
 
+    private func checkTextFieldsAndUpdateButton() {
+        let isEnabled = isStartDateSelected && isEndDateSelected && isTimeSelected
+        
+        nextButton.isEnabled = isEnabled
+        if isEnabled {
+            applyGradient(to: nextButton, colors: [
+                #colorLiteral(red: 0.5294117647, green: 0.6745098039, blue: 0.9411764706, alpha: 1).cgColor,
+                #colorLiteral(red: 0.3098039216, green: 0.5019607843, blue: 0.8431372549, alpha: 1).cgColor
+            ])
+        } else {
+            applyGradient(to: nextButton, colors: [
+                #colorLiteral(red: 0.4862745098, green: 0.4980392157, blue: 0.5294117647, alpha: 1).cgColor,
+                #colorLiteral(red: 0.4862745098, green: 0.4980392157, blue: 0.5294117647, alpha: 1).cgColor
+            ])
+        }
+    }
+
+    private func applyGradient(to button: UIButton, colors: [CGColor]) {
+        button.layer.sublayers?.forEach { layer in
+            if layer is CAGradientLayer {
+                layer.removeFromSuperlayer()
+            }
+        }
+        
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.colors = colors
+        gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.5)
+        gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
+        gradientLayer.cornerRadius = button.layer.cornerRadius
+        gradientLayer.frame = button.bounds
+        
+        button.layer.insertSublayer(gradientLayer, at: 0)
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        checkTextFieldsAndUpdateButton()
+    }
+
 }
+

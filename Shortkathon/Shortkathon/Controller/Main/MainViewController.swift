@@ -2,6 +2,21 @@ import UIKit
 
 class MainViewController : UIViewController {
     //MARK: - property
+    var toDayTask : [String] = ["로고 레퍼런스 찾기","로고 틀 짜기", "하나로 마트 가서 세제 사기"]
+    
+    var doTask: Int = 2 {
+        didSet {
+            updateCountLabel()
+        }
+    }
+//
+    var allTask: Int = 5 {
+        didSet {
+            updateCountLabel()
+        }
+    }
+
+    
     let titleLabel : UILabel = {
         let label = UILabel()
         label.font = UIFont(name: "Pretendard-Medium", size: 35)
@@ -21,7 +36,7 @@ class MainViewController : UIViewController {
     
     let image1 : UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(named: "N1")
+        image.image = UIImage(named: "n1-1")
         image.contentMode = .scaleAspectFill
         image.clipsToBounds = true
         return image
@@ -29,7 +44,7 @@ class MainViewController : UIViewController {
     
     let image2 : UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(named: "O")
+        image.image = UIImage(named: "o1")
         image.contentMode = .scaleAspectFill
         image.clipsToBounds = true
         return image
@@ -37,7 +52,7 @@ class MainViewController : UIViewController {
 
     let image3 : UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(named: "N2")
+        image.image = UIImage(named: "n2-1")
         image.contentMode = .scaleAspectFill
         image.clipsToBounds = true
         return image
@@ -45,25 +60,40 @@ class MainViewController : UIViewController {
     
     let image4 : UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(named: "A")
+        image.image = UIImage(named: "a1")
         image.contentMode = .scaleAspectFill
         image.clipsToBounds = true
         return image
     }()
     
+    lazy var countLabel : UILabel = {
+        let label = UILabel()
+        label.font = UIFont(name: "Pretendard-Regular", size: 17)
+        label.textColor = #colorLiteral(red: 0.7540719509, green: 0.7540718913, blue: 0.7540718913, alpha: 1)
+        return label
+    }()
     
+    let taskTableView : UITableView = {
+        let view = UITableView()
+        view.showsVerticalScrollIndicator = false
+        view.backgroundColor = #colorLiteral(red: 0.137254902, green: 0.137254902, blue: 0.137254902, alpha: 1)
+        view.separatorStyle = .none
+        return view
+    }()
     
     //MARK: - main
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = #colorLiteral(red: 0.137254902, green: 0.137254902, blue: 0.137254902, alpha: 1)
         setUI()
+        setTable()
         startFloatingAnimations()
+        updateCountLabel()
     }
     
     //MARK: - function
     func setUI(){
-        [titleLabel, toDoLabel,image1,image2,image3,image4].forEach{
+        [titleLabel, toDoLabel,image1,image2,image3,image4,countLabel,taskTableView].forEach{
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
@@ -77,6 +107,9 @@ class MainViewController : UIViewController {
             
             toDoLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 140 ),
             toDoLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant:   26),
+            
+            countLabel.leadingAnchor.constraint(equalTo: toDoLabel.trailingAnchor, constant: 4),
+            countLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 147),
             
             image1.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             image1.topAnchor.constraint(equalTo: view.topAnchor, constant: 207),
@@ -99,11 +132,51 @@ class MainViewController : UIViewController {
             image4.widthAnchor.constraint(equalToConstant: 100),
             image4.heightAnchor.constraint(equalToConstant: 101),
             
+            taskTableView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            taskTableView.widthAnchor.constraint(equalToConstant: 345),
+            taskTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            taskTableView.topAnchor.constraint(equalTo: toDoLabel.bottomAnchor, constant: 27 ),
+            
         ])
     }
     
+    private func updateCountLabel() {
+        let completedTasks = doTask ?? 0
+        let totalTasks = allTask ?? 0
+        countLabel.text = "\(completedTasks)/\(totalTasks)개"
+    }
+    
+    func setTable(){
+        taskTableView.delegate = self
+        taskTableView.dataSource = self
+        taskTableView.register(MainTableViewCell.self, forCellReuseIdentifier: "mainTableViewCell")
+    }
+}
+
+
+//MARK: - tableview Extension
+
+extension MainViewController: UITableViewDataSource, UITableViewDelegate {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return toDayTask.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "mainTableViewCell", for: indexPath) as? MainTableViewCell else {return UITableViewCell()}
+        cell.taskLabel.text = toDayTask[indexPath.row]
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 100
+    }
+    
+    
     
 }
+
+
+
 
 //MARK: - 이미지 애니메이션
 extension MainViewController {
@@ -147,3 +220,5 @@ extension MainViewController {
     }
 
 }
+
+

@@ -33,7 +33,7 @@ class AddDetailScheduleViewController4 : UIViewController {
         let button = UIButton()
         button.setTitle("취소", for: .normal)
         button.titleLabel?.font = UIFont(name: "Pretendard-Bold", size: 15)
-        button.tintColor = #colorLiteral(red: 1, green: 0.2745098039, blue: 0.2745098039, alpha: 1)
+        button.setTitleColor(#colorLiteral(red: 1, green: 0.2745098039, blue: 0.2745098039, alpha: 1), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -63,6 +63,7 @@ class AddDetailScheduleViewController4 : UIViewController {
         view.backgroundColor = #colorLiteral(red: 0.1372549087, green: 0.1372549087, blue: 0.1372549087, alpha: 1)
         buttonTapped()
         setUI()
+        setupKeyboardDismiss() 
     }
     
     func setUI(){
@@ -131,4 +132,16 @@ class AddDetailScheduleViewController4 : UIViewController {
         vc.modalTransitionStyle = .crossDissolve
         present(vc, animated: true)
     }
+    
+    private func setupKeyboardDismiss() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tapGesture)
+    }
+
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
 }
+
+
