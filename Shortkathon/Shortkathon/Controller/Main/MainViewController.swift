@@ -231,49 +231,70 @@ extension MainViewController {
 //MARK: - 서버 통신 코드
 extension MainViewController {
     private func fetchDailySchedule() {
-            let today = Date().toDateString()
+        let today = Date().toDateString()
         
-            guard let userId = userId else { return }
+        guard let userId = userId else { return }
         
-            let endpoint = "/daily/\(userId)/\(today)"
-            print("today : \(today)")
-            print("endpoint : \(endpoint)")
-            apiService.get(endpoint: endpoint) { [weak self] (result: Result<DailySchedule, Error>) in
-                switch result {
-                case .success(let schedule):
-                    self?.dailySchedule = schedule
-                    print("✅ 일정 데이터 수신 성공")
-                    print("총 일정 수: \(schedule.totalCount)")
-                    print("완료된 일정 수: \(schedule.completedCount)")
-                    print(schedule)
-                    DispatchQueue.main.async {
-//                        self?.updateUI()
-                    }
-                    
-                case .failure(let error):
-                    print("❌ 일정 조회 실패: \(error.localizedDescription)")
-                    // 에러 처리 - 예: 알림창 표시
-                    DispatchQueue.main.async {
-                        self?.showErrorAlert(message: error.localizedDescription)
-                    }
+        let endpoint = "/daily/\(userId)/\(today)"
+        print("today : \(today)")
+        print("endpoint : \(endpoint)")
+        apiService.get(endpoint: endpoint) { [weak self] (result: Result<DailySchedule, Error>) in
+            switch result {
+            case .success(let schedule):
+                self?.dailySchedule = schedule
+                print("✅ 일정 데이터 수신 성공")
+                print("총 일정 수: \(schedule.totalCount)")
+                print("완료된 일정 수: \(schedule.completedCount)")
+                print(schedule)
+                DispatchQueue.main.async {
+                    self?.updateUI()
+                }
+                
+            case .failure(let error):
+                print("❌ 일정 조회 실패: \(error.localizedDescription)")
+                // 에러 처리 - 예: 알림창 표시
+                DispatchQueue.main.async {
+                    self?.showErrorAlert(message: error.localizedDescription)
                 }
             }
         }
-        
-        private func showErrorAlert(message: String) {
-            let alert = UIAlertController(
-                title: "오류",
-                message: "일정을 불러오는데 실패했습니다.\n\(message)",
-                preferredStyle: .alert
-            )
-            alert.addAction(UIAlertAction(title: "확인", style: .default))
-            present(alert, animated: true)
-        }
+    }
+    
+    private func showErrorAlert(message: String) {
+        let alert = UIAlertController(
+            title: "오류",
+            message: "일정을 불러오는데 실패했습니다.\n\(message)",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "확인", style: .default))
+        present(alert, animated: true)
+    }
     
     
     private func updateUI() {
-            guard let schedule = dailySchedule else { return }
-            // UI 업데이트 코드
-            // 예: 테이블뷰 리로드, 레이블 업데이트 등
+        guard let schedule = dailySchedule else { return }
+        
+        guard let schedule = dailySchedule else { return }
+        
+        // plans와 details를 합쳐서 모든 일정을 표시
+        var allTasks: [String] = []
+        
+        // plans에서 title 추출
+        allTasks.append(contentsOf: schedule.plans.map { $0.title })
+        
+        // details에서 title 추출
+        allTasks.append(contentsOf: schedule.details.map { $0.title })
+        
+        // toDayTask 업데이트
+        self.toDayTask = allTasks
+        
+        // 완료된 일정 수와 전체 일정 수 업데이트
+        self.doTask = schedule.completedCount
+        self.allTask = schedule.totalCount
+        
+        // 테이블뷰 리로드
+        DispatchQueue.main.async {
+            self.taskTableView.reloadData()
         }
+    }
 }
