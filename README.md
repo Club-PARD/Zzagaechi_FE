@@ -1,23 +1,21 @@
-<img src="https://capsule-render.vercel.app/api?type=wave&color=FF971A&height=300&section=header&text=Mumuk&fontSize=90" />
+<img src="https://capsule-render.vercel.app/api?type=rect&color=FDF56E,6BA1FF&text=nanoplan&fontAlign=30&fontSize=30&textBg=true" />
 
 
+# nanoplan_iOS
+
+<img src="https://github.com/user-attachments/assets/f2a24dac-9ae1-462d-81a3-31bbdaca3eca" width="900" height="600"/>
+
+# 📓 nanoplan (나노플랜)
+
+*￼😀서비스 한 줄 설명: 해야 할 일정들을 작게 나눠 실천으로 이끄는 앱서비스😀*
+
+디테일 설명: 하 또 실천하지 못했어 미치겠네?
+
+계획을 세우지만, 
+해야할 일을 자꾸 미루고 실천하지 못하는 대학생을 위해 해야할 일에 세분화 하는 과정을 통해 진입 장벽을 낮추고 실행율을 높여 계획을 성공해보자고요!
 
 
-# Mumuk_iOS
-
-<img src="https://github.com/Club-PARD/Mumuk_iOS/assets/162880508/8f870dd8-a4c0-4443-b537-81a85cbf3c50" width="700" height="400"/>
-
-# 🍚 머먹_Mumuk
-
-*💡서비스 한줄설명: 서로의 음식 선호도를 반영한 메뉴 추천 서비스💡*
-
-디테일 설명: 얘들아! 오늘 ‘머먹’을래?
-
-사람들과 함께 식사할 때, 메뉴 선정에 어려움을 겪어본 적 있나요?
-’머먹‘을 통해 서로의 음식 취향을 공유하고, 공유된 취향을 반영한 메뉴 추천도 받아보세요!
-
-
-얘들아! 오늘 이거 먹자!
+이악 또 미뤄졌어!!😣
 ---
 
 
@@ -27,27 +25,27 @@
 ### 문제
 
 1. **의견전달의 어려움**
-- 자기의사 (자신의 음식선호) 표현의 어려움 -자기자신조차 자신의 음식 취향을 잘 모름
-- 소통의 부재, ex) 연락이 안되는 상황
-1. 전달된 의견을 종합과 결론도출(함께 먹고싶은 메뉴)의 어려움
+할 일이 많은 대학생들이 계획을 세우는 과정에서 해야 할 일을 세분화하고 실천 가능한 일정으로 전환하는 데 어려움을 겪어 결국 해야 할 일의 데드라인이 다가 왔을 때 버겁게 처리해야 하는 문제를 겪게 된다.
 
 ### 솔루션
 
-1.음식프로필 설정: 함께 식사를 하는 사람들에게 에게 자신의 음식선호를 (음식알러지,비선호음식,선호음식) 보여주는 기능
+1. 사용자가 해야 할 일을 세부적인 단계로 나눌 수 있도록 도와줌 (세분화 기능)
 
-- 유저의 고유성향과 데일리 푸드스크럼으로 그날의 음식취향  반영
+2. 계획에 있어 구체적으로 나누는 단계가 왜 중요한 지를 알려줌 (온보딩 페이지)
 
-2.함께 식사를 하는 사람들을 그룹핑 하여 그룹핑하는 사람들의 선호를 모두 반영하여 식사메뉴 추천
+3. 사용자가 설정한 마감 기한에 따라 자동 정렬된 우선순위를 보여줌.
+
+4. 단계적으로 완료한 작업에 대해 체크 하는 기능으로써 성취감을 제공하고, 목표 달성까지의 진행 상황을 시각적으로 보여줌으로 동기 부여.
 
 
 
 # ♥ 팀원 소개
 ------
-|                                                🐣 임시우                                                 |                          🐭 이주향                           |                          🦉 김예정                           |                          🐱먹꾸와 토리                            |
+|                                                🐣 최수원                                                 |                          🐭 이채정                           |                          🦉 이서현                           |                          🐱먹꾸와 토리                            |
 |:-----------------------------------------------------------------------------------------------------:|:---------------------------------------------------------:|:---------------------------------------------------------:|:---------------------------------------------------------:|
 |                                                  PM                                                   |                            기획                             |                           디자인                            |                            사랑둥이                            |
 |  <img src="https://github.com/Club-PARD/Mumuk_iOS/assets/103707692/b8ebc366-7bb2-40b3-9086-532a4e09cb12" style="width: 150px; height: 150px; object-fit: cover;">  |  <img src="https://github.com/Club-PARD/Mumuk_iOS/assets/103707692/f5b7cfac-ca07-420d-b724-44952fd0e0a0" style="width: 150px; height: 150px; object-fit: cover;">   | <img src="https://github.com/Club-PARD/Mumuk_iOS/assets/103707692/2a9b5bd9-9943-4c06-b207-bb611e37808f" style="width: 150px; height: 150px; object-fit: cover;"> |  <img src="https://github.com/Club-PARD/Mumuk_iOS/assets/103707692/fc432403-5a28-4481-a4e4-d79e542c3f3c" style="width: 150px; height: 150px; object-fit: cover;">  |
-|                                                이시온                                                 |                          🐹 김현중                           |                          🐨 김민준                           |                          🐶 유재혁                           |
+|                                                김민규                                                 |                          🐹 김민준                           |                          🐨 최준영                           |                          🐶 김사랑                           |
 |                                                  백엔드                                                  |                           프론트엔드                           |                           프론트엔드                           |                           프론트엔드                           |
 | <img src="https://github.com/Club-PARD/Mumuk_iOS/assets/103707692/f26e4bed-3825-4461-8e1a-ef5a4d2dda8e" style="width: 150px; height: 150px; object-fit: cover;"> | <img src="https://github.com/Club-PARD/Mumuk_iOS/assets/103707692/8803b490-b1cd-445a-a9c3-2686256fbe5f" style="width: 150px; height: 150px; object-fit: cover;"> | <img src="https://github.com/Club-PARD/Mumuk_iOS/assets/103707692/df610ae8-d571-4a39-91b3-0c57a067dd84" style="width: 150px; height: 150px; object-fit: cover;"> | <img src="https://github.com/Club-PARD/Mumuk_iOS/assets/103707692/f9d2904b-db60-4a17-aec1-246711d3da66" style="width: 150px; height: 150px; object-fit: cover;"> |
 
@@ -64,9 +62,9 @@
 
 # ★ 핵심 기능 설명
 
-1. **푸드 프로필**
+1. **홈 화면 기능**
     
->    함께 식사를 하는 사람들끼리 서로의 취향을 알게하기 위한 기능
+>    월별 캘린더 제공
 >    알러지, 비선호 음식,매운맛 수용도,식단등 선택
 >    친구추가 후에 상호간 확인이 가능함
     
