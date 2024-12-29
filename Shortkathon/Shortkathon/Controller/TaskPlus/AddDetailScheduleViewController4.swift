@@ -11,6 +11,11 @@ import UIKit
 
 class AddDetailScheduleViewController4 : UIViewController {
     
+    private let dates: [(date: String, day: String)] = [
+        ("4", "수"), ("5", "목"), ("6", "금"), ("7", "토"), ("8", "일"), ("9", "월"), ("10", "화"), ("11", "수"), ("12", "목")
+    ]
+    
+    
     let mainLabel : UILabel = {
         let label = UILabel()
         label.text = "세분화 일정 등록"
@@ -47,7 +52,7 @@ class AddDetailScheduleViewController4 : UIViewController {
     
     let nextButton : UIButton = {
         let button = UIButton()
-        button.setTitle("다음", for: .normal)
+        button.setTitle("등록", for: .normal)
         button.titleLabel?.font = UIFont(name: "Pretendard-Bold", size: 15)
         button.backgroundColor = #colorLiteral(red: 0.5591031909, green: 0.571234405, blue: 0.5998923779, alpha: 1)
         button.layer.cornerRadius = 12
@@ -55,6 +60,34 @@ class AddDetailScheduleViewController4 : UIViewController {
         return button
     }()
     
+    let titleLabel : UILabel = {
+        let label = UILabel()
+        label.text = "할 일들을 요일별로\n배분해보아요!"
+        label.font = UIFont(name: "Pretendard-SemiBold", size: 28)
+        label.numberOfLines = 0
+        return label
+    }()
+    
+    
+    var monthLabel : UILabel = {
+        let label = UILabel()
+        label.text = "1월" // 서버에서 받은 값으로 넣기
+        label.font = UIFont(name: "Pretendard-Regular", size: 25)
+        
+        return label
+    }()
+    
+    
+    
+    
+    let saveButton : UIButton = {
+        let button = UIButton()
+        button.setTitle("저장", for: .normal)
+        button.titleLabel?.font = UIFont(name: "Pretendard-Regular", size: 14)
+        button.backgroundColor = .clear
+        button.tintColor = #colorLiteral(red: 0.6070454717, green: 0.6070454121, blue: 0.6070454121, alpha: 1)
+        return button
+    }()
     
     
     
@@ -67,15 +100,11 @@ class AddDetailScheduleViewController4 : UIViewController {
     }
     
     func setUI(){
-        [nextButton].forEach{
+        [nextButton,mainLabel,backButton,cancelButton,progessbarImage].forEach{
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
-        
-        view.addSubview(mainLabel)
-        view.addSubview(backButton)
-        view.addSubview(cancelButton)
-        view.addSubview(progessbarImage)
+      
         
         NSLayoutConstraint.activate([
             mainLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -144,4 +173,51 @@ class AddDetailScheduleViewController4 : UIViewController {
     
 }
 
+//MARK: - CollectionView extension
+extension  AddDetailScheduleViewController4 : UICollectionViewDelegate, UICollectionViewDataSource{
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return dates.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DateCollectionViewCell", for: indexPath) as? DateCollectionViewCell else {
+            return UICollectionViewCell()
+        }
+        
+        let date = dates[indexPath.item]
+        cell.dateLabel.text = date.date
+        cell.dayLabel.text = date.day
+        return cell
+    }
+    
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: 60, height: 80)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        // 여기에 날짜 선택 시 contentView의 내용을 변경하는 로직 추가
+        let selectedDate = dates[indexPath.item]
+        
+        print("\(selectedDate.date)일 \(selectedDate.day)요일 선택됨")
+    }
+    
+}
 
+
+extension AddDetailScheduleViewController4:  UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+    }
+    
+    // 줄 간격을 0으로 설정
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 15
+    }
+    
+    // 아이템 간격 설정
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 15
+    }
+}
