@@ -21,7 +21,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let _ = UserDefaults.standard.string(forKey: "userIdentifier") {
             // 이미 로그인된 상태라면 MainPageViewController로 이동
             print("이미 로그인")
-            let mainVC = ViewController()
+            let mainVC = AddDetailScheduleViewController3()
             let navigationController = UINavigationController(rootViewController: mainVC)
 //            mainVC.modalPresentationStyle = .fullScreen
             window.rootViewController = navigationController

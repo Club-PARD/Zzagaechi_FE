@@ -98,6 +98,15 @@ class AddDetailScheduleViewController4 : UIViewController {
         image.clipsToBounds = true
         return image
     }()
+
+    let xButton : UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "xButton"), for: .normal)
+        button.imageView?.contentMode = .scaleAspectFill
+        button.imageView?.clipsToBounds = true
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
     
     let taskTableView : UITableView = {
         let view = UITableView()
@@ -126,6 +135,7 @@ class AddDetailScheduleViewController4 : UIViewController {
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
+        descriptionImage.addSubview(xButton)
         
         
         NSLayoutConstraint.activate([
@@ -146,19 +156,25 @@ class AddDetailScheduleViewController4 : UIViewController {
             
             descriptionImage.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 23),
             descriptionImage.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 31),
+            descriptionImage.widthAnchor.constraint(equalToConstant: 217),
+            descriptionImage.heightAnchor.constraint(equalToConstant: 51),
+            
+            xButton.topAnchor.constraint(equalTo: descriptionImage.topAnchor, constant: 7),
+            xButton.trailingAnchor.constraint(equalTo: descriptionImage.trailingAnchor, constant: -10),
+            xButton.widthAnchor.constraint(equalToConstant: 6),
+            xButton.heightAnchor.constraint(equalToConstant: 6),
             
             
+            taskTableView.topAnchor.constraint(equalTo: descriptionImage.bottomAnchor, constant: 6),
             taskTableView.heightAnchor.constraint(equalToConstant: 281),
             taskTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 29),
             taskTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -29),
 
-            
             nextButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             nextButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor , constant: -49),
             nextButton.heightAnchor.constraint(equalToConstant: 46),
             nextButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 31),
 
-            
             
         ])
     }
@@ -182,7 +198,6 @@ class AddDetailScheduleViewController4 : UIViewController {
         }
         
         dateFormatter.dateFormat = "M월"
-//        dateCollectionView.reloadData()
     }
 
     
@@ -231,80 +246,6 @@ class AddDetailScheduleViewController4 : UIViewController {
     
 }
 
-//MARK: - CollectionView extension
-extension  AddDetailScheduleViewController4 : UICollectionViewDelegate, UICollectionViewDataSource{
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return dates.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DateCollectionViewCell", for: indexPath) as? DateCollectionViewCell else {
-            return UICollectionViewCell()
-        }
-        
-        let date = dates[indexPath.item]
-        let dateString = "\(date.date)일"
-        cell.dateLabel.text = date.date
-        cell.dayLabel.text = date.day
-        
-//        switch DateCellSate[dateString] {
-//        case .selected:
-//            cell.configure(with: .selected)
-//        case .hasTask:
-//            cell.configure(with: .hasTask)
-//        case .default:
-//            cell.configure(with: .normal)
-//            
-//        }
-        
-        return cell
-    }
-    
-    
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 60, height: 80)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        // 여기에 날짜 선택 시 contentView의 내용을 변경하는 로직 추가
-        let selectedDate = dates[indexPath.item]
-        
-        print("\(selectedDate.date)일 \(selectedDate.day)요일 선택됨")
-        
-        // 선택된 셀 가져오기
-        if let cell = collectionView.cellForItem(at: indexPath) as? DateCollectionViewCell {
-            cell.contentView.backgroundColor = #colorLiteral(red: 0.3019607843, green: 0.5568627451, blue: 1, alpha: 1)
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        if let cell = collectionView.cellForItem(at: indexPath) as? DateCollectionViewCell {
-            cell.contentView.backgroundColor = #colorLiteral(red: 0.2605186105, green: 0.2605186105, blue: 0.2605186105, alpha: 1)
-        }
-    }
-    
-}
- 
-
-extension AddDetailScheduleViewController4:  UICollectionViewDelegateFlowLayout {
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
-    }
-    
-    // 줄 간격을 0으로 설정
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 15
-    }
-    
-    // 아이템 간격 설정
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 15
-    }
-    
-}
-
 
 extension AddDetailScheduleViewController4 : UITableViewDelegate,UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -323,12 +264,10 @@ extension AddDetailScheduleViewController4 : UITableViewDelegate,UITableViewData
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 60
+        return 100
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-    }
+    
     
     
 }
