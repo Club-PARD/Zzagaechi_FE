@@ -17,9 +17,7 @@ class AddDetailScheduleViewController4 : UIViewController {
     
     var selectedDate: Date?
     
-    private var dates: [(date: String, day: String)] = [
-        ("4", "수"), ("5", "목"), ("6", "금"), ("7", "토"), ("8", "일"), ("9", "월"), ("10", "화"), ("11", "수"), ("12", "목")
-    ]
+    private var dates: [(date: String, day: String)] = []
     
     private let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -115,7 +113,9 @@ class AddDetailScheduleViewController4 : UIViewController {
     
     let taskTableView : UITableView = {
         let view = UITableView()
-        view.backgroundColor = .clear
+        view.backgroundColor = #colorLiteral(red: 0.1372549087, green: 0.1372549087, blue: 0.1372549087, alpha: 1)
+        view.separatorStyle = .none
+        view.showsVerticalScrollIndicator = false
         return view
     }()
     
@@ -167,9 +167,10 @@ class AddDetailScheduleViewController4 : UIViewController {
             dateCollectionView.heightAnchor.constraint(equalToConstant: 80),
             
             taskTableView.topAnchor.constraint(equalTo: dateCollectionView.bottomAnchor,constant: 48),
+            taskTableView.heightAnchor.constraint(equalToConstant: 182),
             taskTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 29),
             taskTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -29),
-            taskTableView.bottomAnchor.constraint(equalTo: nextButton.topAnchor, constant: 123),
+
             
             nextButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             nextButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor , constant: -49),
@@ -334,6 +335,10 @@ extension AddDetailScheduleViewController4 : UITableViewDelegate,UITableViewData
         
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 60
     }
     
     
