@@ -19,6 +19,19 @@ class AddDetailScheduleViewController4 : UIViewController {
     
     private var dates: [(date: String, day: String)] = []
     
+    enum DateCellSate {
+        case nomal
+        case selected
+        case hasTask
+    }
+    
+    
+    enum TaskCellSate {
+        case normal
+        case selected
+        case timeSet
+    }
+    
     private let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ko_KR")
