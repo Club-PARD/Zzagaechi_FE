@@ -90,39 +90,14 @@ class AddDetailScheduleViewController4 : UIViewController {
         return label
     }()
     
-    
-    var monthLabel : UILabel = {
-        let label = UILabel()
-        label.text = "1월" // 서버에서 받은 값으로 넣기
-        label.font = UIFont(name: "Pretendard-Regular", size: 25)
+    let descriptionImage : UIImageView = {
+        let image = UIImageView()
         
-        return label
+        image.image = UIImage(named: "description")
+        image.contentMode = .scaleAspectFill
+        image.clipsToBounds = true
+        return image
     }()
-    
-    
-    private let dateCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        layout.minimumInteritemSpacing = 11
-        layout.minimumLineSpacing = 15
-        
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .clear
-        collectionView.showsHorizontalScrollIndicator = false
-        collectionView.alwaysBounceHorizontal = true
-        return collectionView
-    }()
-    
-    
-    let saveButton : UIButton = {
-        let button = UIButton()
-        button.setTitle("저장", for: .normal)
-        button.titleLabel?.font = UIFont(name: "Pretendard-Regular", size: 14)
-        button.backgroundColor = .clear
-        button.tintColor = #colorLiteral(red: 0.6070454717, green: 0.6070454121, blue: 0.6070454121, alpha: 1)
-        return button
-    }()
-    
     
     let taskTableView : UITableView = {
         let view = UITableView()
@@ -131,16 +106,14 @@ class AddDetailScheduleViewController4 : UIViewController {
         view.showsVerticalScrollIndicator = false
         return view
     }()
+
     
-    
-    
-    
+    //MARK: - 메인
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = #colorLiteral(red: 0.1372549087, green: 0.1372549087, blue: 0.1372549087, alpha: 1)
         buttonTapped()
         setUI()
-        setCollect()
         setTable()
         generateDates()
     
@@ -149,7 +122,7 @@ class AddDetailScheduleViewController4 : UIViewController {
     }
     
     func setUI(){
-        [nextButton,mainLabel,backButton,cancelButton,progessbarImage,titleLabel,monthLabel, dateCollectionView,taskTableView].forEach{
+        [nextButton,mainLabel,backButton,cancelButton,progessbarImage,titleLabel, taskTableView, descriptionImage].forEach{
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
@@ -171,16 +144,11 @@ class AddDetailScheduleViewController4 : UIViewController {
             titleLabel.topAnchor.constraint(equalTo: progessbarImage.bottomAnchor, constant: 15),
             titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 31),
             
-            monthLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 27),
-            monthLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 31),
+            descriptionImage.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 23),
+            descriptionImage.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 31),
             
-            dateCollectionView.topAnchor.constraint(equalTo: monthLabel.bottomAnchor, constant: 10),
-            dateCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant:  22),
-            dateCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor ),
-            dateCollectionView.heightAnchor.constraint(equalToConstant: 80),
             
-            taskTableView.topAnchor.constraint(equalTo: dateCollectionView.bottomAnchor,constant: 48),
-            taskTableView.heightAnchor.constraint(equalToConstant: 182),
+            taskTableView.heightAnchor.constraint(equalToConstant: 281),
             taskTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 29),
             taskTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -29),
 
@@ -189,7 +157,7 @@ class AddDetailScheduleViewController4 : UIViewController {
             nextButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor , constant: -49),
             nextButton.heightAnchor.constraint(equalToConstant: 46),
             nextButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 31),
-            
+
             
             
         ])
@@ -214,18 +182,10 @@ class AddDetailScheduleViewController4 : UIViewController {
         }
         
         dateFormatter.dateFormat = "M월"
-        monthLabel.text = dateFormatter.string(from: start)
-        
-        dateCollectionView.reloadData()
+//        dateCollectionView.reloadData()
     }
+
     
-    func setCollect(){
-        dateCollectionView.delegate = self
-        dateCollectionView.dataSource = self
-        dateCollectionView.register(DateCollectionViewCell.self, forCellWithReuseIdentifier: DateCollectionViewCell.identifier)
-        dateCollectionView.allowsMultipleSelection = false
-        
-    }
     
     func buttonTapped(){
         backButton.addTarget(self, action: #selector(dismissVC), for: .touchUpInside)
@@ -325,7 +285,7 @@ extension  AddDetailScheduleViewController4 : UICollectionViewDelegate, UICollec
     }
     
 }
-
+ 
 
 extension AddDetailScheduleViewController4:  UICollectionViewDelegateFlowLayout {
     
@@ -364,6 +324,10 @@ extension AddDetailScheduleViewController4 : UITableViewDelegate,UITableViewData
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
     }
     
     

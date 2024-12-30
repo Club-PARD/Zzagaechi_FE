@@ -2,7 +2,12 @@ import UIKit
 
 
 class Page4TaskTableViewCell : UITableViewCell {
-    
+    enum TaskCellState {
+        case normal
+        case selected
+        case timeSet(startTime: String, endTime: String)
+    }
+
     
     let clearView :  UIView = {
         let view = UIView()
@@ -28,8 +33,21 @@ class Page4TaskTableViewCell : UITableViewCell {
         label.textColor = .white
         return label
     }()
+    
+    
+    let clockButton : UIButton = {
+        let button = UIButton()
+        button.isHidden = true
+        button.setImage(UIImage(named: "clock"), for:  .normal)
+        return button
+    }()
 
 
+    let timeLabel : UILabel = {
+        let label = UILabel()
+        label.textColor = .white
+        return label
+    }()
     //MARK: - 메인
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: "page4")
@@ -40,6 +58,13 @@ class Page4TaskTableViewCell : UITableViewCell {
         fatalError()
     }
     
+    var state: TaskCellState = .normal {
+            didSet {
+                updateUI()
+            }
+        }
+
+        var clockButtonTapped: (() -> Void)?
 
     
     func setUI(){
@@ -47,7 +72,7 @@ class Page4TaskTableViewCell : UITableViewCell {
         clearView.addSubview(cellView)
         
         
-        [taskLabel].forEach{
+        [taskLabel,clockButton].forEach{
             $0.translatesAutoresizingMaskIntoConstraints = false
             cellView.addSubview($0)
         }
@@ -70,5 +95,25 @@ class Page4TaskTableViewCell : UITableViewCell {
         ])
         
         
+    }
+    
+    func updateUI(){
+        switch state {
+                case .normal:
+                    contentView.backgroundColor = .white
+                    taskLabel.textColor = .black
+                    clockButton.isHidden = true
+                    timeLabel.text = ""
+                case .selected:
+                    contentView.backgroundColor = .blue
+                    taskLabel.textColor = .white
+                    clockButton.isHidden = false
+                    timeLabel.text = ""
+                case .timeSet(let startTime, let endTime):
+                    contentView.backgroundColor = .green
+                    taskLabel.textColor = .white
+                    clockButton.isHidden = false
+                    timeLabel.text = "\(startTime) - \(endTime)"
+                }
     }
 }
