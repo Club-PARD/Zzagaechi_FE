@@ -290,7 +290,7 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
             }
             
             let lineColor = event.isDetailed ?
-            #colorLiteral(red: 0.7760145068, green: 0.8501827121, blue: 0.9661260247, alpha: 1) : #colorLiteral(red: 1, green: 0.9999999404, blue: 0.9999999404, alpha: 1)
+            #colorLiteral(red: 0.7760145068, green: 0.8501827121, blue: 0.9661260247, alpha: 1) : #colorLiteral(red: 0.9568627451, green: 0.9450980392, blue: 0.7294117647, alpha: 1)
             
             let startPoint = startCell.convert(startCell.bounds.origin, to: calendar)
             let endPoint = endCell.convert(endCell.bounds.origin, to: calendar)
