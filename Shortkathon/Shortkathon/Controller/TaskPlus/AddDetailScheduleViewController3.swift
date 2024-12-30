@@ -236,7 +236,8 @@ class AddDetailScheduleViewController3 : UIViewController {
     @objc func movoToNext(){
         let vc = AddDetailScheduleViewController4()
         vc.modalPresentationStyle = .fullScreen
-    
+        vc.taskList = tableUIView.task
+        
         let transition = CATransition()
         transition.duration = 0.4
         transition.type = .push

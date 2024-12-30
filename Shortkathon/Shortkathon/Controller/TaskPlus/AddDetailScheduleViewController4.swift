@@ -11,6 +11,9 @@ import UIKit
 
 class AddDetailScheduleViewController4 : UIViewController {
     
+    var taskList : [String] = []
+    
+    
     private let dates: [(date: String, day: String)] = [
         ("4", "수"), ("5", "목"), ("6", "금"), ("7", "토"), ("8", "일"), ("9", "월"), ("10", "화"), ("11", "수"), ("12", "목")
     ]
@@ -112,8 +115,7 @@ class AddDetailScheduleViewController4 : UIViewController {
         buttonTapped()
         setUI()
         setCollect()
-//        setupKeyboardDismiss()
-//        tapGesture.cancelsTouchesInView = false
+        print(taskList)
 
     }
     
@@ -202,16 +204,6 @@ class AddDetailScheduleViewController4 : UIViewController {
         vc.modalTransitionStyle = .crossDissolve
         present(vc, animated: true)
     }
-    
-//    private func setupKeyboardDismiss() {
-//        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-//        tapGesture.cancelsTouchesInView = false
-//        view.addGestureRecognizer(tapGesture)
-//    }
-//
-//    @objc private func dismissKeyboard() {
-//        view.endEditing(true)
-//    }
     
 }
 
