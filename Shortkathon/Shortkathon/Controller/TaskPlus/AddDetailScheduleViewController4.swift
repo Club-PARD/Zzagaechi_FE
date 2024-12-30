@@ -12,12 +12,20 @@ import UIKit
 class AddDetailScheduleViewController4 : UIViewController {
     
     var taskList : [String] = []
+    var startDate : Date?
+    var endDate : Date?
     
-    
-    private let dates: [(date: String, day: String)] = [
+    var selectedDate: Date?
+
+    private var dates: [(date: String, day: String)] = [
         ("4", "수"), ("5", "목"), ("6", "금"), ("7", "토"), ("8", "일"), ("9", "월"), ("10", "화"), ("11", "수"), ("12", "목")
     ]
     
+    private let dateFormatter: DateFormatter = {
+           let formatter = DateFormatter()
+           formatter.locale = Locale(identifier: "ko_KR")
+           return formatter
+       }()
     
     let mainLabel : UILabel = {
         let label = UILabel()
@@ -115,6 +123,8 @@ class AddDetailScheduleViewController4 : UIViewController {
         buttonTapped()
         setUI()
         setCollect()
+        generateDates()
+
         print(taskList)
 
     }
@@ -160,6 +170,33 @@ class AddDetailScheduleViewController4 : UIViewController {
             
             
         ])
+    }
+
+    private func generateDates(){
+        
+        
+        
+        guard let start = startDate, let end = endDate else { return }
+        dateFormatter.dateFormat = "d"
+              let dayFormatter = DateFormatter()
+              dayFormatter.dateFormat = "E"
+              dayFormatter.locale = Locale(identifier: "ko_KR")
+              
+              let calendar = Calendar.current
+              let components = calendar.dateComponents([.day], from: start, to: end)
+              guard let dayCount = components.day else { return }
+              
+              dates = (0...dayCount).map { offset in
+                  let date = calendar.date(byAdding: .day, value: offset, to: start)!
+                  let dateString = dateFormatter.string(from: date)
+                  let dayString = dayFormatter.string(from: date)
+                  return (date: dateString, day: dayString)
+              }
+              
+              dateFormatter.dateFormat = "M월"
+              monthLabel.text = dateFormatter.string(from: start)
+              
+              dateCollectionView.reloadData()
     }
     
     func setCollect(){

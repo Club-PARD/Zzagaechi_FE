@@ -166,19 +166,20 @@ class MainTableViewCell : UITableViewCell {
         strikethroughLayer = nil
         taskLabel.textColor = .white
     }
-     
+    
     func configure(with plan: Plan, type: CellType) {
         taskLabel.text = plan.plantitle
         timeLabel.isHidden = true
         titleTaskLabel.isHidden = true
         taskLabel.removeFromSuperview()
         checkButton.setImage(UIImage(named: "noCheckPlan"), for: .normal)
-
+        checkButton.setImage(UIImage(named: "yesCheck"), for: .selected)
+        
         cellView.addSubview(taskLabel)
-              NSLayoutConstraint.activate([
-                  taskLabel.leadingAnchor.constraint(equalTo: cellView.leadingAnchor, constant: 57),
-                  taskLabel.centerYAnchor.constraint(equalTo: cellView.centerYAnchor)
-              ])
+        NSLayoutConstraint.activate([
+            taskLabel.leadingAnchor.constraint(equalTo: cellView.leadingAnchor, constant: 57),
+            taskLabel.centerYAnchor.constraint(equalTo: cellView.centerYAnchor)
+        ])
         // 노란색 테마 적용
         cellView.layer.borderColor = #colorLiteral(red: 0.9568627451, green: 0.9450980392, blue: 0.7294117647, alpha: 1).cgColor  // 노란색
         checkButton.isSelected = plan.completed
@@ -190,8 +191,8 @@ class MainTableViewCell : UITableViewCell {
         
         taskLabel.font = UIFont(name: "Pretendard-Regular", size: 12)
         titleTaskLabel.font = UIFont(name: "Pretendard-Regular", size: 17)
-
-
+        
+        
         
         let startTime = detail.startTime.prefix(5)
         let endTime = detail.endTime.prefix(5)
@@ -200,6 +201,8 @@ class MainTableViewCell : UITableViewCell {
         
         timeLabel.isHidden = false
         titleTaskLabel.isHidden = false
+        checkButton.setImage(UIImage(named: "noCheck"), for: .normal)
+        checkButton.setImage(UIImage(named: "yesCheck"), for: .selected)
         
         cellView.addSubview(titleTaskLabel)
         cellView.addSubview(taskLabel)
@@ -211,7 +214,7 @@ class MainTableViewCell : UITableViewCell {
             
             titleTaskLabel.leadingAnchor.constraint(equalTo: cellView.leadingAnchor, constant: 57),
             titleTaskLabel.topAnchor.constraint(equalTo: cellView.topAnchor ,constant: 38),
-
+            
             timeLabel.trailingAnchor.constraint(equalTo: cellView.trailingAnchor, constant: -26),
             timeLabel.topAnchor.constraint(equalTo:  cellView.topAnchor, constant: 38),
         ])

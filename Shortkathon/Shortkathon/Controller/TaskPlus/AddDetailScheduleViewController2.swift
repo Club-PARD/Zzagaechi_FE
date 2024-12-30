@@ -362,6 +362,8 @@ class AddDetailScheduleViewController2 : UIViewController {
             postSchedule2()
         }
         
+        vc.startDate = startDatePicker.date
+        vc.endDate = endDatePicker.date
         
         
         let transition = CATransition()
