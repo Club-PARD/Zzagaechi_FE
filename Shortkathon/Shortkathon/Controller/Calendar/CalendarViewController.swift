@@ -1,15 +1,24 @@
 import UIKit
 import FSCalendar
 
-class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSCalendarDelegateAppearance, AddButtonModalViewControllerDelegate {
+class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSCalendarDelegateAppearance, AddButtonModalViewControllerDelegate, UITableViewDelegate, UITableViewDataSource {
 
     private var calendar: FSCalendar!
-    private var addButton: UIButton!
     private var prevButton: UIButton!
     private var nextButton: UIButton!
     
     private var events: [(name: String, startDate: Date, endDate: Date, isDetailed: Bool)] = []
     private var eventRangeViews: [UIView] = []
+    private var todayScheduleView: UIView!
+    private var addButton: UIButton!
+    private var calendarHeightConstraint: NSLayoutConstraint!
+    private var panGestureRecognizer: UIPanGestureRecognizer!
+    private var initialTouchPoint: CGPoint = CGPoint(x: 0, y: 0)
+    private var scheduleCountView: UIView!
+    private var todayLabel: UILabel!
+    private var countLabel: UILabel!
+    private var mainPlusButton: UIButton!
+    private var scheduleTableView: UITableView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,18 +28,32 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
         calendar = FSCalendar()
         calendar.delegate = self
         calendar.dataSource = self
+        calendar.scope = .month
         calendar.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(calendar)
         
         calendar.backgroundColor = #colorLiteral(red: 0.1829021573, green: 0.1829021573, blue: 0.1829021573, alpha: 1)
         calendar.appearance.headerMinimumDissolvedAlpha = 0.0
         calendar.appearance.headerTitleColor = .white
+        calendar.appearance.headerTitleFont = UIFont(name: "Pretendard-Regular", size: 25)
         calendar.appearance.weekdayTextColor = .white
         calendar.appearance.titleDefaultColor = .white
         calendar.appearance.titlePlaceholderColor = .gray
         calendar.appearance.selectionColor = .systemBlue
         calendar.appearance.todayColor = #colorLiteral(red: 0.1829021573, green: 0.1829021573, blue: 0.1829021573, alpha: 1)
         calendar.placeholderType = .fillHeadTail
+        
+        let dividerView = UIView()
+        dividerView.backgroundColor = .gray
+        dividerView.translatesAutoresizingMaskIntoConstraints = false
+        calendar.addSubview(dividerView)
+        
+        NSLayoutConstraint.activate([
+            dividerView.leadingAnchor.constraint(equalTo: calendar.leadingAnchor, constant: 15),
+            dividerView.trailingAnchor.constraint(equalTo: calendar.trailingAnchor, constant: -15),
+            dividerView.topAnchor.constraint(equalTo: calendar.calendarWeekdayView.bottomAnchor),
+            dividerView.heightAnchor.constraint(equalToConstant: 0.5)
+        ])
         
         prevButton = UIButton(type: .system)
         prevButton.setImage(UIImage(named: "leftButton"), for: .normal)
@@ -47,12 +70,13 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
         prevButton.addTarget(self, action: #selector(prevButtonTapped), for: .touchUpInside)
         nextButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
         
+        calendarHeightConstraint = calendar.heightAnchor.constraint(equalToConstant: 500)
         NSLayoutConstraint.activate([
             calendar.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
             calendar.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
             calendar.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-            calendar.heightAnchor.constraint(equalToConstant: 600),
-            
+            calendarHeightConstraint,
+
             prevButton.centerYAnchor.constraint(equalTo: calendar.calendarHeaderView.centerYAnchor),
             prevButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40),
             prevButton.widthAnchor.constraint(equalToConstant: 20),
@@ -64,22 +88,95 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
             nextButton.heightAnchor.constraint(equalToConstant: 20)
         ])
         
-        addButton = UIButton(type: .system)
-        addButton.setTitle("일정 추가", for: .normal)
-        addButton.backgroundColor = .systemBlue
-        addButton.setTitleColor(.white, for: .normal)
-        addButton.layer.cornerRadius = 10
-        addButton.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(addButton)
+        todayScheduleView = UIView()
+        todayScheduleView.backgroundColor = #colorLiteral(red: 0.2834452093, green: 0.2834451795, blue: 0.2834452093, alpha: 1)
+        todayScheduleView.layer.cornerRadius = 14
+        todayScheduleView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(todayScheduleView)
         
         NSLayoutConstraint.activate([
-            addButton.topAnchor.constraint(equalTo: calendar.bottomAnchor, constant: 20),
-            addButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            addButton.widthAnchor.constraint(equalToConstant: 200),
-            addButton.heightAnchor.constraint(equalToConstant: 50)
+            todayScheduleView.topAnchor.constraint(equalTo: calendar.bottomAnchor, constant: 10),
+            todayScheduleView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            todayScheduleView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            todayScheduleView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
         
-        addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
+        let handleBar = UIView()
+        handleBar.backgroundColor = .gray
+        handleBar.layer.cornerRadius = 3
+        handleBar.translatesAutoresizingMaskIntoConstraints = false
+        todayScheduleView.addSubview(handleBar)
+        
+        NSLayoutConstraint.activate([
+            handleBar.centerXAnchor.constraint(equalTo: todayScheduleView.centerXAnchor),
+            handleBar.topAnchor.constraint(equalTo: todayScheduleView.topAnchor, constant: 8),
+            handleBar.widthAnchor.constraint(equalToConstant: 60),
+            handleBar.heightAnchor.constraint(equalToConstant: 6)
+        ])
+        
+        scheduleCountView = UIView()
+        scheduleCountView.backgroundColor = .clear
+        scheduleCountView.translatesAutoresizingMaskIntoConstraints = false
+        todayScheduleView.addSubview(scheduleCountView)
+        
+        todayLabel = UILabel()
+        todayLabel.text = "오늘 할 일"
+        todayLabel.font = UIFont(name: "Pretendard-Bold", size: 22)
+        todayLabel.textColor = .white
+        todayLabel.translatesAutoresizingMaskIntoConstraints = false
+        scheduleCountView.addSubview(todayLabel)
+        
+        mainPlusButton = UIButton()
+        mainPlusButton.setImage(UIImage(named: "mainPlus"), for: .normal)
+        mainPlusButton.translatesAutoresizingMaskIntoConstraints = false
+        scheduleCountView.addSubview(mainPlusButton)
+        
+        countLabel = UILabel()
+        countLabel.text = "0/0개"
+        countLabel.font = UIFont(name: "Pretendard-Regular", size: 16)
+        countLabel.textColor = .white
+        countLabel.translatesAutoresizingMaskIntoConstraints = false
+        scheduleCountView.addSubview(countLabel)
+        
+        NSLayoutConstraint.activate([
+            scheduleCountView.topAnchor.constraint(equalTo: todayScheduleView.topAnchor, constant: 20),
+            scheduleCountView.leadingAnchor.constraint(equalTo: todayScheduleView.leadingAnchor, constant: 20),
+            scheduleCountView.trailingAnchor.constraint(equalTo: todayScheduleView.trailingAnchor, constant: -20),
+            scheduleCountView.heightAnchor.constraint(equalToConstant: 30),
+            
+            todayLabel.leadingAnchor.constraint(equalTo: scheduleCountView.leadingAnchor),
+            todayLabel.centerYAnchor.constraint(equalTo: scheduleCountView.centerYAnchor),
+            
+            mainPlusButton.leadingAnchor.constraint(equalTo: todayLabel.trailingAnchor, constant: 10),
+            mainPlusButton.centerYAnchor.constraint(equalTo: scheduleCountView.centerYAnchor),
+            mainPlusButton.widthAnchor.constraint(equalToConstant: 24),
+            mainPlusButton.heightAnchor.constraint(equalToConstant: 24),
+            
+            countLabel.trailingAnchor.constraint(equalTo: scheduleCountView.trailingAnchor),
+            countLabel.centerYAnchor.constraint(equalTo: scheduleCountView.centerYAnchor)
+        ])
+        
+        mainPlusButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
+        
+        panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(_:)))
+        todayScheduleView.addGestureRecognizer(panGestureRecognizer)
+        
+        // 테이블 뷰 설정
+        scheduleTableView = UITableView()
+        scheduleTableView.backgroundColor = #colorLiteral(red: 0.2834452093, green: 0.2834451795, blue: 0.2834452093, alpha: 1)
+        scheduleTableView.translatesAutoresizingMaskIntoConstraints = false
+        todayScheduleView.addSubview(scheduleTableView)
+        
+        NSLayoutConstraint.activate([
+            scheduleTableView.topAnchor.constraint(equalTo: scheduleCountView.bottomAnchor, constant: 20),
+            scheduleTableView.leadingAnchor.constraint(equalTo: todayScheduleView.leadingAnchor, constant: 20),
+            scheduleTableView.trailingAnchor.constraint(equalTo: todayScheduleView.trailingAnchor, constant: -20),
+            scheduleTableView.bottomAnchor.constraint(equalTo: todayScheduleView.bottomAnchor, constant: -20)
+        ])
+        
+        // 테이블 뷰 델리게이트 설정
+        scheduleTableView.delegate = self
+        scheduleTableView.dataSource = self
     }
     
     override func viewDidLayoutSubviews() {
@@ -94,6 +191,7 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
         present(modalVC, animated: true)
     }
     
+    // MARK: - FSCalendarDelegate
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         print("Selected date: \(date)")
     }
@@ -152,9 +250,12 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
         
         calendar.reloadData()
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             self.addEventRangeLine()
         }
+        
+        updateScheduleCount()
+        scheduleTableView.reloadData()
     }
     
     private func hasEvent(for date: Date) -> Bool {
@@ -173,6 +274,7 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
         return nil
     }
     
+    // MARK: - Event Range 라인 그리기
     private func addEventRangeLine() {
         eventRangeViews.forEach { $0.removeFromSuperview() }
         eventRangeViews.removeAll()
@@ -188,8 +290,7 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
             }
             
             let lineColor = event.isDetailed ?
-                UIColor.systemBlue.withAlphaComponent(0.3) :
-                UIColor.systemYellow.withAlphaComponent(0.3)
+            #colorLiteral(red: 0.7760145068, green: 0.8501827121, blue: 0.9661260247, alpha: 1) : #colorLiteral(red: 0.9568627451, green: 0.9450980392, blue: 0.7294117647, alpha: 1)
             
             let startPoint = startCell.convert(startCell.bounds.origin, to: calendar)
             let endPoint = endCell.convert(endCell.bounds.origin, to: calendar)
@@ -206,8 +307,21 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
                 let endX = endCell.convert(endCell.bounds, to: calendar).maxX
                 let y = startPoint.y + startCell.frame.height - 25 + verticalOffset
                 
-                lineView.frame = CGRect(x: startX, y: y, width: endX - startX, height: 10)
+                lineView.frame = CGRect(x: startX, y: y, width: endX - startX, height: 13)
                 eventRangeViews.append(lineView)
+                
+                let nameLabel = UILabel()
+                nameLabel.text = event.name
+                nameLabel.font = .systemFont(ofSize: 10)
+                nameLabel.textColor = event.isDetailed ? .systemBlue : .systemYellow
+                nameLabel.sizeToFit()
+                calendar.addSubview(nameLabel)
+                
+                nameLabel.frame.origin = CGPoint(
+                    x: startX + 5,
+                    y: y
+                )
+                eventRangeViews.append(nameLabel)
                 
                 let timeLabel = UILabel()
                 timeLabel.text = "~\(timeFormatter.string(from: event.endDate))"
@@ -218,7 +332,7 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
                 
                 timeLabel.frame.origin = CGPoint(
                     x: endX - timeLabel.frame.width - 5,
-                    y: y - 2
+                    y: y
                 )
                 eventRangeViews.append(timeLabel)
                 
@@ -234,8 +348,21 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
                 let firstLineEndX = calendar.bounds.width
                 let firstLineY = startPoint.y + startCell.frame.height - 25 + verticalOffset
                 
-                firstLineView.frame = CGRect(x: firstLineStartX, y: firstLineY, width: firstLineEndX - firstLineStartX, height: 10)
+                firstLineView.frame = CGRect(x: firstLineStartX, y: firstLineY, width: firstLineEndX - firstLineStartX, height: 13)
                 eventRangeViews.append(firstLineView)
+                
+                let nameLabel = UILabel()
+                nameLabel.text = event.name
+                nameLabel.font = .systemFont(ofSize: 10)
+                nameLabel.textColor = event.isDetailed ? .systemBlue : .systemYellow
+                nameLabel.sizeToFit()
+                calendar.addSubview(nameLabel)
+                
+                nameLabel.frame.origin = CGPoint(
+                    x: firstLineStartX + 5,
+                    y: firstLineY
+                )
+                eventRangeViews.append(nameLabel)
                 
                 addLongPressGesture(to: firstLineView, for: event)
                 
@@ -248,7 +375,7 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
                 let lastLineEndX = endCell.convert(endCell.bounds, to: calendar).maxX
                 let lastLineY = endPoint.y + endCell.frame.height - 25 + verticalOffset
                 
-                lastLineView.frame = CGRect(x: lastLineStartX, y: lastLineY, width: lastLineEndX, height: 10)
+                lastLineView.frame = CGRect(x: lastLineStartX, y: lastLineY, width: lastLineEndX, height: 13)
                 eventRangeViews.append(lastLineView)
                 
                 addLongPressGesture(to: lastLineView, for: event)
@@ -262,7 +389,7 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
                 
                 timeLabel.frame.origin = CGPoint(
                     x: lastLineEndX - timeLabel.frame.width - 5,
-                    y: lastLineY - 2
+                    y: lastLineY
                 )
                 eventRangeViews.append(timeLabel)
                 
@@ -286,7 +413,7 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
                             x: 0,
                             y: middleY,
                             width: calendar.bounds.width,
-                            height: 10
+                            height: 13
                         )
                         eventRangeViews.append(middleLineView)
                         
@@ -362,27 +489,31 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
     }
 
     @objc private func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
-        if gesture.state == .began {
-            guard let view = gesture.view,
-                  view.tag < events.count else { return }
+        guard gesture.state == .began else { return }
+        
+        let alert = UIAlertController(title: "일정 삭제", message: "이 일정을 삭제하시겠습니까?", preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel))
+        alert.addAction(UIAlertAction(title: "삭제", style: .destructive) { [weak self] _ in
+            guard let self = self else { return }
             
-            let event = events[view.tag]
-            let alert = UIAlertController(
-                title: "일정 삭제",
-                message: "(\(event.name))을 삭제 하시겠습니까?",
-                preferredStyle: .alert
-            )
-            
-            alert.addAction(UIAlertAction(title: "예", style: .destructive) { [weak self] _ in
-                self?.events.remove(at: view.tag)
-                self?.calendar.reloadData()
-                self?.addEventRangeLine()
-            })
-            
-            alert.addAction(UIAlertAction(title: "아니요", style: .cancel))
-            
-            present(alert, animated: true)
-        }
+            if let index = self.events.firstIndex(where: { event in
+                return true
+            }) {
+                self.events.remove(at: index)
+                
+                for view in self.eventRangeViews {
+                    view.removeFromSuperview()
+                }
+                self.eventRangeViews.removeAll()
+                
+                self.updateScheduleCount()
+                
+                self.addEventRangeLine()
+            }
+        })
+        
+        present(alert, animated: true)
     }
     
     private func sortEventsByStartDate() {
@@ -399,6 +530,84 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
         let currentPage = calendar.currentPage
         let nextPage = Calendar.current.date(byAdding: .month, value: 1, to: currentPage)!
         calendar.setCurrentPage(nextPage, animated: true)
+    }
+
+    @objc private func handlePanGesture(_ gesture: UIPanGestureRecognizer) {
+        let touchPoint = gesture.location(in: self.view)
+        
+        switch gesture.state {
+        case .began:
+            initialTouchPoint = touchPoint
+        case .changed:
+            let deltaY = touchPoint.y - initialTouchPoint.y
+            if deltaY > 50 && calendar.scope == .week {
+                calendar.setScope(.month, animated: true)
+            } else if deltaY < -50 && calendar.scope == .month {
+                calendar.setScope(.week, animated: true)
+            }
+        default:
+            break
+        }
+    }
+
+    func calendar(_ calendar: FSCalendar, boundingRectWillChange bounds: CGRect, animated: Bool) {
+        calendarHeightConstraint.constant = bounds.height
+        view.layoutIfNeeded()
+    }
+
+    private func updateScheduleCount() {
+        let totalCount = events.count
+        let todayCount = events.filter { Calendar.current.isDateInToday($0.startDate) }.count
+        countLabel.text = "\(todayCount)/\(totalCount)개"
+    }
+
+    // UITableViewDataSource 메서드
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return events.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = UITableViewCell(style: .value1, reuseIdentifier: "cell")
+        let event = events[indexPath.row]
+        
+        // 이미지뷰 생성 및 설정
+        let ballImageView = UIImageView()
+        ballImageView.image = UIImage(named: event.isDetailed ? "detailBall" : "noDetailBall")
+        ballImageView.contentMode = .scaleAspectFit
+        
+        // 이미지뷰를 셀의 contentView에 추가
+        cell.contentView.addSubview(ballImageView)
+        ballImageView.translatesAutoresizingMaskIntoConstraints = false
+        
+        // 이미지뷰 제약조건 설정
+        NSLayoutConstraint.activate([
+            ballImageView.leadingAnchor.constraint(equalTo: cell.contentView.leadingAnchor, constant: 10),
+            ballImageView.centerYAnchor.constraint(equalTo: cell.contentView.centerYAnchor),
+            ballImageView.widthAnchor.constraint(equalToConstant: 10),
+            ballImageView.heightAnchor.constraint(equalToConstant: 10)
+        ])
+        
+        // 텍스트 레이블 설정
+        cell.textLabel?.text = "      " + event.name
+        cell.backgroundColor = .clear
+        cell.textLabel?.textColor = .white
+        cell.textLabel?.font = UIFont(name: "Pretendard-Regular", size: 17)
+        cell.selectionStyle = .none
+        
+        // 시간 표시 (isDetailed가 true일 때만)
+        if event.isDetailed {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "HH:mm"
+            let startTime = formatter.string(from: event.startDate)
+            let endTime = formatter.string(from: event.endDate)
+            cell.detailTextLabel?.text = "\(startTime)~\(endTime)"
+            cell.detailTextLabel?.textColor = .white
+            cell.detailTextLabel?.font = UIFont(name: "Pretendard-Regular", size: 15)
+        } else {
+            cell.detailTextLabel?.text = ""
+        }
+        
+        return cell
     }
 }
 

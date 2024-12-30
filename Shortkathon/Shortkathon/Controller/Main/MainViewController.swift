@@ -77,7 +77,6 @@ class MainViewController : UIViewController {
         setUI()
         setTable()
         startFloatingAnimations()
-        
     }
     
     //MARK: - function
@@ -266,8 +265,6 @@ extension MainViewController {
         // toDayTask 업데이트
         self.toDayTask = allTasks
         
-        // 완료된 일정 수와 전체 일정 수 업데이트
-
         
         // 테이블뷰 리로드
         DispatchQueue.main.async {
