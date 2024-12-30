@@ -8,17 +8,6 @@ class MainViewController : UIViewController {
     
     var toDayTask : [String] = ["로고 레퍼런스 찾기","로고 틀 짜기", "하나로 마트 가서 세제 사기"] // 더미 데이터
     
-    var doTask: Int = 2 {
-        didSet {
-            updateCountLabel()
-        }
-    }
-    //
-    var allTask: Int = 5 {
-        didSet {
-            updateCountLabel()
-        }
-    }
     
     
     let titleLabel : UILabel = {
@@ -70,12 +59,7 @@ class MainViewController : UIViewController {
         return image
     }()
     
-    lazy var countLabel : UILabel = {
-        let label = UILabel()
-        label.font = UIFont(name: "Pretendard-Regular", size: 17)
-        label.textColor = #colorLiteral(red: 0.7540719509, green: 0.7540718913, blue: 0.7540718913, alpha: 1)
-        return label
-    }()
+    
     
     let taskTableView : UITableView = {
         let view = UITableView()
@@ -98,7 +82,7 @@ class MainViewController : UIViewController {
     
     //MARK: - function
     func setUI(){
-        [titleLabel, toDoLabel,image1,image2,image3,image4,countLabel,taskTableView].forEach{
+        [titleLabel, toDoLabel,image1,image2,image3,image4,taskTableView].forEach{
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
@@ -113,8 +97,7 @@ class MainViewController : UIViewController {
             toDoLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 140 ),
             toDoLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant:   26),
             
-            countLabel.leadingAnchor.constraint(equalTo: toDoLabel.trailingAnchor, constant: 4),
-            countLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 147),
+           
             
             image1.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             image1.topAnchor.constraint(equalTo: view.topAnchor, constant: 207),
@@ -145,12 +128,7 @@ class MainViewController : UIViewController {
         ])
     }
     
-    private func updateCountLabel() {
-        let completedTasks = doTask ?? 0
-        let totalTasks = allTask ?? 0
-        countLabel.text = "\(completedTasks)/\(totalTasks)개"
-    }
-    
+        
     func setTable(){
         taskTableView.delegate = self
         taskTableView.dataSource = self
