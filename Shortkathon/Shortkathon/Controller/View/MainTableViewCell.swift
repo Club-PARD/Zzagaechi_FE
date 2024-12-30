@@ -172,6 +172,8 @@ class MainTableViewCell : UITableViewCell {
         timeLabel.isHidden = true
         titleTaskLabel.isHidden = true
         taskLabel.removeFromSuperview()
+        checkButton.setImage(UIImage(named: "noCheckPlan"), for: .normal)
+
         cellView.addSubview(taskLabel)
               NSLayoutConstraint.activate([
                   taskLabel.leadingAnchor.constraint(equalTo: cellView.leadingAnchor, constant: 57),
