@@ -231,10 +231,10 @@ extension MainViewController {
 //MARK: - 서버 통신 코드
 extension MainViewController {
     private func fetchDailySchedule() {
-        let today = Date().toDateString()
-        
-        guard let userId = userId else { return }
-        
+//        let today = Date().toDateString()
+        let today = "2024-01-03"
+//        guard let userId = userId else { return }
+        let userId = "user1"
         let endpoint = "/daily/\(userId)/\(today)"
         print("today : \(today)")
         print("endpoint : \(endpoint)")
@@ -272,7 +272,7 @@ extension MainViewController {
     
     
     private func updateUI() {
-        guard let schedule = dailySchedule else { return }
+        
         
         guard let schedule = dailySchedule else { return }
         
