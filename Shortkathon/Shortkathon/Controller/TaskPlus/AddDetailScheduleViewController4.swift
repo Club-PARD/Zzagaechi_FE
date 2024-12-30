@@ -16,16 +16,16 @@ class AddDetailScheduleViewController4 : UIViewController {
     var endDate : Date?
     
     var selectedDate: Date?
-
+    
     private var dates: [(date: String, day: String)] = [
         ("4", "수"), ("5", "목"), ("6", "금"), ("7", "토"), ("8", "일"), ("9", "월"), ("10", "화"), ("11", "수"), ("12", "목")
     ]
     
     private let dateFormatter: DateFormatter = {
-           let formatter = DateFormatter()
-           formatter.locale = Locale(identifier: "ko_KR")
-           return formatter
-       }()
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko_KR")
+        return formatter
+    }()
     
     let mainLabel : UILabel = {
         let label = UILabel()
@@ -98,9 +98,6 @@ class AddDetailScheduleViewController4 : UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
         collectionView.showsHorizontalScrollIndicator = false
-//        collectionView.isScrollEnabled = true
-        
-//        collectionView.delaysContentTouches = true
         collectionView.alwaysBounceHorizontal = true
         return collectionView
     }()
@@ -116,6 +113,14 @@ class AddDetailScheduleViewController4 : UIViewController {
     }()
     
     
+    let taskTableView : UITableView = {
+        let view = UITableView()
+        view.backgroundColor = .clear
+        return view
+    }()
+    
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -123,18 +128,19 @@ class AddDetailScheduleViewController4 : UIViewController {
         buttonTapped()
         setUI()
         setCollect()
+        setTable()
         generateDates()
-
+    
         print(taskList)
-
+        
     }
     
     func setUI(){
-        [nextButton,mainLabel,backButton,cancelButton,progessbarImage,titleLabel,monthLabel, dateCollectionView].forEach{
+        [nextButton,mainLabel,backButton,cancelButton,progessbarImage,titleLabel,monthLabel, dateCollectionView,taskTableView].forEach{
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
-      
+        
         
         NSLayoutConstraint.activate([
             mainLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -160,7 +166,10 @@ class AddDetailScheduleViewController4 : UIViewController {
             dateCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor ),
             dateCollectionView.heightAnchor.constraint(equalToConstant: 80),
             
-            
+            taskTableView.topAnchor.constraint(equalTo: dateCollectionView.bottomAnchor,constant: 48),
+            taskTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 29),
+            taskTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -29),
+            taskTableView.bottomAnchor.constraint(equalTo: nextButton.topAnchor, constant: 123),
             
             nextButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             nextButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor , constant: -49),
@@ -171,32 +180,29 @@ class AddDetailScheduleViewController4 : UIViewController {
             
         ])
     }
-
+    
     private func generateDates(){
-        
-        
-        
         guard let start = startDate, let end = endDate else { return }
         dateFormatter.dateFormat = "d"
-              let dayFormatter = DateFormatter()
-              dayFormatter.dateFormat = "E"
-              dayFormatter.locale = Locale(identifier: "ko_KR")
-              
-              let calendar = Calendar.current
-              let components = calendar.dateComponents([.day], from: start, to: end)
-              guard let dayCount = components.day else { return }
-              
-              dates = (0...dayCount).map { offset in
-                  let date = calendar.date(byAdding: .day, value: offset, to: start)!
-                  let dateString = dateFormatter.string(from: date)
-                  let dayString = dayFormatter.string(from: date)
-                  return (date: dateString, day: dayString)
-              }
-              
-              dateFormatter.dateFormat = "M월"
-              monthLabel.text = dateFormatter.string(from: start)
-              
-              dateCollectionView.reloadData()
+        let dayFormatter = DateFormatter()
+        dayFormatter.dateFormat = "E"
+        dayFormatter.locale = Locale(identifier: "ko_KR")
+        
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.day], from: start, to: end)
+        guard let dayCount = components.day else { return }
+        
+        dates = (0...dayCount).map { offset in
+            let date = calendar.date(byAdding: .day, value: offset, to: start)!
+            let dateString = dateFormatter.string(from: date)
+            let dayString = dayFormatter.string(from: date)
+            return (date: dateString, day: dayString)
+        }
+        
+        dateFormatter.dateFormat = "M월"
+        monthLabel.text = dateFormatter.string(from: start)
+        
+        dateCollectionView.reloadData()
     }
     
     func setCollect(){
@@ -204,13 +210,20 @@ class AddDetailScheduleViewController4 : UIViewController {
         dateCollectionView.dataSource = self
         dateCollectionView.register(DateCollectionViewCell.self, forCellWithReuseIdentifier: DateCollectionViewCell.identifier)
         dateCollectionView.allowsMultipleSelection = false
-
+        
     }
     
     func buttonTapped(){
         backButton.addTarget(self, action: #selector(dismissVC), for: .touchUpInside)
         cancelButton.addTarget(self, action: #selector(moveToMain), for: .touchUpInside)
         nextButton.addTarget(self, action: #selector(movoToNext), for: .touchUpInside)
+    }
+    
+    func setTable(){
+        taskTableView.delegate = self
+        taskTableView.dataSource = self
+        taskTableView.register(Page4TaskTableViewCell.self, forCellReuseIdentifier: "page4")
+        
     }
     
     @objc func dismissVC() {
@@ -274,16 +287,16 @@ extension  AddDetailScheduleViewController4 : UICollectionViewDelegate, UICollec
         print("\(selectedDate.date)일 \(selectedDate.day)요일 선택됨")
         
         // 선택된 셀 가져오기
-              if let cell = collectionView.cellForItem(at: indexPath) as? DateCollectionViewCell {
-                  cell.contentView.backgroundColor = #colorLiteral(red: 0.3019607843, green: 0.5568627451, blue: 1, alpha: 1)
-              }
+        if let cell = collectionView.cellForItem(at: indexPath) as? DateCollectionViewCell {
+            cell.contentView.backgroundColor = #colorLiteral(red: 0.3019607843, green: 0.5568627451, blue: 1, alpha: 1)
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-            if let cell = collectionView.cellForItem(at: indexPath) as? DateCollectionViewCell {
-                cell.contentView.backgroundColor = #colorLiteral(red: 0.2605186105, green: 0.2605186105, blue: 0.2605186105, alpha: 1)
-            }
+        if let cell = collectionView.cellForItem(at: indexPath) as? DateCollectionViewCell {
+            cell.contentView.backgroundColor = #colorLiteral(red: 0.2605186105, green: 0.2605186105, blue: 0.2605186105, alpha: 1)
         }
+    }
     
 }
 
@@ -303,5 +316,25 @@ extension AddDetailScheduleViewController4:  UICollectionViewDelegateFlowLayout 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 15
     }
+    
+}
+
+
+extension AddDetailScheduleViewController4 : UITableViewDelegate,UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return taskList.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "page4", for: indexPath) as? Page4TaskTableViewCell else {
+            return UITableViewCell()
+        }
+        
+        cell.taskLabel.text = taskList[indexPath.row]
+        
+        
+        return cell
+    }
+    
     
 }
