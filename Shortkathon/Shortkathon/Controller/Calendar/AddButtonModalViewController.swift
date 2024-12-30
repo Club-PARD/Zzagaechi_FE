@@ -32,9 +32,9 @@ class AddButtonModalViewController: UIViewController {
         // 스택뷰로 UI 구성
         let stackView = UIStackView(arrangedSubviews: [
             titleTextField,
+            createToggleView(),
             createLabel("시작일"), startDatePicker,
-            createLabel("종료일"), endDatePicker,
-            createToggleView()
+            createLabel("종료일"), endDatePicker
         ])
         stackView.axis = .vertical
         stackView.spacing = 10
@@ -82,6 +82,8 @@ class AddButtonModalViewController: UIViewController {
     
     private func createToggleView() -> UIStackView {
         let toggleLabel = createLabel("세분화")
+        detailToggleSwitch.isOn = true
+        detailToggleSwitch.addTarget(self, action: #selector(toggleSwitchChanged), for: .valueChanged)
         let toggleView = UIStackView(arrangedSubviews: [toggleLabel, detailToggleSwitch])
         toggleView.axis = .horizontal
         toggleView.spacing = 10
@@ -95,12 +97,25 @@ class AddButtonModalViewController: UIViewController {
     
     @objc private func addButtonTapped() {
         guard let title = titleTextField.text, !title.isEmpty else { return }
-        delegate?.didAddEvent(
-            name: title,
-            startDate: startDatePicker.date,
-            endDate: endDatePicker.date,
-            isDetailed: detailToggleSwitch.isOn
-        )
+        
+        if detailToggleSwitch.isOn {
+            // 세분화가 켜져있을 때는 기존 방식대로
+            delegate?.didAddEvent(
+                name: title,
+                startDate: startDatePicker.date,
+                endDate: endDatePicker.date,
+                isDetailed: true
+            )
+        } else {
+            // 세분화가 꺼져있을 때는 종료일을 시작일과 종료일로 설정
+            let selectedDate = endDatePicker.date
+            delegate?.didAddEvent(
+                name: title,
+                startDate: selectedDate,
+                endDate: selectedDate,
+                isDetailed: false
+            )
+        }
         dismiss(animated: true)
     }
     
@@ -112,5 +127,10 @@ class AddButtonModalViewController: UIViewController {
     
     @objc private func dismissKeyboard() {
         view.endEditing(true)
+    }
+    
+    @objc private func toggleSwitchChanged(_ sender: UISwitch) {
+        startDatePicker.isEnabled = sender.isOn
+        startDatePicker.alpha = sender.isOn ? 1.0 : 0.5
     }
 }
