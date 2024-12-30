@@ -188,6 +188,11 @@ class MainTableViewCell : UITableViewCell {
         taskLabel.text = detail.plansubtitle
         titleTaskLabel.text = detail.content
         
+        taskLabel.font = UIFont(name: "Pretendard-Regular", size: 12)
+        titleTaskLabel.font = UIFont(name: "Pretendard-Regular", size: 17)
+
+
+        
         let startTime = detail.startTime.prefix(5)
         let endTime = detail.endTime.prefix(5)
         timeLabel.text = "\(startTime)~\(endTime)"
