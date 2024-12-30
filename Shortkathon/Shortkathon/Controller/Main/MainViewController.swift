@@ -5,8 +5,20 @@ class MainViewController : UIViewController {
     let apiService = APIService.shared
     var dailySchedule: DailySchedule?
     var userId = UserDefaults.standard.string(forKey: "userIdentifier")
+    enum TaskType {
+        case plan
+        case detail
+    }
+    
+    var taskData : [(type: TaskType, task : Any)] = []
+    
+    
+    
     
     var toDayTask : [String] = ["로고 레퍼런스 찾기","로고 틀 짜기", "하나로 마트 가서 세제 사기"] // 더미 데이터
+    
+    
+    //    var taskData: [(type: TaskType, task: Any)] = []
     
     
     
@@ -96,8 +108,6 @@ class MainViewController : UIViewController {
             toDoLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 140 ),
             toDoLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant:   26),
             
-           
-            
             image1.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             image1.topAnchor.constraint(equalTo: view.topAnchor, constant: 207),
             image1.widthAnchor.constraint(equalToConstant: 109),
@@ -127,7 +137,7 @@ class MainViewController : UIViewController {
         ])
     }
     
-        
+    
     func setTable(){
         taskTableView.delegate = self
         taskTableView.dataSource = self
@@ -140,12 +150,26 @@ class MainViewController : UIViewController {
 
 extension MainViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return toDayTask.count
+        return taskData.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "mainTableViewCell", for: indexPath) as? MainTableViewCell else {return UITableViewCell()}
-        cell.taskLabel.text = toDayTask[indexPath.row]
+        
+        let taskItem = taskData[indexPath.row]
+        
+        switch taskItem.type {
+        case .plan:
+            if let plan = taskItem.task as? Plan {
+                cell.configure(with: plan, type: .plan)
+            }
+        case .detail:
+            if let detail = taskItem.task as? Detail {
+                cell.configure(with: detail, type: .detail)
+            }
+        }
+        
+        
         return cell
     }
     
@@ -208,9 +232,9 @@ extension MainViewController {
 //MARK: - 서버 통신 코드
 extension MainViewController {
     private func fetchDailySchedule() {
-//        let today = Date().toDateString()
+        //        let today = Date().toDateString()
         let today = "2024-01-03"
-//        guard let userId = userId else { return }
+        //        guard let userId = userId else { return }
         let userId = "user2"
         let endpoint = "/daily/\(userId)/\(today)"
         print("today : \(today)")
@@ -231,7 +255,7 @@ extension MainViewController {
                 print("❌ 일정 조회 실패: \(error.localizedDescription)")
                 // 에러 처리 - 예: 알림창 표시
                 DispatchQueue.main.async {
-//                    self?.showErrorAlert(message: error.localizedDescription)
+                    //                    self?.showErrorAlert(message: error.localizedDescription)
                 }
             }
         }
@@ -252,21 +276,16 @@ extension MainViewController {
         
         
         guard let schedule = dailySchedule else { return }
+//        taskData = []
         
-        // plans와 details를 합쳐서 모든 일정을 표시
-        var allTasks: [String] = []
+        schedule.details.forEach { detail in
+            taskData.append((type: .detail, task: detail))
+        }
         
-        // plans에서 title 추출
-        allTasks.append(contentsOf: schedule.plans.map { $0.plantitle })
+        schedule.plans.forEach { plan in
+            taskData.append((type: .plan, task: plan))
+        }
         
-        // details에서 title 추출
-        allTasks.append(contentsOf: schedule.details.map { $0.plansubtitle })
-        
-        // toDayTask 업데이트
-        self.toDayTask = allTasks
-        
-        
-        // 테이블뷰 리로드
         DispatchQueue.main.async {
             self.taskTableView.reloadData()
         }

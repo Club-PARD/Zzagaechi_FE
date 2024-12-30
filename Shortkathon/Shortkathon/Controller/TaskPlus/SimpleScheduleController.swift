@@ -7,6 +7,11 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
     
     var uid3: String?
     
+    private let apiService = APIService.shared
+    
+    // 시간 선택 여부를 추적하는 플래그 추가
+    private var userSelectedTime = false
+    
     let centerLabel: UILabel = {
         let label = UILabel()
         label.text = "간단한 일정 등록"
@@ -219,24 +224,21 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
         formatter.dateFormat = "M월 dd, yyyy"
         formatter.locale = Locale(identifier: "ko_KR")
         startTextField.text = formatter.string(from: Date())
-        startTextField.textColor = .black  // 초기 텍스트 색상을 검은색으로 설정
-        // DatePicker의 초기 날짜도 오늘로 설정
+        startTextField.textColor = .black
         startDatePicker.date = Date()
         
         let endformatter = DateFormatter()
         endformatter.dateFormat = "M월 dd, yyyy"
         endformatter.locale = Locale(identifier: "ko_KR")
         endTextField.text = endformatter.string(from: Date())
-        endTextField.textColor = .black  // 초기 텍스트 색상을 검은색으로 설정
-        // DatePicker의 초기 날짜도 오늘로 설정
+        endTextField.textColor = .black
         endDatePicker.date = Date()
         
-        let timeformatter = DateFormatter()
-        timeformatter.dateFormat = "a hh:mm"
-        timeformatter.locale = Locale(identifier: "ko_KR")
-        timeTextField.text = timeformatter.string(from: Date())
-        timeTextField.textColor = .black
-        timeDatePicker.date = Date()
+        // timeTextField에 현재 시간 설정
+        timeTextField.placeholder = "시간을 선택하세요"
+        timeDatePicker.date = Date()  // 현재 시간으로 설정
+        timeChanged(timeDatePicker)   // 현재 시간을 텍스트 필드에 표시
+        userSelectedTime = false      // 초기 시간 설정은 사용자 선택이 아님
         
         viewDidLayoutSubviews()
     }
@@ -389,6 +391,9 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
         timeTextField.text = formatter.string(from: sender.date)
         timeTextField.textColor = .systemBlue
         timeTextField.resignFirstResponder()
+        
+        // 사용자가 직접 시간을 변경했음을 표시
+        userSelectedTime = true
     }
     
     private func setupKeyboardDismiss() {
@@ -441,6 +446,18 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
     @objc func didtap() {
         print("간단한 일정 다 등록했디~!")
         let vc = SchedulemodalController()
+        
+        // 사용자가 직접 시간을 선택했는지 확인
+        if userSelectedTime {
+            // 사용자가 직접 시간을 선택한 경우 postDateTime 호출
+            print("시간 있")
+            postDateTime()
+        } else {
+            // 사용자가 시간을 선택하지 않은 경우 postDate 호출
+            print("시간 없")
+            postDate()
+        }
+        
         vc.modalPresentationStyle = .overFullScreen
         vc.modalTransitionStyle = .crossDissolve
         present(vc, animated: true)
@@ -460,3 +477,129 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
     }
     
 }
+extension SimpleScheduleController {
+    func postDateTime() {
+        print("시간까지 받는 POST")
+        
+        // 날짜 변환을 위한 포매터
+        let inputDateFormatter = DateFormatter()
+        inputDateFormatter.dateFormat = "M월 dd,yyyy"
+        inputDateFormatter.locale = Locale(identifier: "ko_KR")
+        
+        let outputDateFormatter = DateFormatter()
+        outputDateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        // 시간 변환을 위한 포매터
+        let inputTimeFormatter = DateFormatter()
+        inputTimeFormatter.dateFormat = "a hh:mm"
+        inputTimeFormatter.locale = Locale(identifier: "ko_KR")
+        
+        let outputTimeFormatter = DateFormatter()
+        outputTimeFormatter.dateFormat = "HH:mm"
+        
+        // 날짜 변환
+        var formattedStartDate = "2024-01-01"
+        var formattedEndDate = "2024-01-01"
+        
+        if let dateText = startTextField.text,
+           let date = inputDateFormatter.date(from: dateText) {
+            formattedStartDate = outputDateFormatter.string(from: date)
+        }
+        
+        if let dateText = endTextField.text,
+           let date = inputDateFormatter.date(from: dateText) {
+            formattedEndDate = outputDateFormatter.string(from: date)
+        }
+        
+        // 시간 변환
+        var startTimeString = "14:00"
+        
+        if let timeText = timeTextField.text,
+           let timeDate = inputTimeFormatter.date(from: timeText) {
+            startTimeString = outputTimeFormatter.string(from: timeDate)
+        }
+        
+        // 서버에 보낼 데이터 준비 (swagger 형식에 맞춤)
+        let parameters: [String: Any] = [
+            "plantitle": schedulTextField.text ?? "",
+            "startDate": formattedStartDate,
+            "endDate": formattedEndDate,
+            "startTime": startTimeString
+        ]
+        
+        print("서버로 보내는 파라미터:", parameters)
+        
+        // API 호출
+        let userId = "user2"
+        apiService.post(endpoint: "/plan/\(userId)/datetime", parameters: parameters) { (result: Result<APIResponse, Error>) in
+            switch result {
+            case .success(let response):
+                DispatchQueue.main.async {
+                    print("✅ 일정 등록 성공:", response)
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    print("❌ 일정 등록 실패:", error.localizedDescription)
+                    self.showAlert(message: "일정 등록에 실패했습니다: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+    
+    func postDate() {
+        print("시간안 받는 POST")
+        // 날짜 변환을 위한 포매터
+        let inputDateFormatter = DateFormatter()
+        inputDateFormatter.dateFormat = "M월 dd,yyyy"
+        inputDateFormatter.locale = Locale(identifier: "ko_KR")
+        
+        let outputDateFormatter = DateFormatter()
+        outputDateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        // 날짜 변환
+        var formattedStartDate = "2024-01-01"
+        var formattedEndDate = "2024-01-01"
+        
+        if let dateText = startTextField.text,
+           let date = inputDateFormatter.date(from: dateText) {
+            formattedStartDate = outputDateFormatter.string(from: date)
+        }
+        
+        if let dateText = endTextField.text,
+           let date = inputDateFormatter.date(from: dateText) {
+            formattedEndDate = outputDateFormatter.string(from: date)
+        }
+        
+        // 서버에 보낼 데이터 준비 (swagger 형식에 맞춤)
+        let parameters: [String: Any] = [
+            "plantitle": schedulTextField.text ?? "",
+            "startDate": formattedStartDate,
+            "endDate": formattedEndDate
+        ]
+        
+        print("서버로 보내는 파라미터 (날짜만):", parameters)
+        
+        // API 호출
+        let userId = "user2"
+        apiService.post(endpoint: "/plan/\(userId)/date", parameters: parameters) { (result: Result<APIResponse, Error>) in
+            switch result {
+            case .success(let response):
+                DispatchQueue.main.async {
+                    print("✅ 일정 등록 성공 (날짜만):", response)
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    print("❌ 일정 등록 실패:", error.localizedDescription)
+                    self.showAlert(message: "일정 등록에 실패했습니다: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+    
+    private func showAlert(message: String) {
+        let alert = UIAlertController(title: "알림", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "확인", style: .default))
+        present(alert, animated: true)
+    }
+}
+
