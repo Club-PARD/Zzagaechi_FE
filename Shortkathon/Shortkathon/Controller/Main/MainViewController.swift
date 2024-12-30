@@ -254,7 +254,7 @@ extension MainViewController {
                 print("❌ 일정 조회 실패: \(error.localizedDescription)")
                 // 에러 처리 - 예: 알림창 표시
                 DispatchQueue.main.async {
-                    self?.showErrorAlert(message: error.localizedDescription)
+//                    self?.showErrorAlert(message: error.localizedDescription)
                 }
             }
         }

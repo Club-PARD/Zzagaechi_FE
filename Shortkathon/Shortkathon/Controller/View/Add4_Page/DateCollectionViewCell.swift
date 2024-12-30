@@ -20,24 +20,7 @@ class DateCollectionViewCell : UICollectionViewCell {
         return label
     }()
     
-    private let dateCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        layout.minimumInteritemSpacing = 11
-        layout.minimumLineSpacing = 15
-        
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .clear
-        collectionView.showsHorizontalScrollIndicator = false
-        collectionView.isScrollEnabled = true
-        collectionView.canCancelContentTouches = true
-        collectionView.delaysContentTouches = false
-        collectionView.alwaysBounceHorizontal = true
-        return collectionView
-    }()
     
-    
-   
     
     //MARK: - main
     override init(frame: CGRect) {
@@ -47,25 +30,40 @@ class DateCollectionViewCell : UICollectionViewCell {
         contentView.layer.cornerRadius = 6
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        contentView.frame = bounds
+        contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+    }
+    
     required init?(coder: NSCoder) {
         fatalError()
     }
     
     override var isSelected: Bool {
-            didSet {
-                if isSelected {
-                    contentView.backgroundColor = #colorLiteral(red: 0.7294117647, green: 0.8117647059, blue: 0.9568627451, alpha: 1)
-                    dateLabel.textColor = .black
-                    dayLabel.textColor = .black
-                } else {
-                    contentView.backgroundColor =  #colorLiteral(red: 0.2605186105, green: 0.2605186105, blue: 0.2605186105, alpha: 1)
-                    dateLabel.textColor = .white
-                    dayLabel.textColor = .white
-                }
-            }
+//            didSet {
+//                if isSelected {
+//                    contentView.backgroundColor = #colorLiteral(red: 0.7294117647, green: 0.8117647059, blue: 0.9568627451, alpha: 1)
+//                    dateLabel.textColor = .black
+//                    dayLabel.textColor = .black
+//                } else {
+//                    contentView.backgroundColor =  #colorLiteral(red: 0.2605186105, green: 0.2605186105, blue: 0.2605186105, alpha: 1)
+//                    dateLabel.textColor = .white
+//                    dayLabel.textColor = .white
+//                }
+//            }
+        
+        
+               didSet {
+                   // 선택 상태에 따라 셀의 외관 변경
+                   contentView.backgroundColor = isSelected ? #colorLiteral(red: 0.3019607843, green: 0.5568627451, blue: 1, alpha: 1) : #colorLiteral(red: 0.2605186105, green: 0.2605186105, blue: 0.2605186105, alpha: 1)
+                   contentView.layer.borderColor = isSelected ? UIColor.clear.cgColor : #colorLiteral(red: 0.7294117647, green: 0.8117647059, blue: 0.9568627451, alpha: 1)
+               }
+           
         }
     
     func setUI(){
+        isUserInteractionEnabled = true
         [dateLabel, dayLabel].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             contentView.addSubview($0)

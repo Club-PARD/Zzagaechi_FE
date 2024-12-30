@@ -78,6 +78,21 @@ class AddDetailScheduleViewController4 : UIViewController {
     }()
     
     
+    private let dateCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.minimumInteritemSpacing = 11
+        layout.minimumLineSpacing = 15
+        
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .clear
+        collectionView.showsHorizontalScrollIndicator = false
+//        collectionView.isScrollEnabled = true
+        
+//        collectionView.delaysContentTouches = true
+        collectionView.alwaysBounceHorizontal = true
+        return collectionView
+    }()
     
     
     let saveButton : UIButton = {
@@ -96,11 +111,14 @@ class AddDetailScheduleViewController4 : UIViewController {
         view.backgroundColor = #colorLiteral(red: 0.1372549087, green: 0.1372549087, blue: 0.1372549087, alpha: 1)
         buttonTapped()
         setUI()
-        setupKeyboardDismiss() 
+        setCollect()
+//        setupKeyboardDismiss()
+//        tapGesture.cancelsTouchesInView = false
+
     }
     
     func setUI(){
-        [nextButton,mainLabel,backButton,cancelButton,progessbarImage].forEach{
+        [nextButton,mainLabel,backButton,cancelButton,progessbarImage,titleLabel,monthLabel, dateCollectionView].forEach{
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
@@ -119,12 +137,35 @@ class AddDetailScheduleViewController4 : UIViewController {
             progessbarImage.topAnchor.constraint(equalTo: mainLabel.bottomAnchor, constant: 60),
             progessbarImage.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 31),
             
+            titleLabel.topAnchor.constraint(equalTo: progessbarImage.bottomAnchor, constant: 15),
+            titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 31),
+            
+            monthLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 27),
+            monthLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 31),
+            
+            dateCollectionView.topAnchor.constraint(equalTo: monthLabel.bottomAnchor, constant: 10),
+            dateCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant:  22),
+            dateCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor ),
+            dateCollectionView.heightAnchor.constraint(equalToConstant: 80),
+            
+            
             
             nextButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             nextButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor , constant: -49),
             nextButton.heightAnchor.constraint(equalToConstant: 46),
             nextButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 31),
+            
+            
+            
         ])
+    }
+    
+    func setCollect(){
+        dateCollectionView.delegate = self
+        dateCollectionView.dataSource = self
+        dateCollectionView.register(DateCollectionViewCell.self, forCellWithReuseIdentifier: DateCollectionViewCell.identifier)
+        dateCollectionView.allowsMultipleSelection = false
+
     }
     
     func buttonTapped(){
@@ -162,14 +203,15 @@ class AddDetailScheduleViewController4 : UIViewController {
         present(vc, animated: true)
     }
     
-    private func setupKeyboardDismiss() {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        view.addGestureRecognizer(tapGesture)
-    }
-
-    @objc private func dismissKeyboard() {
-        view.endEditing(true)
-    }
+//    private func setupKeyboardDismiss() {
+//        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+//        tapGesture.cancelsTouchesInView = false
+//        view.addGestureRecognizer(tapGesture)
+//    }
+//
+//    @objc private func dismissKeyboard() {
+//        view.endEditing(true)
+//    }
     
 }
 
@@ -191,6 +233,7 @@ extension  AddDetailScheduleViewController4 : UICollectionViewDelegate, UICollec
     }
     
     
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 60, height: 80)
     }
@@ -200,7 +243,18 @@ extension  AddDetailScheduleViewController4 : UICollectionViewDelegate, UICollec
         let selectedDate = dates[indexPath.item]
         
         print("\(selectedDate.date)일 \(selectedDate.day)요일 선택됨")
+        
+        // 선택된 셀 가져오기
+              if let cell = collectionView.cellForItem(at: indexPath) as? DateCollectionViewCell {
+                  cell.contentView.backgroundColor = #colorLiteral(red: 0.3019607843, green: 0.5568627451, blue: 1, alpha: 1)
+              }
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+            if let cell = collectionView.cellForItem(at: indexPath) as? DateCollectionViewCell {
+                cell.contentView.backgroundColor = #colorLiteral(red: 0.2605186105, green: 0.2605186105, blue: 0.2605186105, alpha: 1)
+            }
+        }
     
 }
 
@@ -220,4 +274,5 @@ extension AddDetailScheduleViewController4:  UICollectionViewDelegateFlowLayout 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 15
     }
+    
 }
