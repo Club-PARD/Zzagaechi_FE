@@ -1,6 +1,8 @@
 import UIKit
 import FSCalendar
 
+
+
 class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSCalendarDelegateAppearance, AddButtonModalViewControllerDelegate, UITableViewDelegate, UITableViewDataSource {
 
     private var calendar: FSCalendar!
@@ -19,6 +21,12 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
     private var countLabel: UILabel!
     private var mainPlusButton: UIButton!
     private var scheduleTableView: UITableView!
+    private var connectionLines: [UIView] = []
+    private let apiService = APIService.shared
+    private var monthlySchedule: CalendarResponse?
+    private var userId = "user2" // 사용자 ID 설정
+    private var currentYear: Int = 0
+    private var currentMonth: Int = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -177,6 +185,8 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
         // 테이블 뷰 델리게이트 설정
         scheduleTableView.delegate = self
         scheduleTableView.dataSource = self
+        
+        fetchCurrentMonthSchedule()
     }
     
     override func viewDidLayoutSubviews() {
@@ -256,6 +266,14 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
         
         updateScheduleCount()
         scheduleTableView.reloadData()
+        
+        // 테이블뷰 업데이트 후 약간의 지연을 주어 셀이 모두 그려진 후 선을 그림
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            self.drawConnectionLines()
+        }
+        
+        updateScheduleCount()
+        addEventRangeLine()
     }
     
     private func hasEvent(for date: Date) -> Bool {
@@ -428,6 +446,11 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
             self.addEventRangeLine()
         }
+        let currentPage = calendar.currentPage
+        let calendar = Calendar.current
+        currentYear = calendar.component(.year, from: currentPage)
+        currentMonth = calendar.component(.month, from: currentPage)
+        fetchCurrentMonthSchedule()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -495,20 +518,28 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
         
         alert.addAction(UIAlertAction(title: "취소", style: .cancel))
         alert.addAction(UIAlertAction(title: "삭제", style: .destructive) { [weak self] _ in
-            guard let self = self else { return }
+            guard let self = self,
+                  let view = gesture.view else { return }
             
-            if let index = self.events.firstIndex(where: { event in
-                return true
-            }) {
+            // 해당 이벤트 찾기
+            if let index = self.eventRangeViews.firstIndex(of: view) {
+                // 이벤트 배열과 뷰 배열에서 제거
                 self.events.remove(at: index)
+                view.removeFromSuperview()
+                self.eventRangeViews.remove(at: index)
                 
-                for view in self.eventRangeViews {
-                    view.removeFromSuperview()
+                // 테이블뷰 업데이트
+                self.scheduleTableView.reloadData()
+                
+                // 연결선 다시 그리기
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    self.drawConnectionLines()
                 }
-                self.eventRangeViews.removeAll()
                 
+                // 카운트 업데이트
                 self.updateScheduleCount()
                 
+                // 캘린더 라인 다시 그리기
                 self.addEventRangeLine()
             }
         })
@@ -608,6 +639,103 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
         }
         
         return cell
+    }
+
+    private func drawConnectionLines() {
+        // 기존 선들 제거
+        connectionLines.forEach { $0.removeFromSuperview() }
+        connectionLines.removeAll()
+        
+        // 최소 2개의 셀이 있어야 선을 그릴 수 있음
+        guard events.count >= 2 else { return }
+        
+        // 모든 Ball 이미지뷰를 앞으로 가져오기
+        for i in 0..<events.count {
+            let indexPath = IndexPath(row: i, section: 0)
+            if let cell = scheduleTableView.cellForRow(at: indexPath),
+               let ballView = cell.contentView.subviews.first(where: { $0 is UIImageView }) {
+                cell.contentView.bringSubviewToFront(ballView)
+            }
+        }
+        
+        // 선 그리기
+        for i in 0..<events.count - 1 {
+            let indexPath1 = IndexPath(row: i, section: 0)
+            let indexPath2 = IndexPath(row: i + 1, section: 0)
+            
+            guard let cell1 = scheduleTableView.cellForRow(at: indexPath1),
+                  let cell2 = scheduleTableView.cellForRow(at: indexPath2),
+                  let ballView1 = cell1.contentView.subviews.first(where: { $0 is UIImageView }),
+                  let ballView2 = cell2.contentView.subviews.first(where: { $0 is UIImageView }) else {
+                continue
+            }
+            
+            var point1 = ballView1.convert(ballView1.center, to: scheduleTableView)
+            var point2 = ballView2.convert(ballView2.center, to: scheduleTableView)
+            
+            point1.x -= 31.5
+            point2.x -= 31.5
+            
+            let line = UIView()
+            line.backgroundColor = .gray
+            scheduleTableView.insertSubview(line, at: 0)
+            
+            let length = sqrt(pow(point2.x - point1.x, 2) + pow(point2.y - point1.y, 2))
+            let angle = atan2(point2.y - point1.y, point2.x - point1.x)
+            
+            line.frame = CGRect(x: point1.x, y: point1.y, width: length, height: 1)
+            line.transform = CGAffineTransform(rotationAngle: angle)
+            
+            connectionLines.append(line)
+        }
+    }
+
+    // MARK: - API 호출
+    func fetchMonthlySchedule(userId: String, yearMonth: String) {
+        apiService.get(endpoint: "/calendar/\(userId)/\(yearMonth)") { [weak self] (result: Result<CalendarResponse, Error>) in
+            switch result {
+            case .success(let response):
+                self?.monthlySchedule = response
+                self?.processScheduleData(response)
+            case .failure(let error):
+                print("Failed to fetch monthly schedule:", error)
+            }
+        }
+    }
+    
+    private func processScheduleData(_ response: CalendarResponse) {
+        events.removeAll()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+
+        for plan in response.plans {
+            if let startDate = dateFormatter.date(from: plan.startDate),
+               let endDate = dateFormatter.date(from: plan.endDate) {
+                let event = (name: plan.plantitle, startDate: startDate, endDate: endDate, isDetailed: false)
+                events.append(event)
+            }
+        }
+
+        for planSub in response.planSubs {
+            if let startDate = dateFormatter.date(from: planSub.startDate),
+               let endDate = dateFormatter.date(from: planSub.endDate) {
+                let event = (name: planSub.plansubtitle, startDate: startDate, endDate: endDate, isDetailed: true)
+                events.append(event)
+            }
+        }
+
+        sortEventsByStartDate()
+        DispatchQueue.main.async {
+            self.scheduleTableView.reloadData()
+            self.drawConnectionLines()
+            self.updateScheduleCount()
+            self.addEventRangeLine()
+        }
+    }
+
+    private func fetchCurrentMonthSchedule() {
+        let yearMonth = "\(currentYear)-\(String(format: "%02d", currentMonth))"
+        fetchMonthlySchedule(userId: userId, yearMonth: yearMonth)
     }
 }
 
