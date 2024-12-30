@@ -283,8 +283,20 @@ extension  AddDetailScheduleViewController4 : UICollectionViewDelegate, UICollec
         }
         
         let date = dates[indexPath.item]
+        let dateString = "\(date.date)일"
         cell.dateLabel.text = date.date
         cell.dayLabel.text = date.day
+        
+//        switch DateCellSate[dateString] {
+//        case .selected:
+//            cell.configure(with: .selected)
+//        case .hasTask:
+//            cell.configure(with: .hasTask)
+//        case .default:
+//            cell.configure(with: .normal)
+//            
+//        }
+        
         return cell
     }
     

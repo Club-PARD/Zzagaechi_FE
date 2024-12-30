@@ -1,5 +1,5 @@
 import UIKit
 
 class URLClass {
-    var baseURL : String = "http://172.17.203.169:8080"
+    var baseURL : String = "http://192.168.219.101:8080"
 }

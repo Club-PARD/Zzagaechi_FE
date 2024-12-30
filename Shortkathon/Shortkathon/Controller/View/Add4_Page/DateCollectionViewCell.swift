@@ -4,6 +4,35 @@ import UIKit
 class DateCollectionViewCell : UICollectionViewCell {
     static let identifier = "DateCollectionViewCell"
     
+    enum CellState{
+        case normal
+        case selected
+        case hasTask
+        var backgroundColor: UIColor {
+                   switch self {
+                   case .normal:
+                       return #colorLiteral(red: 0.2605186105, green: 0.2605186105, blue: 0.2605186105, alpha: 1)
+                   case .selected:
+                       return #colorLiteral(red: 0.3019607843, green: 0.5568627451, blue: 1, alpha: 1)
+                   case .hasTask:
+                       return #colorLiteral(red: 0.3019607843, green: 0.5568627451, blue: 1, alpha: 0.5)
+                   }
+               }
+               
+               var textColor: UIColor {
+                   switch self {
+                   case .normal, .hasTask:
+                       return .white
+                   case .selected:
+                       return .white
+                   }
+               }
+    }
+    
+    
+    
+    
+    
     var dateLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
@@ -40,27 +69,23 @@ class DateCollectionViewCell : UICollectionViewCell {
         fatalError()
     }
     
-    override var isSelected: Bool {
-//            didSet {
-//                if isSelected {
-//                    contentView.backgroundColor = #colorLiteral(red: 0.7294117647, green: 0.8117647059, blue: 0.9568627451, alpha: 1)
-//                    dateLabel.textColor = .black
-//                    dayLabel.textColor = .black
-//                } else {
-//                    contentView.backgroundColor =  #colorLiteral(red: 0.2605186105, green: 0.2605186105, blue: 0.2605186105, alpha: 1)
-//                    dateLabel.textColor = .white
-//                    dayLabel.textColor = .white
-//                }
-//            }
-        
-        
-               didSet {
-                   // 선택 상태에 따라 셀의 외관 변경
-                   contentView.backgroundColor = isSelected ? #colorLiteral(red: 0.3019607843, green: 0.5568627451, blue: 1, alpha: 1) : #colorLiteral(red: 0.2605186105, green: 0.2605186105, blue: 0.2605186105, alpha: 1)
-                   contentView.layer.borderColor = isSelected ? UIColor.clear.cgColor : #colorLiteral(red: 0.7294117647, green: 0.8117647059, blue: 0.9568627451, alpha: 1)
-               }
-           
+    
+    func configure(with state: CellState) {
+            contentView.backgroundColor = state.backgroundColor
+            dateLabel.textColor = state.textColor
+            dayLabel.textColor = state.textColor
         }
+    
+    override var isSelected: Bool {
+        
+        didSet {
+            // 선택 상태에 따라 셀의 외관 변경
+            configure(with: isSelected ? .selected : .normal)
+//            contentView.backgroundColor = isSelected ? #colorLiteral(red: 0.3019607843, green: 0.5568627451, blue: 1, alpha: 1) : #colorLiteral(red: 0.2605186105, green: 0.2605186105, blue: 0.2605186105, alpha: 1)
+//            contentView.layer.borderColor = isSelected ? UIColor.clear.cgColor : #colorLiteral(red: 0.7294117647, green: 0.8117647059, blue: 0.9568627451, alpha: 1)
+        }
+        
+    }
     
     func setUI(){
         isUserInteractionEnabled = true

@@ -695,6 +695,7 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
         apiService.get(endpoint: "/calendar/\(userId)/\(yearMonth)") { [weak self] (result: Result<CalendarResponse, Error>) in
             switch result {
             case .success(let response):
+                print(response)
                 self?.monthlySchedule = response
                 self?.processScheduleData(response)
             case .failure(let error):
@@ -734,7 +735,9 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
     }
 
     private func fetchCurrentMonthSchedule() {
-        let yearMonth = "\(currentYear)-\(String(format: "%02d", currentMonth))"
+//        let yearMonth = "\(currentYear)-\(String(format: "%02d", currentMonth))"
+        let yearMonth = "2024-01"
+        userId = "user2"
         fetchMonthlySchedule(userId: userId, yearMonth: yearMonth)
     }
 }
