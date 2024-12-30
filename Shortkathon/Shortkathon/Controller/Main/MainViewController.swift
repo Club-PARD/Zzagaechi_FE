@@ -2,20 +2,13 @@ import UIKit
 
 class MainViewController : UIViewController {
     //MARK: - property
-    var toDayTask : [String] = ["로고 레퍼런스 찾기","로고 틀 짜기", "하나로 마트 가서 세제 사기"]
+    let apiService = APIService.shared
+    var dailySchedule: DailySchedule?
+    var userId = UserDefaults.standard.string(forKey: "userIdentifier")
     
-    var doTask: Int = 2 {
-        didSet {
-            updateCountLabel()
-        }
-    }
-//
-    var allTask: Int = 5 {
-        didSet {
-            updateCountLabel()
-        }
-    }
-
+    var toDayTask : [String] = ["로고 레퍼런스 찾기","로고 틀 짜기", "하나로 마트 가서 세제 사기"] // 더미 데이터
+    
+    
     
     let titleLabel : UILabel = {
         let label = UILabel()
@@ -49,7 +42,7 @@ class MainViewController : UIViewController {
         image.clipsToBounds = true
         return image
     }()
-
+    
     let image3 : UIImageView = {
         let image = UIImageView()
         image.image = UIImage(named: "n2-1")
@@ -66,12 +59,7 @@ class MainViewController : UIViewController {
         return image
     }()
     
-    lazy var countLabel : UILabel = {
-        let label = UILabel()
-        label.font = UIFont(name: "Pretendard-Regular", size: 17)
-        label.textColor = #colorLiteral(red: 0.7540719509, green: 0.7540718913, blue: 0.7540718913, alpha: 1)
-        return label
-    }()
+    
     
     let taskTableView : UITableView = {
         let view = UITableView()
@@ -85,6 +73,7 @@ class MainViewController : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = #colorLiteral(red: 0.137254902, green: 0.137254902, blue: 0.137254902, alpha: 1)
+        fetchDailySchedule()
         setUI()
         setTable()
         startFloatingAnimations()
@@ -93,13 +82,13 @@ class MainViewController : UIViewController {
     
     //MARK: - function
     func setUI(){
-        [titleLabel, toDoLabel,image1,image2,image3,image4,countLabel,taskTableView].forEach{
+        [titleLabel, toDoLabel,image1,image2,image3,image4,taskTableView].forEach{
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
         
         view.bringSubviewToFront(titleLabel) // titleLabel을 항상 위로
-
+        
         
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor ,constant: 50),
@@ -108,8 +97,7 @@ class MainViewController : UIViewController {
             toDoLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 140 ),
             toDoLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant:   26),
             
-            countLabel.leadingAnchor.constraint(equalTo: toDoLabel.trailingAnchor, constant: 4),
-            countLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 147),
+           
             
             image1.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             image1.topAnchor.constraint(equalTo: view.topAnchor, constant: 207),
@@ -120,7 +108,7 @@ class MainViewController : UIViewController {
             image2.topAnchor.constraint(equalTo: view.topAnchor, constant: 336),
             image2.widthAnchor.constraint(equalToConstant: 98),
             image2.heightAnchor.constraint(equalToConstant: 71),
-
+            
             
             image3.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -13),
             image3.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 197),
@@ -140,12 +128,7 @@ class MainViewController : UIViewController {
         ])
     }
     
-    private func updateCountLabel() {
-        let completedTasks = doTask ?? 0
-        let totalTasks = allTask ?? 0
-        countLabel.text = "\(completedTasks)/\(totalTasks)개"
-    }
-    
+        
     func setTable(){
         taskTableView.delegate = self
         taskTableView.dataSource = self
@@ -218,7 +201,78 @@ extension MainViewController {
             self.startFloatingAnimations(repeatCount: repeatCount - 1)
         }
     }
-
+    
 }
 
 
+
+//MARK: - 서버 통신 코드
+extension MainViewController {
+    private func fetchDailySchedule() {
+//        let today = Date().toDateString()
+        let today = "2024-01-03"
+//        guard let userId = userId else { return }
+        let userId = "user2"
+        let endpoint = "/daily/\(userId)/\(today)"
+        print("today : \(today)")
+        print("endpoint : \(endpoint)")
+        apiService.get(endpoint: endpoint) { [weak self] (result: Result<DailySchedule, Error>) in
+            switch result {
+            case .success(let schedule):
+                self?.dailySchedule = schedule
+                print("✅ 일정 데이터 수신 성공")
+                print("총 일정 수: \(schedule.totalCount)")
+                print("완료된 일정 수: \(schedule.completedCount)")
+                print(schedule)
+                DispatchQueue.main.async {
+                    self?.updateUI()
+                }
+                
+            case .failure(let error):
+                print("❌ 일정 조회 실패: \(error.localizedDescription)")
+                // 에러 처리 - 예: 알림창 표시
+                DispatchQueue.main.async {
+//                    self?.showErrorAlert(message: error.localizedDescription)
+                }
+            }
+        }
+    }
+    
+    private func showErrorAlert(message: String) {
+        let alert = UIAlertController(
+            title: "오류",
+            message: "일정을 불러오는데 실패했습니다.\n\(message)",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "확인", style: .default))
+        present(alert, animated: true)
+    }
+    
+    
+    private func updateUI() {
+        
+        
+        guard let schedule = dailySchedule else { return }
+        
+        // plans와 details를 합쳐서 모든 일정을 표시
+        var allTasks: [String] = []
+        
+        // plans에서 title 추출
+        allTasks.append(contentsOf: schedule.plans.map { $0.plantitle })
+        
+        // details에서 title 추출
+        allTasks.append(contentsOf: schedule.details.map { $0.plansubtitle })
+        
+        // toDayTask 업데이트
+        self.toDayTask = allTasks
+        
+        // 완료된 일정 수와 전체 일정 수 업데이트
+        self.doTask = schedule.completedCount
+        self.allTask = schedule.totalCount
+        
+        // 테이블뷰 리로드
+        DispatchQueue.main.async {
+            self.taskTableView.reloadData()
+        }
+    }
+}

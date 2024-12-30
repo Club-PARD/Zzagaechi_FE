@@ -91,7 +91,7 @@ class AddDetailScheduleViewController3 : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = #colorLiteral(red: 0.1372549087, green: 0.1372549087, blue: 0.1372549087, alpha: 1)
-        //        setupScrollView()
+
         setUI()
         buttonTapped()
         setupKeyboardDismiss()
@@ -236,6 +236,7 @@ class AddDetailScheduleViewController3 : UIViewController {
     @objc func movoToNext(){
         let vc = AddDetailScheduleViewController4()
         vc.modalPresentationStyle = .fullScreen
+    
         let transition = CATransition()
         transition.duration = 0.4
         transition.type = .push

@@ -10,6 +10,9 @@
 import UIKit
 
 class AddDetailScheduleViewController2 : UIViewController {
+    var plansubtitle : String?
+    var userId =  UserDefaults.standard.string(forKey: "userIdentifier")
+    let apiService = APIService.shared
     
     let mainLabel : UILabel = {
         let label = UILabel()
@@ -52,8 +55,7 @@ class AddDetailScheduleViewController2 : UIViewController {
         let combinedText = "\(firstPart)\n\(secondPart)"
         
         label.text = combinedText
-        label.font = .systemFont(ofSize: 30)
-        //        label.font = UIFont(name: "Pretendard-Regular", size: 30)//볼더임
+        label.font = UIFont(name: "Pretendard-Regular", size: 30)//볼더임
         label.textColor = #colorLiteral(red: 0.9999999881, green: 0.9999999881, blue: 0.9999999881, alpha: 1)
         label.numberOfLines = 0 // 여러 줄 지원
         label.lineBreakMode = .byWordWrapping // 단어 단위로 줄바꿈
@@ -64,7 +66,7 @@ class AddDetailScheduleViewController2 : UIViewController {
     let subLabel: UILabel = {
         let label = UILabel()
         label.text = "언제부터 언제까지 진행하실건가요?"
-        label.font = .systemFont(ofSize: 15)
+        label.font = UIFont(name: "Pretendard-Regular", size: 15)
         label.textColor = #colorLiteral(red: 0.6901960784, green: 0.6901960784, blue: 0.6901960784, alpha: 1)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -74,8 +76,7 @@ class AddDetailScheduleViewController2 : UIViewController {
         let label = UILabel()
         label.text = "시작일"
         label.textColor = #colorLiteral(red: 0.9999999881, green: 0.9999999881, blue: 0.9999999881, alpha: 1)
-        label.font = .systemFont(ofSize: 19)
-        //        label.font = UIFont(name: "Pretendard-Regular", size: 30)//미디움
+        label.font = UIFont(name: "Pretendard-Regular", size: 19)//미디움
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -84,8 +85,7 @@ class AddDetailScheduleViewController2 : UIViewController {
         let label = UILabel()
         label.text = "종료일"
         label.textColor = #colorLiteral(red: 0.9999999881, green: 0.9999999881, blue: 0.9999999881, alpha: 1)
-        label.font = .systemFont(ofSize: 19)
-        //        label.font = UIFont(name: "Pretendard-Regular", size: 30)//미디움
+        label.font = UIFont(name: "Pretendard-Regular", size: 19)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -94,7 +94,7 @@ class AddDetailScheduleViewController2 : UIViewController {
         let label = UILabel()
         label.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         label.text = ""
-        label.font = .systemFont(ofSize: 16)
+        label.font = .systemFont(ofSize: 14)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -103,8 +103,7 @@ class AddDetailScheduleViewController2 : UIViewController {
         let label = UILabel()
         label.text = "시간"
         label.textColor = #colorLiteral(red: 0.9999999881, green: 0.9999999881, blue: 0.9999999881, alpha: 1)
-        label.font = .systemFont(ofSize: 19)
-        //        label.font = UIFont(name: "Pretendard-Regular", size: 30)//미디움
+        label.font = UIFont(name: "Pretendard-Regular", size: 19)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -114,7 +113,7 @@ class AddDetailScheduleViewController2 : UIViewController {
         textField.placeholder = "할일을 적어보세요!"
         textField.borderStyle = .roundedRect
         textField.layer.cornerRadius = 10
-        textField.font = .systemFont(ofSize: 14)
+        textField.font = UIFont(name: "Pretendard-Regular", size: 14)
         textField.textAlignment = .center
         textField.backgroundColor = #colorLiteral(red: 0.8274509804, green: 0.8274509804, blue: 0.8274509804, alpha: 1)
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -135,7 +134,7 @@ class AddDetailScheduleViewController2 : UIViewController {
         textField.placeholder = "날짜를 선택하세요"
         textField.borderStyle = .roundedRect
         textField.layer.cornerRadius = 10
-        textField.font = .systemFont(ofSize: 14)
+        textField.font = UIFont(name: "Pretendard-Regular", size: 14)
         textField.textAlignment = .center
         textField.backgroundColor = #colorLiteral(red: 0.8274509804, green: 0.8274509804, blue: 0.8274509804, alpha: 1)
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -156,7 +155,7 @@ class AddDetailScheduleViewController2 : UIViewController {
         textField.placeholder = "시간을 선택하세요"
         textField.borderStyle = .roundedRect
         textField.layer.cornerRadius = 10
-        textField.font = .systemFont(ofSize: 14)
+        textField.font = UIFont(name: "Pretendard-Regular", size: 14)
         textField.textAlignment = .center
         textField.backgroundColor = #colorLiteral(red: 0.8274509804, green: 0.8274509804, blue: 0.8274509804, alpha: 1)
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -251,7 +250,7 @@ class AddDetailScheduleViewController2 : UIViewController {
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
-
+        
         
         view.addSubview(mainLabel)
         view.addSubview(backButton)
@@ -296,18 +295,18 @@ class AddDetailScheduleViewController2 : UIViewController {
             timeLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 44),
             
             startTextField.topAnchor.constraint(equalTo: subLabel.bottomAnchor , constant: 91),
-            startTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 262),
-            startTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor , constant: -44),
+            startTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 230),
+            startTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor , constant: -28),
             startTextField.heightAnchor.constraint(equalToConstant: 39),
             
             endTextField.topAnchor.constraint(equalTo: startTextField.bottomAnchor , constant: 41),
-            endTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 262),
-            endTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor , constant: -44),
+            endTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 230),
+            endTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor , constant: -28),
             endTextField.heightAnchor.constraint(equalToConstant: 39),
             
             timeTextField.topAnchor.constraint(equalTo: endTextField.bottomAnchor , constant: 41),
-            timeTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 262),
-            timeTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor , constant: -44),
+            timeTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 230),
+            timeTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor , constant: -28),
             timeTextField.heightAnchor.constraint(equalToConstant: 39),
             
             
@@ -318,7 +317,7 @@ class AddDetailScheduleViewController2 : UIViewController {
             nextButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 31),
         ])
     }
-
+    
     
     func buttonTapped(){
         backButton.addTarget(self, action: #selector(dismissVC), for: .touchUpInside)
@@ -352,8 +351,19 @@ class AddDetailScheduleViewController2 : UIViewController {
     }
     
     @objc func movoToNext(){
+        guard nextButton.isEnabled else {return}
+        
         let vc = AddDetailScheduleViewController3()
         vc.modalPresentationStyle = .fullScreen
+        
+        if !isTimeSelected {
+            postSchedule1()
+        } else{
+            postSchedule2()
+        }
+        
+        
+        
         let transition = CATransition()
         transition.duration = 0.4
         transition.type = .push
@@ -374,7 +384,7 @@ class AddDetailScheduleViewController2 : UIViewController {
         isStartDateSelected = true  // 날짜 선택 상태 업데이트
         checkTextFieldsAndUpdateButton()
     }
-
+    
     @objc private func enddateChanged(_ sender: UIDatePicker) {
         let formatter = DateFormatter()
         formatter.dateFormat = "M월 dd,yyyy"
@@ -384,7 +394,7 @@ class AddDetailScheduleViewController2 : UIViewController {
         isEndDateSelected = true  // 날짜 선택 상태 업데이트
         checkTextFieldsAndUpdateButton()
     }
-
+    
     @objc private func timeChanged(_ sender: UIDatePicker) {
         let formatter = DateFormatter()
         formatter.dateFormat = "a hh:mm"
@@ -395,18 +405,22 @@ class AddDetailScheduleViewController2 : UIViewController {
         checkTextFieldsAndUpdateButton()  // 버튼 상태 체크 추가
         timeTextField.resignFirstResponder()
     }
-
+    
     private func setupKeyboardDismiss() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tapGesture)
     }
-
+    
     @objc private func dismissKeyboard() {
         view.endEditing(true)
+        startTextField.textColor = .black
+        endTextField.textColor = .black
+        timeTextField.textColor = .black
     }
-
+    
     private func checkTextFieldsAndUpdateButton() {
-        let isEnabled = isStartDateSelected && isEndDateSelected && isTimeSelected
+        let isEnabled = isStartDateSelected && isEndDateSelected
+        //        && isTimeSelected
         
         nextButton.isEnabled = isEnabled
         if isEnabled {
@@ -421,7 +435,7 @@ class AddDetailScheduleViewController2 : UIViewController {
             ])
         }
     }
-
+    
     private func applyGradient(to button: UIButton, colors: [CGColor]) {
         button.layer.sublayers?.forEach { layer in
             if layer is CAGradientLayer {
@@ -438,11 +452,114 @@ class AddDetailScheduleViewController2 : UIViewController {
         
         button.layer.insertSublayer(gradientLayer, at: 0)
     }
-
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         checkTextFieldsAndUpdateButton()
     }
+    
+}
 
+
+
+//MARK: - main
+
+extension AddDetailScheduleViewController2 {
+    func postSchedule1() {
+        print("첫번째 POST")
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        guard let plansubtitle = plansubtitle else{return}
+        
+        // 시작일과 종료일 가져오기
+        let startDate = dateFormatter.string(from: startDatePicker.date)
+        let endDate = dateFormatter.string(from: endDatePicker.date)
+        
+        let parameters: [String: Any] = [
+            "plansubtitle": plansubtitle ,
+            "startDate": startDate,
+            "endDate": endDate
+        ]
+        
+        print("startDate : \(startDate)")
+        print("endDate : \(endDate)")
+        print("plansubtitle : \(plansubtitle)")
+        
+        
+        
+        let userId = "user2"
+        // API 호출
+        apiService.post(
+            endpoint: "/plansub/\(userId)",
+            parameters: parameters
+        ) { (result: Result<Int, Error>) in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    print("✅ 일정 등록 성공: \(response)")
+                    
+                case .failure(let error):
+                    print("❌ 일정 등록 실패: \(error.localizedDescription)")
+                    // 에러 처리
+                    print("🚨세분화 1,2 post 실패")
+                }
+            }
+        }
+        
+        
+        
+    }
+    
+    func postSchedule2() {
+        print("두번째 POST")
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        
+        let timeFormatter = DateFormatter()
+        timeFormatter.dateFormat = "HH:mm"
+        
+        guard let plansubtitle = plansubtitle else{return}
+        print("plansubtitle : \(plansubtitle)")
+        // 시작일과 종료일 가져오기
+        let startDate = dateFormatter.string(from: startDatePicker.date)
+        let endDate = dateFormatter.string(from: endDatePicker.date)
+        let deadline = timeFormatter.string(from: timeDatePicker.date)
+        
+        print("startDate : \(startDate)")
+        print("endDate : \(endDate)")
+        print("deadline : \(deadline)")
+        
+        
+        let parameters: [String: Any] = [
+            "plansubtitle" : plansubtitle,
+            "startDate": startDate,
+            "endDate": endDate,
+            "deadline": deadline,
+        ]
+        
+        let userId = "user2"
+        // API 호출
+        apiService.post(
+            endpoint: "/plansub/\(userId)/endtime",
+            parameters: parameters
+        ) { (result: Result<Int, Error>) in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    print("✅ 일정 등록 성공: \(response)")
+                    
+                case .failure(let error):
+                    print("❌ 일정 등록 실패: \(error.localizedDescription)")
+                    // 에러 처리
+                    print("🚨세분화 1,2 post 실패")
+                }
+            }
+        }
+        
+    }
+    
+    
+    
 }
 

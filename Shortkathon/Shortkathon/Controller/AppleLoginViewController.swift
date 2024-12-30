@@ -165,14 +165,13 @@ extension AppleLoginViewController{
             DispatchQueue.main.async {
                 switch result {
                 case .success(let response):
-                    if response.check {
+                   
                         print("✅ 로그인 성공")
                         UserDefaults.standard.set(uid, forKey: "userIdentifier")
                         // 메인 페이지로 이동하는 코드는 별도의 메서드로 분리하여 처리
 //                        NotificationCenter.default.post(name: NSNotification.Name("LoginSuccess"), object: nil)
-                    } else {
-                        print("⚠️ 로그인 실패")
-                    }
+//                        print("⚠️ 로그인 실패")
+                    
                 case .failure(let error):
                     print("❌ 로그인 요청 실패: \(error.localizedDescription)")
                 }

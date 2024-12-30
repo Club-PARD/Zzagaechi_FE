@@ -2,7 +2,7 @@ import Foundation
 import Alamofire
 
 struct APIResponse: Codable {
-    let check: Bool
+    let check: Int
 }
 
 class APIService {
