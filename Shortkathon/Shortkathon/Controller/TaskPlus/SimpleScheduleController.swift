@@ -41,12 +41,13 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
     
     let subLabel: UILabel = {
         let label = UILabel()
-        label.text = "(문구 수정 요망 여기 부가적으로 들가는 글)"
+        label.text = "한 번에 끝낼 수 있는 작업의 제목과 날짜, 시간을 입력해주세요"
         label.textColor = #colorLiteral(red: 0.6901960784, green: 0.6901960784, blue: 0.6901960784, alpha: 1)
+        label.font = UIFont(name: "Pretendard-Regular", size: 14)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
+
     let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "제목"
@@ -77,7 +78,7 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
         label.text = "시작일"
         label.textColor = #colorLiteral(red: 0.9999999881, green: 0.9999999881, blue: 0.9999999881, alpha: 1)
         label.font = .systemFont(ofSize: 19)
-        //        label.font = UIFont(name: "Pretendard-Regular", size: 30)//미디움
+                label.font = UIFont(name: "Pretendard-Medium", size: 19)//미디움
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -87,7 +88,7 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
         label.text = "종료일"
         label.textColor = #colorLiteral(red: 0.9999999881, green: 0.9999999881, blue: 0.9999999881, alpha: 1)
         label.font = .systemFont(ofSize: 19)
-        //        label.font = UIFont(name: "Pretendard-Regular", size: 30)//미디움
+                label.font = UIFont(name: "Pretendard-Medium", size: 19)//미디움
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -105,8 +106,7 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
         let label = UILabel()
         label.text = "시간"
         label.textColor = #colorLiteral(red: 0.9999999881, green: 0.9999999881, blue: 0.9999999881, alpha: 1)
-        //        label.font = .systemFont(ofSize: 19)
-        label.font = UIFont(name: "Pretendard-Regular", size: 30)//미디움
+        label.font = UIFont(name: "Pretendard-Medium", size: 19)//미디움
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -128,7 +128,7 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
         picker.datePickerMode = .date
         picker.preferredDatePickerStyle = .inline
         picker.locale = Locale(identifier: "ko_KR")
-        picker.tintColor = .white
+        picker.tintColor = #colorLiteral(red: 0, green: 0.5176470588, blue: 1, alpha: 1)
         return picker
     }()
     
@@ -174,8 +174,8 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
     
     let saveButton: UIButton = {
         let button = UIButton()
-        button.setTitle("저장", for: .normal)
-        button.setTitleColor(.white, for: .normal)
+        button.setTitle("등록", for: .normal)
+        button.setTitleColor(#colorLiteral(red: 0.2980392157, green: 0.2980392157, blue: 0.2980392157, alpha: 1), for: .normal)
         button.backgroundColor = .clear
         button.layer.cornerRadius = 12
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -204,6 +204,8 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
         schedulTextField.delegate = self
         schedulTextField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         backButton.addTarget(self, action: #selector(moveBack), for: .touchUpInside)
+        
+        saveButton.isEnabled = false
         saveButton.addTarget(self, action: #selector(didtap), for: .touchUpInside)
         
         setupScrollView()
@@ -235,6 +237,24 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
         timeTextField.text = timeformatter.string(from: Date())
         timeTextField.textColor = .black
         timeDatePicker.date = Date()
+        
+        viewDidLayoutSubviews()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        // 레이아웃이 업데이트될 때마다 그라데이션 다시 적용
+        if !schedulTextField.text!.isEmpty {
+            applyGradient(to: saveButton, colors: [
+                #colorLiteral(red: 0.9568627451, green: 0.9450980392, blue: 0.7294117647, alpha: 1).cgColor,
+                #colorLiteral(red: 0.9764705882, green: 0.9568627451, blue: 0.5568627451, alpha: 1).cgColor
+            ])
+        } else {
+            applyGradient(to: saveButton, colors: [
+                #colorLiteral(red: 0.4862745098, green: 0.4980392157, blue: 0.5294117647, alpha: 1).cgColor,
+                #colorLiteral(red: 0.4862745098, green: 0.4980392157, blue: 0.5294117647, alpha: 1).cgColor
+            ])
+        }
     }
     
     private func setupScrollView() {
@@ -312,7 +332,7 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
             schedulTextField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
             schedulTextField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 31),
             schedulTextField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -31),
-            //            schedulTextField.heightAnchor.constraint(equalToConstant: 50),
+            schedulTextField.heightAnchor.constraint(equalToConstant: 50),
             
             startLabel.topAnchor.constraint(equalTo: schedulTextField.bottomAnchor, constant: 50),
             startLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 44),
@@ -378,17 +398,44 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
     
     @objc private func dismissKeyboard() {
         view.endEditing(true)
+        startTextField.textColor = .black
+        endTextField.textColor = .black
+        timeTextField.textColor = .black
     }
     
     @objc private func textFieldDidChange(_ textField: UITextField) {
         guard let text = textField.text else { return }
         if text.isEmpty {
             saveButton.isEnabled = false
-            saveButton.backgroundColor = #colorLiteral(red: 0.4862745098, green: 0.4980392157, blue: 0.5294117647, alpha: 1) // 비활성화 색상
+            applyGradient(to: saveButton, colors: [
+                #colorLiteral(red: 0.4862745098, green: 0.4980392157, blue: 0.5294117647, alpha: 1).cgColor,
+                #colorLiteral(red: 0.4862745098, green: 0.4980392157, blue: 0.5294117647, alpha: 1).cgColor
+            ])
         } else {
             saveButton.isEnabled = true
-            saveButton.backgroundColor = #colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1) // 활성화 색상 (파란색)
+            applyGradient(to: saveButton, colors: [
+                #colorLiteral(red: 0.9568627451, green: 0.9450980392, blue: 0.7294117647, alpha: 1).cgColor,
+                #colorLiteral(red: 0.9764705882, green: 0.9568627451, blue: 0.5568627451, alpha: 1).cgColor
+            ])
         }
+    }
+    
+    private func applyGradient(to button: UIButton, colors: [CGColor]) {
+        // 기존 그라데이션 레이어 제거
+        button.layer.sublayers?.forEach { layer in
+            if layer is CAGradientLayer {
+                layer.removeFromSuperlayer()
+            }
+        }
+        
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.colors = colors
+        gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.5)
+        gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
+        gradientLayer.cornerRadius = button.layer.cornerRadius
+        gradientLayer.frame = button.bounds
+        
+        button.layer.insertSublayer(gradientLayer, at: 0)
     }
     
     @objc func didtap() {

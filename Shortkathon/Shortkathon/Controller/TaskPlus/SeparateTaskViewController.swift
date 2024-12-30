@@ -4,14 +4,23 @@ import UIKit
 
 class SeparateTaskViewController : UIViewController {
     
-    
+    private let gradientLayer: CAGradientLayer = {
+        let layer = CAGradientLayer()
+        layer.colors = [
+                   UIColor(red: 0.668, green: 0.800, blue: 1.0, alpha: 1.0).cgColor,
+                   UIColor(red: 0.261, green: 0.539, blue: 0.935, alpha: 1.0).cgColor
+               ]
+        layer.locations = [0.0, 1.0]
+        layer.startPoint = CGPoint(x: 0.0, y: 0.0)  // 왼쪽 상단
+        layer.endPoint = CGPoint(x: 0.5, y: 1.0)    // 가운데 하단
+        return layer
+    }()
     
     let mainLabel: UILabel = {
         let label = UILabel()
-        label.text = "일정을 등록해보세요!"
-        label.font = .systemFont(ofSize: 20)
-        label.font = UIFont(name: "Pretendard-Regular", size: 20)
-        label.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        label.text = "어떤 새로운 일정을 등록할래요?"
+        label.font = UIFont(name: "Pretendard-Bold", size: 20)
+        label.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -19,8 +28,7 @@ class SeparateTaskViewController : UIViewController {
     let Button: UIButton = {
         let button = UIButton()
         button.setTitle("세분화 일정", for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 20)
-        button.titleLabel?.font = UIFont(name: "Pretendard-Regular", size: 13)
+        button.titleLabel?.font = UIFont(name: "Pretendard-Medium", size: 20)
         button.setTitleColor(#colorLiteral(red: 0.1882352941, green: 0.4784313725, blue: 0.9960784314, alpha: 1), for: .normal)
         button.layer.cornerRadius = 18
         button.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
@@ -48,7 +56,6 @@ class SeparateTaskViewController : UIViewController {
         let combinedText = "\(firstPart)!\n\(secondPart)"
         
         label.text = combinedText
-        label.font = .systemFont(ofSize: 13)
         label.font = UIFont(name: "Pretendard-Regular", size: 13)
         label.textColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
         label.numberOfLines = 0 // 여러 줄 지원
@@ -59,7 +66,7 @@ class SeparateTaskViewController : UIViewController {
     
     let iconImage: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "Icon")
+        imageView.image = UIImage(named: "Icon_right")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -67,9 +74,8 @@ class SeparateTaskViewController : UIViewController {
     let Button2: UIButton = {
         let button = UIButton()
         button.setTitle("간단한 일정", for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 20)
         button.setTitleColor(#colorLiteral(red: 0.9921568627, green: 0.7921568627, blue: 0.431372549, alpha: 1), for: .normal)
-        button.titleLabel?.font = UIFont(name: "Pretendard-Regular", size: 13)
+        button.titleLabel?.font = UIFont(name: "Pretendard-Medium", size: 20)
         button.layer.cornerRadius = 18
         button.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         
@@ -96,7 +102,6 @@ class SeparateTaskViewController : UIViewController {
         let combinedText = "\(firstPart)!\n\(secondPart)"
         
         label.text = combinedText
-        label.font = .systemFont(ofSize: 13)
         label.font = UIFont(name: "Pretendard-Regular", size: 13)
         label.textColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
         label.numberOfLines = 0 // 여러 줄 지원
@@ -107,16 +112,16 @@ class SeparateTaskViewController : UIViewController {
     
     let iconImage2: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "Icon")
+        imageView.image = UIImage(named: "Icon_right")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     
     override func viewDidLoad() {
-        view.backgroundColor = #colorLiteral(red: 0.7294117647, green: 0.8078431373, blue: 0.9568627451, alpha: 1)
+        //        view.backgroundColor = #colorLiteral(red: 0.7294117647, green: 0.8078431373, blue: 0.9568627451, alpha: 1)
         super.viewDidLoad()
         
-        
+        setupGradientBackground()
         Button.addTarget(self, action: #selector(didTap), for:  .touchUpInside)
         Button2.addTarget(self, action: #selector(doTap), for: .touchUpInside)
         setUI()
@@ -142,7 +147,7 @@ class SeparateTaskViewController : UIViewController {
             Button.widthAnchor.constraint(equalToConstant: 305),
             Button.heightAnchor.constraint(equalToConstant: 92),
             
-            subLabel.topAnchor.constraint(equalTo: mainLabel.bottomAnchor, constant: 86),
+            subLabel.topAnchor.constraint(equalTo: mainLabel.bottomAnchor, constant: 85),
             subLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 64),
             
             iconImage.topAnchor.constraint(equalTo: view.topAnchor, constant: 178),
@@ -178,5 +183,19 @@ class SeparateTaskViewController : UIViewController {
         vc.modalPresentationStyle = .fullScreen
         present(vc,animated: true)
     }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        // 뷰의 크기가 결정된 후 그라데이션 레이어의 프레임 설정
+        gradientLayer.frame = view.bounds
+    }
+    
+    private func setupGradientBackground() {
+        // 그라데이션 레이어를 뷰의 가장 아래 레이어로 삽입
+        view.layer.insertSublayer(gradientLayer, at: 0)
+    }
+    
+    
 }
+
 

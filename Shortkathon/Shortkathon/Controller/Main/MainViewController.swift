@@ -2,6 +2,14 @@ import UIKit
 
 class MainViewController : UIViewController {
     //MARK: - property
+    let apiService = APIService.shared
+    var dailySchedule: DailySchedule?
+    var userId = UserDefaults.standard.string(forKey: "userIdentifier")
+    
+    var toDayTask : [String] = ["로고 레퍼런스 찾기","로고 틀 짜기", "하나로 마트 가서 세제 사기"] // 더미 데이터
+    
+    
+    
     let titleLabel : UILabel = {
         let label = UILabel()
         label.font = UIFont(name: "Pretendard-Medium", size: 35)
@@ -21,7 +29,7 @@ class MainViewController : UIViewController {
     
     let image1 : UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(named: "N1")
+        image.image = UIImage(named: "n1-1")
         image.contentMode = .scaleAspectFill
         image.clipsToBounds = true
         return image
@@ -29,15 +37,15 @@ class MainViewController : UIViewController {
     
     let image2 : UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(named: "O")
+        image.image = UIImage(named: "o1")
         image.contentMode = .scaleAspectFill
         image.clipsToBounds = true
         return image
     }()
-
+    
     let image3 : UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(named: "N2")
+        image.image = UIImage(named: "n2-1")
         image.contentMode = .scaleAspectFill
         image.clipsToBounds = true
         return image
@@ -45,7 +53,7 @@ class MainViewController : UIViewController {
     
     let image4 : UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(named: "A")
+        image.image = UIImage(named: "a1")
         image.contentMode = .scaleAspectFill
         image.clipsToBounds = true
         return image
@@ -53,23 +61,34 @@ class MainViewController : UIViewController {
     
     
     
+    let taskTableView : UITableView = {
+        let view = UITableView()
+        view.showsVerticalScrollIndicator = false
+        view.backgroundColor = #colorLiteral(red: 0.137254902, green: 0.137254902, blue: 0.137254902, alpha: 1)
+        view.separatorStyle = .none
+        return view
+    }()
+    
     //MARK: - main
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = #colorLiteral(red: 0.137254902, green: 0.137254902, blue: 0.137254902, alpha: 1)
+        fetchDailySchedule()
         setUI()
+        setTable()
         startFloatingAnimations()
+        updateCountLabel()
     }
     
     //MARK: - function
     func setUI(){
-        [titleLabel, toDoLabel,image1,image2,image3,image4].forEach{
+        [titleLabel, toDoLabel,image1,image2,image3,image4,taskTableView].forEach{
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
         
         view.bringSubviewToFront(titleLabel) // titleLabel을 항상 위로
-
+        
         
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor ,constant: 50),
@@ -77,6 +96,8 @@ class MainViewController : UIViewController {
             
             toDoLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 140 ),
             toDoLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant:   26),
+            
+           
             
             image1.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             image1.topAnchor.constraint(equalTo: view.topAnchor, constant: 207),
@@ -87,7 +108,7 @@ class MainViewController : UIViewController {
             image2.topAnchor.constraint(equalTo: view.topAnchor, constant: 336),
             image2.widthAnchor.constraint(equalToConstant: 98),
             image2.heightAnchor.constraint(equalToConstant: 71),
-
+            
             
             image3.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -13),
             image3.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 197),
@@ -99,11 +120,46 @@ class MainViewController : UIViewController {
             image4.widthAnchor.constraint(equalToConstant: 100),
             image4.heightAnchor.constraint(equalToConstant: 101),
             
+            taskTableView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            taskTableView.widthAnchor.constraint(equalToConstant: 345),
+            taskTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            taskTableView.topAnchor.constraint(equalTo: toDoLabel.bottomAnchor, constant: 27 ),
+            
         ])
     }
     
+        
+    func setTable(){
+        taskTableView.delegate = self
+        taskTableView.dataSource = self
+        taskTableView.register(MainTableViewCell.self, forCellReuseIdentifier: "mainTableViewCell")
+    }
+}
+
+
+//MARK: - tableview Extension
+
+extension MainViewController: UITableViewDataSource, UITableViewDelegate {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return toDayTask.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "mainTableViewCell", for: indexPath) as? MainTableViewCell else {return UITableViewCell()}
+        cell.taskLabel.text = toDayTask[indexPath.row]
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 100
+    }
+    
+    
     
 }
+
+
+
 
 //MARK: - 이미지 애니메이션
 extension MainViewController {
@@ -145,5 +201,78 @@ extension MainViewController {
             self.startFloatingAnimations(repeatCount: repeatCount - 1)
         }
     }
+    
+}
 
+
+
+//MARK: - 서버 통신 코드
+extension MainViewController {
+    private func fetchDailySchedule() {
+//        let today = Date().toDateString()
+        let today = "2024-01-03"
+//        guard let userId = userId else { return }
+        let userId = "user2"
+        let endpoint = "/daily/\(userId)/\(today)"
+        print("today : \(today)")
+        print("endpoint : \(endpoint)")
+        apiService.get(endpoint: endpoint) { [weak self] (result: Result<DailySchedule, Error>) in
+            switch result {
+            case .success(let schedule):
+                self?.dailySchedule = schedule
+                print("✅ 일정 데이터 수신 성공")
+                print("총 일정 수: \(schedule.totalCount)")
+                print("완료된 일정 수: \(schedule.completedCount)")
+                print(schedule)
+                DispatchQueue.main.async {
+                    self?.updateUI()
+                }
+                
+            case .failure(let error):
+                print("❌ 일정 조회 실패: \(error.localizedDescription)")
+                // 에러 처리 - 예: 알림창 표시
+                DispatchQueue.main.async {
+//                    self?.showErrorAlert(message: error.localizedDescription)
+                }
+            }
+        }
+    }
+    
+    private func showErrorAlert(message: String) {
+        let alert = UIAlertController(
+            title: "오류",
+            message: "일정을 불러오는데 실패했습니다.\n\(message)",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "확인", style: .default))
+        present(alert, animated: true)
+    }
+    
+    
+    private func updateUI() {
+        
+        
+        guard let schedule = dailySchedule else { return }
+        
+        // plans와 details를 합쳐서 모든 일정을 표시
+        var allTasks: [String] = []
+        
+        // plans에서 title 추출
+        allTasks.append(contentsOf: schedule.plans.map { $0.plantitle })
+        
+        // details에서 title 추출
+        allTasks.append(contentsOf: schedule.details.map { $0.plansubtitle })
+        
+        // toDayTask 업데이트
+        self.toDayTask = allTasks
+        
+        // 완료된 일정 수와 전체 일정 수 업데이트
+        self.doTask = schedule.completedCount
+        self.allTask = schedule.totalCount
+        
+        // 테이블뷰 리로드
+        DispatchQueue.main.async {
+            self.taskTableView.reloadData()
+        }
+    }
 }

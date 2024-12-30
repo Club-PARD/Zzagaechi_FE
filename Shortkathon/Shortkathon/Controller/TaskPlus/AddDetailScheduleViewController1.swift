@@ -33,7 +33,7 @@ class AddDetailScheduleViewController1 : UIViewController {
         let button = UIButton()
         button.setTitle("취소", for: .normal)
         button.titleLabel?.font = UIFont(name: "Pretendard-Bold", size: 15)
-        button.tintColor = #colorLiteral(red: 1, green: 0.2745098039, blue: 0.2745098039, alpha: 1)
+        button.setTitleColor(#colorLiteral(red: 1, green: 0.2745098039, blue: 0.2745098039, alpha: 1), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -56,8 +56,8 @@ class AddDetailScheduleViewController1 : UIViewController {
     
     let subLabel: UILabel = {
         let label = UILabel()
-        label.text = "문구 수정 "
-        label.font = .systemFont(ofSize: 15)
+        label.text = "어떤 일을 해야 하는지 제목을 입력해주세요"
+        label.font = UIFont(name: "Pretendard-Regular", size: 15)
         label.textColor = #colorLiteral(red: 0.6901960784, green: 0.6901960784, blue: 0.6901960784, alpha: 1)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -99,9 +99,10 @@ class AddDetailScheduleViewController1 : UIViewController {
         let button = UIButton()
         button.setTitle("다음", for: .normal)
         button.titleLabel?.font = UIFont(name: "Pretendard-Bold", size: 15)
-        button.backgroundColor = #colorLiteral(red: 0.5591031909, green: 0.571234405, blue: 0.5998923779, alpha: 1)
+        button.backgroundColor = #colorLiteral(red: 0.4862745098, green: 0.4980392157, blue: 0.5294117647, alpha: 1)
         button.layer.cornerRadius = 12
         button.tintColor = .white
+        button.isEnabled = false
         return button
     }()
     
@@ -114,7 +115,8 @@ class AddDetailScheduleViewController1 : UIViewController {
         
         setUI()
         buttonTapped()
-        
+        setupKeyboardDismiss()
+        setupTextField()
     }
     
     
@@ -160,6 +162,62 @@ class AddDetailScheduleViewController1 : UIViewController {
         ])
     }
     
+    
+    func setupTextField(){
+        schedulTextField.addTarget(self, action: #selector(textFieldChanged(_:)), for: .editingChanged)
+    }
+    
+    @objc func textFieldChanged(_ textField: UITextField){
+        let isEmpty = textField.text?.isEmpty ?? true
+        updateNextButtonState(isEmpty: isEmpty)
+    }
+    
+    
+    func updateNextButtonState(isEmpty : Bool){
+        if isEmpty {
+            nextButton.backgroundColor = #colorLiteral(red: 0.5591031909, green: 0.571234405, blue: 0.5998923779, alpha: 1)
+            // 비활성화 상태에서는 그라데이션 레이어 제거
+            nextButton.layer.sublayers?.forEach { layer in
+                if layer is CAGradientLayer {
+                    layer.removeFromSuperlayer()
+                }
+            }
+            nextButton.isEnabled = false
+        } else {
+            // 그라데이션 레이어 생성
+            let gradientLayer = CAGradientLayer()
+            gradientLayer.frame = nextButton.bounds
+            gradientLayer.colors = [
+                #colorLiteral(red: 0.5294117647, green: 0.6745098039, blue: 0.9411764706, alpha: 1).cgColor,
+                #colorLiteral(red: 0.3098039216, green: 0.5019607843, blue: 0.8431372549, alpha: 1).cgColor,
+            ]
+            gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.5)
+            gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
+            gradientLayer.cornerRadius = 12
+            
+            // 기존 그라데이션 레이어 제거
+            nextButton.layer.sublayers?.forEach { layer in
+                if layer is CAGradientLayer {
+                    layer.removeFromSuperlayer()
+                }
+            }
+            
+            nextButton.layer.insertSublayer(gradientLayer, at: 0)
+            nextButton.isEnabled = true
+        }
+    }
+    
+    private func setupKeyboardDismiss() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tapGesture)
+    }
+    
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
+    
+    
     func buttonTapped(){
         backButton.addTarget(self, action: #selector(dismissVC), for: .touchUpInside)
         cancelButton.addTarget(self, action: #selector(moveToMain), for: .touchUpInside)
@@ -189,7 +247,12 @@ class AddDetailScheduleViewController1 : UIViewController {
     }
     
     @objc func movoToNext(){
+        guard nextButton.isEnabled else { return }
+
         let vc = AddDetailScheduleViewController2()
+        vc.plansubtitle = schedulTextField.text
+        
+        
         vc.modalPresentationStyle = .fullScreen
         let transition = CATransition()
         transition.duration = 0.4
@@ -200,4 +263,16 @@ class AddDetailScheduleViewController1 : UIViewController {
         present(vc,animated: false)
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        nextButton.layer.sublayers?.forEach { layer in
+            if layer is CAGradientLayer {
+                layer.frame = nextButton.bounds
+            }
+        }
+    }
+    
+    
+    
 }
+
