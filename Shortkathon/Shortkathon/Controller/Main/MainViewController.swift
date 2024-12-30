@@ -234,7 +234,7 @@ extension MainViewController {
 //        let today = Date().toDateString()
         let today = "2024-01-03"
 //        guard let userId = userId else { return }
-        let userId = "user1"
+        let userId = "user2"
         let endpoint = "/daily/\(userId)/\(today)"
         print("today : \(today)")
         print("endpoint : \(endpoint)")
@@ -280,10 +280,10 @@ extension MainViewController {
         var allTasks: [String] = []
         
         // plans에서 title 추출
-        allTasks.append(contentsOf: schedule.plans.map { $0.title })
+        allTasks.append(contentsOf: schedule.plans.map { $0.plantitle })
         
         // details에서 title 추출
-        allTasks.append(contentsOf: schedule.details.map { $0.title })
+        allTasks.append(contentsOf: schedule.details.map { $0.plansubtitle })
         
         // toDayTask 업데이트
         self.toDayTask = allTasks

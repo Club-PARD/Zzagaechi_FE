@@ -41,12 +41,13 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
     
     let subLabel: UILabel = {
         let label = UILabel()
-        label.text = "(문구 수정 요망 여기 부가적으로 들가는 글)"
+        label.text = "한 번에 끝낼 수 있는 작업의 제목과 날짜, 시간을 입력해주세요"
         label.textColor = #colorLiteral(red: 0.6901960784, green: 0.6901960784, blue: 0.6901960784, alpha: 1)
+        label.font = UIFont(name: "Pretendard-Regular", size: 14)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
+
     let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "제목"
@@ -397,6 +398,9 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
     
     @objc private func dismissKeyboard() {
         view.endEditing(true)
+        startTextField.textColor = .black
+        endTextField.textColor = .black
+        timeTextField.textColor = .black
     }
     
     @objc private func textFieldDidChange(_ textField: UITextField) {

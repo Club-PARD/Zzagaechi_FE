@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ParticleAnimationView: UIView {
+class ParticleeAnimationView: UIView {
     private var emitter: CAEmitterLayer?
     
     override init(frame: CGRect) {
@@ -129,7 +129,7 @@ class SchedulemodalController: UIViewController {
         return button
     }()
     
-    private var animationView: ParticleAnimationView?
+    private var animationView: ParticleeAnimationView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -182,7 +182,7 @@ class SchedulemodalController: UIViewController {
         sender.isEnabled = false
         animationView?.removeFromSuperview()
         
-        let newAnimationView = ParticleAnimationView(frame: containerView.bounds)
+        let newAnimationView = ParticleeAnimationView(frame: containerView.bounds)
         containerView.addSubview(newAnimationView)
         animationView = newAnimationView
         
@@ -209,4 +209,5 @@ class SchedulemodalController: UIViewController {
         }
     }
 }
+
 

@@ -19,7 +19,7 @@ class SeparateTaskViewController : UIViewController {
     let mainLabel: UILabel = {
         let label = UILabel()
         label.text = "어떤 새로운 일정을 등록할래요?"
-        label.font = UIFont(name: "Pretendard-Regular", size: 20)
+        label.font = UIFont(name: "Pretendard-Bold", size: 20)
         label.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -28,8 +28,7 @@ class SeparateTaskViewController : UIViewController {
     let Button: UIButton = {
         let button = UIButton()
         button.setTitle("세분화 일정", for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 20)
-        button.titleLabel?.font = UIFont(name: "Pretendard-Regular", size: 13)
+        button.titleLabel?.font = UIFont(name: "Pretendard-Medium", size: 20)
         button.setTitleColor(#colorLiteral(red: 0.1882352941, green: 0.4784313725, blue: 0.9960784314, alpha: 1), for: .normal)
         button.layer.cornerRadius = 18
         button.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
@@ -57,7 +56,6 @@ class SeparateTaskViewController : UIViewController {
         let combinedText = "\(firstPart)!\n\(secondPart)"
         
         label.text = combinedText
-        label.font = .systemFont(ofSize: 13)
         label.font = UIFont(name: "Pretendard-Regular", size: 13)
         label.textColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
         label.numberOfLines = 0 // 여러 줄 지원
@@ -68,7 +66,7 @@ class SeparateTaskViewController : UIViewController {
     
     let iconImage: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "Icon")
+        imageView.image = UIImage(named: "Icon_right")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -76,9 +74,8 @@ class SeparateTaskViewController : UIViewController {
     let Button2: UIButton = {
         let button = UIButton()
         button.setTitle("간단한 일정", for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 20)
         button.setTitleColor(#colorLiteral(red: 0.9921568627, green: 0.7921568627, blue: 0.431372549, alpha: 1), for: .normal)
-        button.titleLabel?.font = UIFont(name: "Pretendard-Regular", size: 13)
+        button.titleLabel?.font = UIFont(name: "Pretendard-Medium", size: 20)
         button.layer.cornerRadius = 18
         button.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         
@@ -105,7 +102,6 @@ class SeparateTaskViewController : UIViewController {
         let combinedText = "\(firstPart)!\n\(secondPart)"
         
         label.text = combinedText
-        label.font = .systemFont(ofSize: 13)
         label.font = UIFont(name: "Pretendard-Regular", size: 13)
         label.textColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
         label.numberOfLines = 0 // 여러 줄 지원
@@ -116,7 +112,7 @@ class SeparateTaskViewController : UIViewController {
     
     let iconImage2: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "Icon")
+        imageView.image = UIImage(named: "Icon_right")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -151,7 +147,7 @@ class SeparateTaskViewController : UIViewController {
             Button.widthAnchor.constraint(equalToConstant: 305),
             Button.heightAnchor.constraint(equalToConstant: 92),
             
-            subLabel.topAnchor.constraint(equalTo: mainLabel.bottomAnchor, constant: 86),
+            subLabel.topAnchor.constraint(equalTo: mainLabel.bottomAnchor, constant: 85),
             subLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 64),
             
             iconImage.topAnchor.constraint(equalTo: view.topAnchor, constant: 178),
@@ -201,4 +197,5 @@ class SeparateTaskViewController : UIViewController {
     
     
 }
+
 

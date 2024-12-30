@@ -11,7 +11,7 @@ struct DailySchedule: Codable {
 
 struct Plan: Codable {
     let planId: Int
-    let title: String
+    let plantitle: String
     let startTime: String?
     let endTime: String?
     let completed: Bool
@@ -19,7 +19,7 @@ struct Plan: Codable {
 
 struct Detail: Codable {
     let detailId: Int
-    let title: String
+    let plansubtitle: String
     let content: String
     let startTime: String
     let endTime: String
