@@ -17,7 +17,7 @@ class SeperateTaskViewTableCell : UITableViewCell {
         view.clipsToBounds = true
         view.backgroundColor = .clear
         view.layer.borderWidth = 2
-        view.layer.cornerRadius = 25.5
+        view.layer.cornerRadius = 20
         view.layer.borderColor = #colorLiteral(red: 0.7294117647, green: 0.8117647059, blue: 0.9568627451, alpha: 1)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
