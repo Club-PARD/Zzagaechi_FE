@@ -23,12 +23,16 @@
 해야할 일을 자꾸 미루고 실천하지 못하는 대학생을 위해 해야할 일에 세분화 하는 과정을 통해 진입 장벽을 낮추고 실행율을 높여 계획을 성공해보자고요!
 
 
+<br>
+
 이악 또 미뤄졌어!!😣
 ---
 
 
 
 여러 사람들과 메뉴를 고르는 대학생들이 함께 식사를 할 때 서로의 선호를 반영하기 힘들어서 식사 메뉴 선정에 어려움을 느낀다.
+
+<br>
 
 ### 문제
 
@@ -45,7 +49,8 @@
 
 4. 단계적으로 완료한 작업에 대해 체크 하는 기능으로써 성취감을 제공하고, 목표 달성까지의 진행 상황을 시각적으로 보여줌으로 동기 부여.
 
-
+<br>
+<br>
 
 # ♥ 팀원 소개
 ------
@@ -57,15 +62,24 @@
 |                                                  PM                                                  |                           Designer                           |                           Designer                           |                           NANO                           |
 | <img src="https://github.com/user-attachments/assets/81ba93dd-c874-49e7-9bc5-99684922fe83" style="width: 150px; height: 150px; object-fit: cover;">| <img src="https://github.com/user-attachments/assets/fba74226-5005-498e-a487-95f6dc1e26d1" style="width: 150px; height: 150px; object-fit: cover;"> | <img src="https://github.com/user-attachments/assets/abeb52ba-c496-43e9-aecb-6459057d7253" style="width: 150px; height: 150px; object-fit: cover;"> | <img src="https://github.com/user-attachments/assets/23bb9b2a-879b-4e9d-8c51-1784df9fa7af" style="width: 150px; height: 150px; object-fit: cover;"> |
 
+<br><br>
 
+☀️ **Front-end**
+    
+>    일정 체크 리스트
+<br>
+☀🌕 **Backend**     
+>   Language : JavaScript<br>
+>   Library & Framework : React, Styled-Components, Axios, Recoil<br>
+>   Deploy: Firebase
 
-
-
+<br>
+<br>
 
 
 
 <div align="left"> 
-## 개발환경 및 언어
+## 개발환경 및 언어 <br>
 <img src="https://img.shields.io/badge/Swift-white?style=for-the-badge&logo=Swift&logoColor=FF971A">
 <div>
   <img src="https://img.shields.io/badge/Github-white?style=for-the-badge&logo=Github&logoColor=FF971A">
