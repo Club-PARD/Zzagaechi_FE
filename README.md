@@ -1,10 +1,7 @@
 <div align="center">  
   <a href="https://git.io/typing-svg">
-    <img src="https://readme-typing-svg.demolab.com?font=Poppins&size=40&duration=3000&pause=2300&color=FFFFFF&center=true&random=false&height=80&lines=nanoplan" alt="Typing SVG" />
+    <img src="https://readme-typing-svg.demolab.com?font=Poppins&size=40&duration=3000&pause=2300&color=6BA1FF&center=true&random=false&height=80&lines=nanoplan" alt="Typing SVG" />
   </a>
-
-
-
 
 # nanoplan_iOS
 
@@ -35,7 +32,7 @@
 
 ### 문제
 
-1. **의견전달의 어려움**
+ **의견전달의 어려움**
 할 일이 많은 대학생들이 계획을 세우는 과정에서 해야 할 일을 세분화하고 실천 가능한 일정으로 전환하는 데 어려움을 겪어 결국 해야 할 일의 데드라인이 다가 왔을 때 버겁게 처리해야 하는 문제를 겪게 된다.
 
 ### 솔루션
@@ -52,19 +49,22 @@
 
 # ♥ 팀원 소개
 ------
-|                                                🐻‍❄️ 최수원                                                 |                          🐰 이채정                           |                          🐱 이서현                           |                          📓 nanoplan                            |
+|                                                🪽 김민준                                                 |                          😎 최준영                           |                          ❣️ 김사랑                           |                         🍞 김민규                            |
 |:-----------------------------------------------------------------------------------------------------:|:---------------------------------------------------------:|:---------------------------------------------------------:|:---------------------------------------------------------:|
-|                                                  PM                                                   |                            기획                             |                           디자인                            |                            nano                            |
-|  <img src="https://github.com/user-attachments/assets/1984afe8-7d40-4cfc-9de4-9c4ab4871223" style="width: 150px; height: 150px; object-fit: cover;">  |  <img src="https://github.com/user-attachments/assets/1984afe8-7d40-4cfc-9de4-9c4ab4871223" style="width: 150px; height: 150px; object-fit: cover;">   | <img src="https://github.com/user-attachments/assets/1984afe8-7d40-4cfc-9de4-9c4ab4871223" style="width: 150px; height: 150px; object-fit: cover;"> |  <img src="https://github.com/user-attachments/assets/1984afe8-7d40-4cfc-9de4-9c4ab4871223" style="width: 150px; height: 150px; object-fit: cover;">  |
-|                                                🥨김민규                                                 |                          🪽 김민준                           |                          😎 최준영                           |                          ❣️ 김사랑                           |
-|                                                  백엔드                                                  |                           프론트엔드                           |                           프론트엔드                           |                           프론트엔드                           |
-| <img src="https://github.com/user-attachments/assets/1984afe8-7d40-4cfc-9de4-9c4ab4871223" style="width: 150px; height: 150px; object-fit: cover;"> | <img src="https://github.com/user-attachments/assets/4303940d-1e88-48f5-930b-22cfeb5246a1" style="width: 150px; height: 150px; object-fit: cover;"> | <img src="https://github.com/user-attachments/assets/1984afe8-7d40-4cfc-9de4-9c4ab4871223" style="width: 150px; height: 150px; object-fit: cover;"> | <img src="https://github.com/user-attachments/assets/89013085-a1ad-4969-8328-ef7617585873" style="width: 150px; height: 150px; object-fit: cover;"> |
+|                                                  Front-end                                                   |                            Front-end                             |                           Front-end                            |                            Backend                            |
+|  <img src="https://github.com/user-attachments/assets/4303940d-1e88-48f5-930b-22cfeb5246a1" style="width: 150px; height: 150px; object-fit: cover;">  |  <img src="https://github.com/user-attachments/assets/3080eab6-46f4-4f3d-96ae-c1abb6330c7d" style="width: 150px; height: 150px; object-fit: cover;">   | <img src="https://github.com/user-attachments/assets/89013085-a1ad-4969-8328-ef7617585873" style="width: 150px; height: 150px; object-fit: cover;">  |  <img src="https://github.com/user-attachments/assets/a8e911c6-1cf8-44fe-ad2c-167e8daf4021" style="width: 150px; height: 150px; object-fit: cover;">  |
+|                                                🐻‍❄️ 최수원                                                 |                          🐰 이채정                           |                          🐱 이서현                           |                          📓 nanoplan                           |
+|                                                  PM                                                  |                           Designer                           |                           Designer                           |                           NANO                           |
+| <img src="https://github.com/user-attachments/assets/81ba93dd-c874-49e7-9bc5-99684922fe83" style="width: 150px; height: 150px; object-fit: cover;">| <img src="https://github.com/user-attachments/assets/fba74226-5005-498e-a487-95f6dc1e26d1" style="width: 150px; height: 150px; object-fit: cover;"> | <img src="https://github.com/user-attachments/assets/abeb52ba-c496-43e9-aecb-6459057d7253" style="width: 150px; height: 150px; object-fit: cover;"> | <img src="https://github.com/user-attachments/assets/23bb9b2a-879b-4e9d-8c51-1784df9fa7af" style="width: 150px; height: 150px; object-fit: cover;"> |
 
 
 
 
 
 
+
+
+<div align="left"> 
 ## 개발환경 및 언어
 <img src="https://img.shields.io/badge/Swift-white?style=for-the-badge&logo=Swift&logoColor=FF971A">
 <div>
@@ -76,32 +76,112 @@
 
 
 
+
+
+-------
+
+### 화면 구성
+
+<table align="center">
+<tr>
+<th>스플래시</th>
+<th>메인 화면</th>
+<th>일정등록</th>
+<th>캘린더</th>
+</tr>
+<tr>
+<td align="center">
+
+<img src="https://github.com/user-attachments/assets/b5333820-b033-489e-8cb8-7b455f272241" height="400" />
+
+앱을 실행할 때 나오는 화면
+
+</td>
+<td align="center">
+
+<img src="https://github.com/user-attachments/assets/b5333820-b033-489e-8cb8-7b455f272241" height="400" />
+
+메인 화면
+
+</td>
+<td align="center">
+
+<img src="https://github.com/user-attachments/assets/b5333820-b033-489e-8cb8-7b455f272241" height="400" />
+
+
+일정을 등록하는 방법 
+
+</td>
+<td align="center">
+
+<img src="https://github.com/user-attachments/assets/b5333820-b033-489e-8cb8-7b455f272241" height="400" />
+
+
+등록된 일정을 보는 캘린더 
+
+</td>
+</tr>
+</table>
+
+<table align="center">
+<tr>
+<th>간편 일정 등록</th>
+<th>세부 일정 등록</th>
+<th>일정 성공 환경</th>
+</tr>
+<tr>
+<td align="center">
+
+<img src="https://github.com/user-attachments/assets/b5333820-b033-489e-8cb8-7b455f272241" height="400" />
+
+간편 일정 등록
+
+</td>
+<td align="center">
+    
+<img src="https://github.com/user-attachments/assets/b5333820-b033-489e-8cb8-7b455f272241" height="400" />
+
+세부 일정 등록
+
+</td>
+<td align="center">
+
+<img src="https://github.com/user-attachments/assets/b5333820-b033-489e-8cb8-7b455f272241" height="400" />
+
+출발지부터 도착지까지의 경로 지도 생성
+
+</td>
+</tr>
+</table>
+
+<br />
+
 -------
 
 # ★ 핵심 기능 설명
 
-1. *ㄹ**
+1. **메인 페이지**
     
->    ㄹ
+>    일정 체크 리스트
     
-2. **데ㄹ** 
+2. **캘린더** 
     
->   ㅎㅇ
+>   등록된 일정을 한 눈에 볼 수 있음 
     
-3. **ㅎㅇ**
+3. **일정 등록**
     
->    ㅎㅇ
+>    세분화 할지 안 할지를 나누어 페이지 제작 
     
-4. **ㅎㅇ**
->    ㅎㅇ
+4. **동기 부여 넣기**
+>    일정을 등록하면, 메인 페이지로 넘어가기전, 이모지 파티클을 통해 재미 요소를 통해 동기부여를 줌
 
 
 ----------
 
-## 추천 로직 설명
+## 로직 설명
 
-1. **ㄹ**:
-    - ㄹ
+1. **일정 등록**:
+    - 일정 등록한 일정을, 메인 페이지, 캘린더를 통해서 확인을 할 수 있
 
 2. **후ㄹ정**:
     - 사ㄹ
