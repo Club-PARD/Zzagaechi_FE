@@ -1,7 +1,19 @@
 import UIKit
 
+protocol TimeModalViewControllerDelegate: AnyObject {
+    func didSelectDateTime(date: Date, startTime: Date?, endTime: Date?)
+}
+
 
 class TimeModalViewController: UIViewController {
+    
+    var availableStartDate : Date?
+    var availableEndDate : Date?
+    weak var delegate: TimeModalViewControllerDelegate?
+    private var selectedDate: Date?
+    private var selectedStartTime: Date?
+    private var selectedEndTime: Date?
+    
     enum ModalStep {
         case date
         case startTime
@@ -90,7 +102,7 @@ class TimeModalViewController: UIViewController {
         return label
     }()
     
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black.withAlphaComponent(0.2)
@@ -106,7 +118,12 @@ class TimeModalViewController: UIViewController {
         [nextButton, cancelButton, titleLabel].forEach{
             containerView.addSubview($0)
         }
-        
+        if let startDate = availableStartDate {
+            datePicker.minimumDate = startDate
+        }
+        if let endDate = availableEndDate {
+            datePicker.maximumDate = endDate
+        }
         
         NSLayoutConstraint.activate([
             containerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -116,14 +133,14 @@ class TimeModalViewController: UIViewController {
             
             titleLabel.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
             titleLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 20),
-          
+            
             nextButton.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 14),
             nextButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20),
-        
+            
             cancelButton.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 14),
             cancelButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20),
             
-    
+            
         ])
         
         cancelButton.addTarget(self, action: #selector(back), for: .touchUpInside)
@@ -152,7 +169,7 @@ class TimeModalViewController: UIViewController {
                 
                 titleLabel1.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
                 titleLabel1.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 20),
-
+                
                 datePicker.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 40),
                 datePicker.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20),
                 datePicker.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20),
@@ -166,7 +183,7 @@ class TimeModalViewController: UIViewController {
             nextButton.setTitle(currentStep == .endTime ? "완료" : "다음", for: .normal)
             titleLabel1.isHidden = true
             NSLayoutConstraint.activate([
-
+                
                 timeLabel.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
                 timeLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 30),
                 
@@ -183,10 +200,17 @@ class TimeModalViewController: UIViewController {
     @objc private func nextButtonTapped() {
         switch currentStep {
         case .date:
+            selectedDate = datePicker.date
             currentStep = .startTime
         case .startTime:
+            selectedStartTime = datePicker.date
             currentStep = .endTime
         case .endTime:
+            selectedEndTime = datePicker.date
+            
+            if let date = selectedDate {
+                delegate?.didSelectDateTime(date: date, startTime: selectedStartTime, endTime: selectedEndTime)
+            }
             dismiss(animated: true)
         }
     }

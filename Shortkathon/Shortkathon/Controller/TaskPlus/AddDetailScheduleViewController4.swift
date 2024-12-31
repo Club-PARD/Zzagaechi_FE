@@ -16,7 +16,8 @@ class AddDetailScheduleViewController4 : UIViewController {
     var endDate : Date?
     
     var selectedDate: Date?
-    
+    private weak var selectedCell: UITableViewCell?
+
     private var dates: [(date: String, day: String)] = []
     
     enum DateCellSate {
@@ -137,7 +138,7 @@ class AddDetailScheduleViewController4 : UIViewController {
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
-        descriptionImage.addSubview(xButton)
+        
         
         
         NSLayoutConstraint.activate([
@@ -160,11 +161,6 @@ class AddDetailScheduleViewController4 : UIViewController {
             descriptionImage.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 31),
             descriptionImage.widthAnchor.constraint(equalToConstant: 217),
             descriptionImage.heightAnchor.constraint(equalToConstant: 51),
-            
-            xButton.topAnchor.constraint(equalTo: descriptionImage.topAnchor, constant: 7),
-            xButton.trailingAnchor.constraint(equalTo: descriptionImage.trailingAnchor, constant: -10),
-            xButton.widthAnchor.constraint(equalToConstant: 15),
-            xButton.heightAnchor.constraint(equalToConstant: 15),
             
             
             taskTableView.topAnchor.constraint(equalTo: descriptionImage.bottomAnchor, constant: 6),
@@ -273,6 +269,8 @@ extension AddDetailScheduleViewController4 : UITableViewDelegate,UITableViewData
         return cell
     }
     
+    
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 100
     }
@@ -293,6 +291,11 @@ extension AddDetailScheduleViewController4: Page4TaskTableViewCellDelegate {
         print("Button tapped for task: \(selectedTask)")
         
         let detailVC = TimeModalViewController() // 이동할 ViewController
+        detailVC.delegate = self
+        detailVC.availableStartDate = startDate
+        detailVC.availableEndDate = endDate
+        selectedCell = cell  // 선택된 셀 저장
+
         detailVC.modalPresentationStyle = .overCurrentContext
         detailVC.modalTransitionStyle = .crossDissolve
         present(detailVC, animated: true, completion: nil)
@@ -300,3 +303,25 @@ extension AddDetailScheduleViewController4: Page4TaskTableViewCellDelegate {
 }
 
 
+extension AddDetailScheduleViewController4: TimeModalViewControllerDelegate {
+    func didSelectDateTime(date: Date, startTime: Date?, endTime: Date?) {
+        // 현재 선택된 셀 업데이트
+        guard let cell = selectedCell as? Page4TaskTableViewCell else { return }
+        
+        // 날짜 포맷터
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "ko_KR")
+        
+        // 날짜 설정
+        dateFormatter.dateFormat = "yyyy년 M월 d일"
+        cell.dateLabel.text = dateFormatter.string(from: date)
+        
+        // 시간 설정
+        if let start = startTime, let end = endTime {
+            dateFormatter.dateFormat = "a h:mm"
+            let startTimeString = dateFormatter.string(from: start)
+            let endTimeString = dateFormatter.string(from: end)
+            cell.timeLabel.text = "\(startTimeString)~\(endTimeString)"
+        }
+    }
+}
