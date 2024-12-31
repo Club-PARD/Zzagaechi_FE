@@ -36,8 +36,7 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
         let combinedText = "\(firstPart)!\n\(secondPart)"
         
         label.text = combinedText
-        label.font = .systemFont(ofSize: 30)
-        //        label.font = UIFont(name: "Pretendard-Regular", size: 30)//볼더임
+        label.font = UIFont(name: "Pretendard-Regular", size: 30)//볼더임
         label.textColor = #colorLiteral(red: 0.9999999881, green: 0.9999999881, blue: 0.9999999881, alpha: 1)
         label.numberOfLines = 0 // 여러 줄 지원
         label.lineBreakMode = .byWordWrapping // 단어 단위로 줄바꿈
@@ -57,7 +56,7 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
     let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "제목"
-        label.textColor = #colorLiteral(red: 0.9999999881, green: 0.9999999881, blue: 0.9999999881, alpha: 1)
+        label.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         label.font = .systemFont(ofSize: 19)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -69,11 +68,11 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
         textField.borderStyle = .roundedRect
         textField.layer.cornerRadius = 12
         textField.font = .systemFont(ofSize: 14)
-        //        textField.font = UIFont(name: "Pretendard-Regular", size: 14)
+        textField.font = UIFont(name: "Pretendard-Regular", size: 14)
         
         textField.backgroundColor = #colorLiteral(red: 0.137254902, green: 0.137254902, blue: 0.137254902, alpha: 1)
         textField.textColor = #colorLiteral(red: 0.9999999881, green: 0.9999999881, blue: 0.9999999881, alpha: 1)
-        textField.layer.borderColor = #colorLiteral(red: 0.7294117647, green: 0.8117647059, blue: 0.9568627451, alpha: 1)
+        textField.layer.borderColor = #colorLiteral(red: 0.9764705882, green: 0.9529411765, blue: 0.568627451, alpha: 1)
         textField.layer.borderWidth = 2
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
@@ -134,7 +133,7 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
         picker.datePickerMode = .date
         picker.preferredDatePickerStyle = .inline
         picker.locale = Locale(identifier: "ko_KR")
-        picker.tintColor = #colorLiteral(red: 0, green: 0.5176470588, blue: 1, alpha: 1)
+        picker.tintColor = .white
         return picker
     }()
     
@@ -372,7 +371,7 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
         formatter.dateFormat = "M월 dd,yyyy"
         formatter.locale = Locale(identifier: "ko_KR")
         startTextField.text = formatter.string(from: sender.date)
-        startTextField.textColor = .systemBlue  // 선택된 날짜는 파란색으로 표시
+        startTextField.textColor = #colorLiteral(red: 0.9764705882, green: 0.9529411765, blue: 0.568627451, alpha: 1)  // 선택된 날짜는 파란색으로 표시
         startTextField.resignFirstResponder()
     }
     
@@ -381,7 +380,7 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
         formatter.dateFormat = "M월 dd,yyyy"
         formatter.locale = Locale(identifier: "ko_KR")
         endTextField.text = formatter.string(from: sender.date)
-        endTextField.textColor = .systemBlue  // 선택된 날짜는 파란색으로 표시
+        endTextField.textColor = #colorLiteral(red: 0.9764705882, green: 0.9529411765, blue: 0.568627451, alpha: 1)  // 선택된 날짜는 파란색으로 표시
         endTextField.resignFirstResponder()
     }
     
@@ -390,7 +389,7 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
         formatter.dateFormat = "a hh:mm"
         formatter.locale = Locale(identifier: "ko_KR")
         timeTextField.text = formatter.string(from: sender.date)
-        timeTextField.textColor = .systemBlue
+        timeTextField.textColor = #colorLiteral(red: 0.9764705882, green: 0.9529411765, blue: 0.568627451, alpha: 1)
         timeTextField.resignFirstResponder()
         
         // 사용자가 직접 시간을 변경했음을 표시
@@ -446,7 +445,7 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
     
     @objc func didtap() {
         print("간단한 일정 다 등록했디~!")
-        let vc = SchedulemodalController()
+        let vc = SimpleSchedulemodalController()
         
         // 사용자가 직접 시간을 선택했는지 확인
         if userSelectedTime {
