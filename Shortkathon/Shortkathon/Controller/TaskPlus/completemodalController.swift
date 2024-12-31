@@ -36,7 +36,7 @@ class ParticleAnimationView: UIView {
         emitter.emitterSize = CGSize(width: 100, height: 100)
         emitter.emitterShape = .point
         
-        let emojiStrings = ["✨", "⭐️", "🫧", "🎉", "🩵","🔹", "✧"]
+        let emojiStrings = ["✨", "⭐️", "👏🏻", "🎉", "🩵"]
         
         var emitterCells: [CAEmitterCell] = []
         for emoji in emojiStrings {
@@ -94,8 +94,7 @@ class completemodalController: UIViewController {
         let secondPart = "오늘 하루도 고생했어요!"
         let combinedText = "\(firstPart)!\n\(secondPart)"
         label.text = combinedText
-        label.font = .systemFont(ofSize: 21)
-        //        label.font = UIFont(name: "Pretendard-Regular", size: 13)
+        label.font = UIFont(name: "Pretendard-Regular", size: 21)
         label.textColor = #colorLiteral(red: 0.9568627451, green: 0.9568627451, blue: 0.9568627451, alpha: 1)
         label.numberOfLines = 0 // 여러 줄 지원
         label.lineBreakMode = .byWordWrapping // 단어 단위로 줄바꿈
@@ -110,8 +109,7 @@ class completemodalController: UIViewController {
         let combinedText = "\(firstPart)!\n\(secondPart)"
         label.text = combinedText
         label.textAlignment = .center
-        label.font = .systemFont(ofSize: 13)
-        //        label.font = UIFont(name: "Pretendard-Regular", size: 13)
+        label.font = UIFont(name: "Pretendard-Regular", size: 13)
         label.textColor = #colorLiteral(red: 0.9568627451, green: 0.9568627451, blue: 0.9568627451, alpha: 1)
         label.numberOfLines = 0 // 여러 줄 지원
         label.lineBreakMode = .byWordWrapping // 단어 단위로 줄바꿈
@@ -134,6 +132,8 @@ class completemodalController: UIViewController {
         button.setTitle("나 자신 칭찬해 👏🏻", for: .normal)
         button.setTitleColor(#colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), for: .normal)
         button.backgroundColor = #colorLiteral(red: 0.662745098, green: 0.7764705882, blue: 0.9803921569, alpha: 1)
+        button.layer.cornerRadius = 20
+        button.titleLabel?.font = UIFont(name: "Pretendard-Bold", size: 15)
         button.layer.cornerRadius = 20
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -176,7 +176,7 @@ class completemodalController: UIViewController {
             closeButton.heightAnchor.constraint(equalToConstant: 24),
             
             mainLabel.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            mainLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 35.32),
+            mainLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 64),
             mainLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 51),
             mainLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -56),
             
@@ -184,7 +184,7 @@ class completemodalController: UIViewController {
             fireImageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 62),
             fireImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -48.25),
             
-            
+            subLabel.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
             subLabel.topAnchor.constraint(equalTo: mainLabel.bottomAnchor, constant: 242.12),
             subLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 68),
             subLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -73),
@@ -234,6 +234,7 @@ class completemodalController: UIViewController {
         }
     }
 }
+
 
 
 

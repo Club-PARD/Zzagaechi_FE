@@ -15,11 +15,6 @@ class AddDetailScheduleViewController2 : UIViewController {
     let apiService = APIService.shared
     private let maximumDays: Int = 30
     
-    
-    
-    
-    
-    
     let mainLabel : UILabel = {
         let label = UILabel()
         label.text = "세분화 일정 등록"
