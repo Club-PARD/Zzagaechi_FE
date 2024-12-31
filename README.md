@@ -56,7 +56,7 @@
 ------
 |                                                🪽 김민준                                                 |                          😎 최준영                           |                          ❣️ 김사랑                           |                         🍞 김민규                            |
 |:-----------------------------------------------------------------------------------------------------:|:---------------------------------------------------------:|:---------------------------------------------------------:|:---------------------------------------------------------:|
-|                                                  Front-end                                                   |                            Front-end                             |                           Front-end                            |                            Backend                            |
+|                                                  Frontend                                                   |                            Frontend                             |                           Frontend                            |                            Backend                            |
 |  <img src="https://github.com/user-attachments/assets/4303940d-1e88-48f5-930b-22cfeb5246a1" style="width: 150px; height: 150px; object-fit: cover;">  |  <img src="https://github.com/user-attachments/assets/3080eab6-46f4-4f3d-96ae-c1abb6330c7d" style="width: 150px; height: 150px; object-fit: cover;">   | <img src="https://github.com/user-attachments/assets/89013085-a1ad-4969-8328-ef7617585873" style="width: 150px; height: 150px; object-fit: cover;">  |  <img src="https://github.com/user-attachments/assets/a8e911c6-1cf8-44fe-ad2c-167e8daf4021" style="width: 150px; height: 150px; object-fit: cover;">  |
 |                                                🐻‍❄️ 최수원                                                 |                          🐰 이채정                           |                          🐱 이서현                           |                          🐹 nanoplan                           |
 |                                                  PM                                                  |                           Designer                           |                           Designer                           |                           NANO                           |
@@ -64,22 +64,26 @@
 
 <br><br>
 
-☀️ **Front-end**
-    
->    일정 체크 리스트
-<br>
-☀🌕 **Backend**     
->   Language : JavaScript<br>
->   Library & Framework : React, Styled-Components, Axios, Recoil<br>
->   Deploy: Firebase
+☀️Frontend
+
+> Language : Swift<br>
+> Library & Framework : React<br>
+> Styled-Components, Axios, Recoil  <br>
+> Deploy: Firebase<br>
 
 <br>
+🌕Backend
+
+> Language : JavaScript<br>
+> Library & Framework : React<br>
+> Styled-Components, Axios, Recoil  <br>
+> Deploy: Firebase
+
 <br>
 
-
-
+<br>
 <div align="left"> 
-## 개발환경 및 언어 <br>
+** 개발환경 및 언어 **  <br>
 <img src="https://img.shields.io/badge/Swift-white?style=for-the-badge&logo=Swift&logoColor=FF971A">
 <div>
   <img src="https://img.shields.io/badge/Github-white?style=for-the-badge&logo=Github&logoColor=FF971A">
