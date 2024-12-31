@@ -14,7 +14,7 @@ class AddDetailScheduleViewController4 : UIViewController {
     var taskList : [String] = []
     var startDate : Date?
     var endDate : Date?
-    
+    var planSubId : Int?
     var selectedDate: Date?
     private weak var selectedCell: UITableViewCell?
 
@@ -81,6 +81,7 @@ class AddDetailScheduleViewController4 : UIViewController {
         button.backgroundColor = #colorLiteral(red: 0.5591031909, green: 0.571234405, blue: 0.5998923779, alpha: 1)
         button.layer.cornerRadius = 12
         button.tintColor = .white
+        button.isEnabled = false
         return button
     }()
     
@@ -128,7 +129,7 @@ class AddDetailScheduleViewController4 : UIViewController {
         setUI()
         setTable()
         generateDates()
-        
+        print("페이지 4\(planSubId)")
         print(taskList)
         
     }

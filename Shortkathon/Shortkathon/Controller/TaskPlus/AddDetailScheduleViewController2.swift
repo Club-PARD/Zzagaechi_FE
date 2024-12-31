@@ -14,6 +14,7 @@ class AddDetailScheduleViewController2 : UIViewController {
     var userId =  UserDefaults.standard.string(forKey: "userIdentifier")
     let apiService = APIService.shared
     private let maximumDays: Int = 30
+    var planSubId: Int?
     
     let mainLabel : UILabel = {
         let label = UILabel()
@@ -354,29 +355,50 @@ class AddDetailScheduleViewController2 : UIViewController {
     @objc func movoToNext(){
         guard nextButton.isEnabled else {return}
         
+//        guard let planSubId = planSubId else {return}
+        
         let vc = AddDetailScheduleViewController3()
         vc.modalPresentationStyle = .fullScreen
         
+//        if !isTimeSelected {
+//            postSchedule1()
+//        } else{
+//            postSchedule2()
+//        }
         if !isTimeSelected {
-            postSchedule1()
-        } else{
-            postSchedule2()
-        }
+               postSchedule1 { [weak self] success in
+                   guard let self = self else { return }
+                   if success {
+                       self.presentNextViewController(vc)
+                   }
+               }
+           } else {
+               postSchedule2 { [weak self] success in
+                   guard let self = self else { return }
+                   if success {
+                       self.presentNextViewController(vc)
+                   }
+               }
+           }
         
-        vc.startDate = startDatePicker.date
-        vc.endDate = endDatePicker.date
-        
-        
-        let transition = CATransition()
-        transition.duration = 0.4
-        transition.type = .push
-        transition.subtype = .fromRight
-        transition.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-        view.window?.layer.add(transition, forKey: kCATransition)
-        present(vc,animated: false)
     }
     
-    
+    private func presentNextViewController(_ vc: AddDetailScheduleViewController3) {
+        DispatchQueue.main.async {
+            vc.planSubId = self.planSubId
+            vc.startDate = self.startDatePicker.date
+            vc.endDate = self.endDatePicker.date
+            
+            let transition = CATransition()
+            transition.duration = 0.4
+            transition.type = .push
+            transition.subtype = .fromRight
+            transition.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+            self.view.window?.layer.add(transition, forKey: kCATransition)
+            self.present(vc, animated: false)
+        }
+    }
+
     
     @objc private func startdateChanged(_ sender: UIDatePicker) {
         let formatter = DateFormatter()
@@ -508,7 +530,7 @@ class AddDetailScheduleViewController2 : UIViewController {
 //MARK: - main
 
 extension AddDetailScheduleViewController2 {
-    func postSchedule1() {
+    func postSchedule1(completion : @escaping (Bool) -> Void) {
         print("첫번째 POST")
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
@@ -540,10 +562,14 @@ extension AddDetailScheduleViewController2 {
                 switch result {
                 case .success(let response):
                     print("✅ 일정 등록 성공: \(response)")
-                    
+                    self.planSubId = response
+                    print("🚨플랜서브아이디\(self.planSubId)")
+                    completion(true)
+
                 case .failure(let error):
                     print("❌ 일정 등록 실패: \(error.localizedDescription)")
                     // 에러 처리
+                    completion(false)
                     print("🚨세분화 1,2 post 실패")
                 }
             }
@@ -553,7 +579,7 @@ extension AddDetailScheduleViewController2 {
         
     }
     
-    func postSchedule2() {
+    func postSchedule2(completion : @escaping (Bool) -> Void) {
         print("두번째 POST")
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
@@ -593,10 +619,12 @@ extension AddDetailScheduleViewController2 {
                 switch result {
                 case .success(let response):
                     print("✅ 일정 등록 성공: \(response)")
-                    
+                    self.planSubId = response
+                    completion(true)
                 case .failure(let error):
                     print("❌ 일정 등록 실패: \(error.localizedDescription)")
                     // 에러 처리
+                    completion(false)
                     print("🚨세분화 1,2 post 실패")
                 }
             }

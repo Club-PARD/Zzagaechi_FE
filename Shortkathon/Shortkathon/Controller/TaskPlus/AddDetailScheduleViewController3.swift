@@ -8,6 +8,7 @@ class AddDetailScheduleViewController3 : UIViewController {
     //MARK: - property
     var startDate : Date?
     var endDate : Date?
+    var planSubId : Int?
     
     let scrollView : UIScrollView = {
         let view = UIScrollView()
@@ -94,6 +95,7 @@ class AddDetailScheduleViewController3 : UIViewController {
         super.viewDidLoad()
         view.backgroundColor = #colorLiteral(red: 0.1372549087, green: 0.1372549087, blue: 0.1372549087, alpha: 1)
 
+        print("페이지 3\(planSubId)")
         setUI()
         buttonTapped()
         setupKeyboardDismiss()
@@ -242,7 +244,7 @@ class AddDetailScheduleViewController3 : UIViewController {
         vc.taskList = tableUIView.task
         vc.startDate = startDate
         vc.endDate = endDate
-        
+        vc.planSubId = planSubId
         let transition = CATransition()
         transition.duration = 0.4
         transition.type = .push
