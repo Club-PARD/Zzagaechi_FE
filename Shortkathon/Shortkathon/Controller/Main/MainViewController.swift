@@ -232,10 +232,10 @@ extension MainViewController {
 //MARK: - 서버 통신 코드
 extension MainViewController {
     private func fetchDailySchedule() {
-        //        let today = Date().toDateString()
-        let today = "2024-01-03"
-        //        guard let userId = userId else { return }
-        let userId = "user2"
+                let today = Date().toDateString()
+//        let today = "2024-01-03"
+                guard let userId = userId else { return }
+//        let userId = "user2"
         let endpoint = "/daily/\(userId)/\(today)"
         print("today : \(today)")
         print("endpoint : \(endpoint)")

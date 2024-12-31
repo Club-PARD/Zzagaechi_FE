@@ -533,9 +533,9 @@ extension AddDetailScheduleViewController2 {
         print("endDate : \(endDate)")
         print("plansubtitle : \(plansubtitle)")
         
+        guard let userId = userId else { return }
         
-        
-        let userId = "user2"
+//        let userId = "user2"
         // API 호출
         apiService.post(
             endpoint: "/plansub/\(userId)",
@@ -586,7 +586,9 @@ extension AddDetailScheduleViewController2 {
             "deadline": deadline,
         ]
         
-        let userId = "user2"
+//        let userId = "user2"
+        guard let userId = userId else { return }
+
         // API 호출
         apiService.post(
             endpoint: "/plansub/\(userId)/endtime",

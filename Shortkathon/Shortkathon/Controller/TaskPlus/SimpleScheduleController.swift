@@ -4,7 +4,8 @@
 import UIKit
 
 class SimpleScheduleController: UIViewController, UITextFieldDelegate {
-    
+    var userId =  UserDefaults.standard.string(forKey: "userIdentifier")
+
     var uid3: String?
     
     private let apiService = APIService.shared
@@ -530,7 +531,10 @@ extension SimpleScheduleController {
         print("서버로 보내는 파라미터:", parameters)
         
         // API 호출
-        let userId = "user2"
+//        let userId = "user2"
+        
+        guard let userId = userId else { return }
+        
         apiService.post(endpoint: "/plan/\(userId)/datetime", parameters: parameters) { (result: Result<APIResponse, Error>) in
             switch result {
             case .success(let response):
@@ -578,9 +582,9 @@ extension SimpleScheduleController {
         ]
         
         print("서버로 보내는 파라미터 (날짜만):", parameters)
-        
+        guard let userId = userId else { return }
         // API 호출
-        let userId = "user2"
+//        let userId = "user2"
         apiService.post(endpoint: "/plan/\(userId)/date", parameters: parameters) { (result: Result<APIResponse, Error>) in
             switch result {
             case .success(let response):

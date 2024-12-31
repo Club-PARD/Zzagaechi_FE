@@ -4,6 +4,7 @@ import FSCalendar
 
 
 class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSCalendarDelegateAppearance, AddButtonModalViewControllerDelegate, UITableViewDelegate, UITableViewDataSource {
+    var userId = UserDefaults.standard.string(forKey: "userIdentifier")
 
     private var calendar: FSCalendar!
     private var prevButton: UIButton!
@@ -24,7 +25,7 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
     private var connectionLines: [UIView] = []
     private let apiService = APIService.shared
     private var monthlySchedule: CalendarResponse?
-    private var userId = "user2" // 사용자 ID 설정
+//    private var userId = "user2" // 사용자 ID 설정
     private var currentYear: Int = 0
     private var currentMonth: Int = 0
 
@@ -735,9 +736,11 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
     }
 
     private func fetchCurrentMonthSchedule() {
-//        let yearMonth = "\(currentYear)-\(String(format: "%02d", currentMonth))"
-        let yearMonth = "2024-01"
-        userId = "user2"
+        let yearMonth = "\(currentYear)-\(String(format: "%02d", currentMonth))"
+        print(yearMonth)
+//        let yearMonth = "2024-01"
+        guard let userId = userId else { return }
+//        userId = "user2"
         fetchMonthlySchedule(userId: userId, yearMonth: yearMonth)
     }
 }

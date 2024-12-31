@@ -125,7 +125,7 @@ class AddDetailScheduleViewController4 : UIViewController {
         setUI()
         setTable()
         generateDates()
-    
+        xButton.addTarget(self, action: #selector(xButtonTapped), for: .touchUpInside )
         print(taskList)
         
     }
@@ -208,6 +208,9 @@ class AddDetailScheduleViewController4 : UIViewController {
         nextButton.addTarget(self, action: #selector(movoToNext), for: .touchUpInside)
     }
     
+    @objc func xButtonTapped(){
+        
+    }
     func setTable(){
         taskTableView.delegate = self
         taskTableView.dataSource = self
