@@ -1,4 +1,11 @@
 //
+//  timemodalController2.swift
+//  Shortkathon
+//
+//  Created by 김사랑 on 12/30/24.
+//
+
+//
 //  timemodalController.swift
 //  Shortkathon
 //
@@ -7,7 +14,7 @@
 
 import UIKit
 
-class timemodalController2: UIViewController {
+class timemodalController3: UIViewController {
     
     let containerView: UIView = {
         let view = UIView()
@@ -29,18 +36,16 @@ class timemodalController2: UIViewController {
     
     let nextButton: UIButton = {
         let button = UIButton()
-        button.setTitleColor(#colorLiteral(red: 0.3369887173, green: 0.6149112582, blue: 1, alpha: 1), for: .normal)
-        button.setTitle("다음", for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
-        button.backgroundColor = .clear
+        let image = UIImage(named: "Icon-3")
+        button.setImage(image, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
     let cancelButton: UIButton = {
         let button = UIButton()
-        button.setTitleColor(#colorLiteral(red: 0.7529411765, green: 0.2156862745, blue: 0.2156862745, alpha: 1), for: .normal)
-        button.setTitle("취소", for: .normal)
+        button.setTitleColor(#colorLiteral(red: 0.337254902, green: 0.6156862745, blue: 1, alpha: 1), for: .normal)
+        button.setTitle("완료", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
         button.backgroundColor = .clear
         button.translatesAutoresizingMaskIntoConstraints = false

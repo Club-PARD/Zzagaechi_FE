@@ -1,9 +1,12 @@
 import UIKit
 
+protocol Page4TaskTableViewCellDelegate: AnyObject {
+    func didTapAddButton(in cell: Page4TaskTableViewCell)
+}
 
 class Page4TaskTableViewCell : UITableViewCell {
+    weak var delegate: Page4TaskTableViewCellDelegate?
     
-
     
     let clearView :  UIView = {
         let view = UIView()
@@ -36,6 +39,8 @@ class Page4TaskTableViewCell : UITableViewCell {
         button.setImage(UIImage(named: "rightButton"), for: .normal)
         button.imageView?.contentMode = .scaleAspectFill
         button.imageView?.clipsToBounds = true
+        button.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside) // 타깃 설정
+
         return button
     }()
     
@@ -93,8 +98,7 @@ class Page4TaskTableViewCell : UITableViewCell {
             $0.translatesAutoresizingMaskIntoConstraints = false
             cellView.addSubview($0)
         }
-        
-        
+    
         
         NSLayoutConstraint.activate([
             
@@ -134,6 +138,10 @@ class Page4TaskTableViewCell : UITableViewCell {
         
     }
     
+       @objc private func addButtonTapped() {
+           delegate?.didTapAddButton(in: self)
+       }
+
     override func layoutSubviews() {
             super.layoutSubviews()
             
@@ -148,6 +156,6 @@ class Page4TaskTableViewCell : UITableViewCell {
             shape.path = maskPath.cgPath
             blueView.layer.mask = shape
         }
-    
-  
 }
+
+

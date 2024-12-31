@@ -267,7 +267,8 @@ extension AddDetailScheduleViewController4 : UITableViewDelegate,UITableViewData
         }
         
         cell.taskLabel.text = taskList[indexPath.row]
-        
+        cell.delegate = self // Delegate 연결
+
         
         return cell
     }
@@ -277,6 +278,24 @@ extension AddDetailScheduleViewController4 : UITableViewDelegate,UITableViewData
     }
     
     
-    
+   
     
 }
+
+
+extension AddDetailScheduleViewController4: Page4TaskTableViewCellDelegate {
+    func didTapAddButton(in cell: Page4TaskTableViewCell) {
+        // 버튼이 눌린 셀의 인덱스를 가져옵니다.
+        guard let indexPath = taskTableView.indexPath(for: cell) else { return }
+        
+        // 예: 새로운 ViewController로 이동
+        let selectedTask = taskList[indexPath.row]
+        print("Button tapped for task: \(selectedTask)")
+        
+        let detailVC = timemodalController1() // 이동할 ViewController
+        detailVC.modalPresentationStyle = .fullScreen
+        present(detailVC, animated: true, completion: nil)
+    }
+}
+
+
