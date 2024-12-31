@@ -62,6 +62,7 @@ class timemodalController1: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .black.withAlphaComponent(0.5)
         setupUI()
+        buttonTap()
     }
     
     private func setupUI() {
@@ -93,5 +94,21 @@ class timemodalController1: UIViewController {
             timedatePicker.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -20)
         ])
     }
+    
+    func buttonTap(){
+        nextButton.addTarget(self, action: #selector(moveToNext), for: .touchUpInside)
+        cancelButton.addTarget(self, action: #selector(cancelModal), for: .touchUpInside)
+    }
+    
+    @objc func moveToNext(){
+        let vc = timemodalController2()
+        present(vc,animated: true)
+    }
+    
+    @objc func cancelModal(){
+        dismiss(animated: true, completion: nil)
+    }
+    
+    
 }
 

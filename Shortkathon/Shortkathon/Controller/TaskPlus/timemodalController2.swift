@@ -118,6 +118,23 @@ class timemodalController2: UIViewController {
         dateFormatter.dateFormat = "a HH:mm"
         timeLabel.text = dateFormatter.string(from: timedatePicker.date)
     }
+    
+    
+    func buttonTap(){
+        nextButton.addTarget(self, action: #selector(moveToNext), for: .touchUpInside)
+        cancelButton.addTarget(self, action: #selector(cancelModal), for: .touchUpInside)
+    }
+    
+    @objc func moveToNext(){
+        let vc = timemodalController3()
+        print("페이지 2 다음")
+        present(vc,animated: true)
+    }
+    
+    @objc func cancelModal(){
+        print("페이지 2 취소")
+        dismiss(animated: true, completion: nil)
+    }
 }
     
    

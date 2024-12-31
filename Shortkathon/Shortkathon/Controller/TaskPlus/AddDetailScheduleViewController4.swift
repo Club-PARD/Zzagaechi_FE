@@ -292,8 +292,9 @@ extension AddDetailScheduleViewController4: Page4TaskTableViewCellDelegate {
         let selectedTask = taskList[indexPath.row]
         print("Button tapped for task: \(selectedTask)")
         
-        let detailVC = timemodalController1() // 이동할 ViewController
-        detailVC.modalPresentationStyle = .fullScreen
+        let detailVC = TimeModalViewController() // 이동할 ViewController
+        detailVC.modalPresentationStyle = .overCurrentContext
+        detailVC.modalTransitionStyle = .crossDissolve
         present(detailVC, animated: true, completion: nil)
     }
 }

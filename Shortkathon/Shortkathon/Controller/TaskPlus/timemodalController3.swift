@@ -123,6 +123,21 @@ class timemodalController3: UIViewController {
         dateFormatter.dateFormat = "a HH:mm"
         timeLabel.text = dateFormatter.string(from: timedatePicker.date)
     }
+    
+    
+    func buttonTap(){
+        nextButton.addTarget(self, action: #selector(moveToNext), for: .touchUpInside)
+        cancelButton.addTarget(self, action: #selector(cancelModal), for: .touchUpInside)
+    }
+    
+    @objc func moveToNext(){
+        let vc = timemodalController2()
+        present(vc,animated: true)
+    }
+    
+    @objc func cancelModal(){
+        dismiss(animated: true, completion: nil)
+    }
 }
     
    
