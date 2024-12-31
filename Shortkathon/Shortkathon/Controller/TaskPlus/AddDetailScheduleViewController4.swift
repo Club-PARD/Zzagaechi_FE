@@ -52,6 +52,7 @@ class AddDetailScheduleViewController4 : UIViewController {
         let button = UIButton()
         let image = UIImage(named: "Icon-3")
         button.setImage(image, for: .normal)
+    
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -98,12 +99,13 @@ class AddDetailScheduleViewController4 : UIViewController {
         image.clipsToBounds = true
         return image
     }()
-
+    
     let xButton : UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "xButton"), for: .normal)
         button.imageView?.contentMode = .scaleAspectFill
         button.imageView?.clipsToBounds = true
+        button.isUserInteractionEnabled = true
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -115,7 +117,7 @@ class AddDetailScheduleViewController4 : UIViewController {
         view.showsVerticalScrollIndicator = false
         return view
     }()
-
+    
     
     //MARK: - 메인
     override func viewDidLoad() {
@@ -125,7 +127,7 @@ class AddDetailScheduleViewController4 : UIViewController {
         setUI()
         setTable()
         generateDates()
-        xButton.addTarget(self, action: #selector(xButtonTapped), for: .touchUpInside )
+        
         print(taskList)
         
     }
@@ -161,20 +163,20 @@ class AddDetailScheduleViewController4 : UIViewController {
             
             xButton.topAnchor.constraint(equalTo: descriptionImage.topAnchor, constant: 7),
             xButton.trailingAnchor.constraint(equalTo: descriptionImage.trailingAnchor, constant: -10),
-            xButton.widthAnchor.constraint(equalToConstant: 6),
-            xButton.heightAnchor.constraint(equalToConstant: 6),
+            xButton.widthAnchor.constraint(equalToConstant: 15),
+            xButton.heightAnchor.constraint(equalToConstant: 15),
             
             
             taskTableView.topAnchor.constraint(equalTo: descriptionImage.bottomAnchor, constant: 6),
             taskTableView.heightAnchor.constraint(equalToConstant: 281),
             taskTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 29),
             taskTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -29),
-
+            
             nextButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             nextButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor , constant: -49),
             nextButton.heightAnchor.constraint(equalToConstant: 46),
             nextButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 31),
-
+            
             
         ])
     }
@@ -199,18 +201,22 @@ class AddDetailScheduleViewController4 : UIViewController {
         
         dateFormatter.dateFormat = "M월"
     }
-
+    
     
     
     func buttonTapped(){
         backButton.addTarget(self, action: #selector(dismissVC), for: .touchUpInside)
         cancelButton.addTarget(self, action: #selector(moveToMain), for: .touchUpInside)
         nextButton.addTarget(self, action: #selector(movoToNext), for: .touchUpInside)
+        xButton.addTarget(self, action: #selector(xButtonTapped), for: .touchUpInside)
     }
     
     @objc func xButtonTapped(){
-        
+        print("설명삭제")
+        descriptionImage.isHidden = true
     }
+    
+    
     func setTable(){
         taskTableView.delegate = self
         taskTableView.dataSource = self
