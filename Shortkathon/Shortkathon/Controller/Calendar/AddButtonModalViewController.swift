@@ -98,24 +98,12 @@ class AddButtonModalViewController: UIViewController {
     @objc private func addButtonTapped() {
         guard let title = titleTextField.text, !title.isEmpty else { return }
         
-        if detailToggleSwitch.isOn {
-            // 세분화가 켜져있을 때는 기존 방식대로
-            delegate?.didAddEvent(
-                name: title,
-                startDate: startDatePicker.date,
-                endDate: endDatePicker.date,
-                isDetailed: true
-            )
-        } else {
-            // 세분화가 꺼져있을 때는 종료일을 시작일과 종료일로 설정
-            let selectedDate = endDatePicker.date
-            delegate?.didAddEvent(
-                name: title,
-                startDate: selectedDate,
-                endDate: selectedDate,
-                isDetailed: false
-            )
-        }
+        delegate?.didAddEvent(
+            name: title,
+            startDate: startDatePicker.date,
+            endDate: endDatePicker.date,
+            isDetailed: detailToggleSwitch.isOn
+        )
         dismiss(animated: true)
     }
     
@@ -130,7 +118,6 @@ class AddButtonModalViewController: UIViewController {
     }
     
     @objc private func toggleSwitchChanged(_ sender: UISwitch) {
-        startDatePicker.isEnabled = sender.isOn
-        startDatePicker.alpha = sender.isOn ? 1.0 : 0.5
+        // 비활성화 코드 제거
     }
 }

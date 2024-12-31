@@ -11,10 +11,32 @@ import UIKit
 
 class AddDetailScheduleViewController4 : UIViewController {
     
-    private let dates: [(date: String, day: String)] = [
-        ("4", "수"), ("5", "목"), ("6", "금"), ("7", "토"), ("8", "일"), ("9", "월"), ("10", "화"), ("11", "수"), ("12", "목")
-    ]
+    var taskList : [String] = []
+    var startDate : Date?
+    var endDate : Date?
     
+    var selectedDate: Date?
+    
+    private var dates: [(date: String, day: String)] = []
+    
+    enum DateCellSate {
+        case nomal
+        case selected
+        case hasTask
+    }
+    
+    
+    enum TaskCellSate {
+        case normal
+        case selected
+        case timeSet
+    }
+    
+    private let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko_KR")
+        return formatter
+    }()
     
     let mainLabel : UILabel = {
         let label = UILabel()
@@ -68,61 +90,53 @@ class AddDetailScheduleViewController4 : UIViewController {
         return label
     }()
     
-    
-    var monthLabel : UILabel = {
-        let label = UILabel()
-        label.text = "1월" // 서버에서 받은 값으로 넣기
-        label.font = UIFont(name: "Pretendard-Regular", size: 25)
+    let descriptionImage : UIImageView = {
+        let image = UIImageView()
         
-        return label
+        image.image = UIImage(named: "description")
+        image.contentMode = .scaleAspectFill
+        image.clipsToBounds = true
+        return image
     }()
-    
-    
-    private let dateCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        layout.minimumInteritemSpacing = 11
-        layout.minimumLineSpacing = 15
-        
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .clear
-        collectionView.showsHorizontalScrollIndicator = false
-//        collectionView.isScrollEnabled = true
-        
-//        collectionView.delaysContentTouches = true
-        collectionView.alwaysBounceHorizontal = true
-        return collectionView
-    }()
-    
-    
-    let saveButton : UIButton = {
+
+    let xButton : UIButton = {
         let button = UIButton()
-        button.setTitle("저장", for: .normal)
-        button.titleLabel?.font = UIFont(name: "Pretendard-Regular", size: 14)
-        button.backgroundColor = .clear
-        button.tintColor = #colorLiteral(red: 0.6070454717, green: 0.6070454121, blue: 0.6070454121, alpha: 1)
+        button.setImage(UIImage(named: "xButton"), for: .normal)
+        button.imageView?.contentMode = .scaleAspectFill
+        button.imageView?.clipsToBounds = true
+        button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
+    let taskTableView : UITableView = {
+        let view = UITableView()
+        view.backgroundColor = #colorLiteral(red: 0.1372549087, green: 0.1372549087, blue: 0.1372549087, alpha: 1)
+        view.separatorStyle = .none
+        view.showsVerticalScrollIndicator = false
+        return view
+    }()
+
     
-    
+    //MARK: - 메인
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = #colorLiteral(red: 0.1372549087, green: 0.1372549087, blue: 0.1372549087, alpha: 1)
         buttonTapped()
         setUI()
-        setCollect()
-//        setupKeyboardDismiss()
-//        tapGesture.cancelsTouchesInView = false
-
+        setTable()
+        generateDates()
+        xButton.addTarget(self, action: #selector(xButtonTapped), for: .touchUpInside )
+        print(taskList)
+        
     }
     
     func setUI(){
-        [nextButton,mainLabel,backButton,cancelButton,progessbarImage,titleLabel,monthLabel, dateCollectionView].forEach{
+        [nextButton,mainLabel,backButton,cancelButton,progessbarImage,titleLabel, taskTableView, descriptionImage].forEach{
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
-      
+        descriptionImage.addSubview(xButton)
+        
         
         NSLayoutConstraint.activate([
             mainLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -140,38 +154,68 @@ class AddDetailScheduleViewController4 : UIViewController {
             titleLabel.topAnchor.constraint(equalTo: progessbarImage.bottomAnchor, constant: 15),
             titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 31),
             
-            monthLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 27),
-            monthLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 31),
+            descriptionImage.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 23),
+            descriptionImage.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 31),
+            descriptionImage.widthAnchor.constraint(equalToConstant: 217),
+            descriptionImage.heightAnchor.constraint(equalToConstant: 51),
             
-            dateCollectionView.topAnchor.constraint(equalTo: monthLabel.bottomAnchor, constant: 10),
-            dateCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant:  22),
-            dateCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor ),
-            dateCollectionView.heightAnchor.constraint(equalToConstant: 80),
+            xButton.topAnchor.constraint(equalTo: descriptionImage.topAnchor, constant: 7),
+            xButton.trailingAnchor.constraint(equalTo: descriptionImage.trailingAnchor, constant: -10),
+            xButton.widthAnchor.constraint(equalToConstant: 6),
+            xButton.heightAnchor.constraint(equalToConstant: 6),
             
             
-            
+            taskTableView.topAnchor.constraint(equalTo: descriptionImage.bottomAnchor, constant: 6),
+            taskTableView.heightAnchor.constraint(equalToConstant: 281),
+            taskTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 29),
+            taskTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -29),
+
             nextButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             nextButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor , constant: -49),
             nextButton.heightAnchor.constraint(equalToConstant: 46),
             nextButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 31),
-            
-            
+
             
         ])
     }
     
-    func setCollect(){
-        dateCollectionView.delegate = self
-        dateCollectionView.dataSource = self
-        dateCollectionView.register(DateCollectionViewCell.self, forCellWithReuseIdentifier: DateCollectionViewCell.identifier)
-        dateCollectionView.allowsMultipleSelection = false
-
+    private func generateDates(){
+        guard let start = startDate, let end = endDate else { return }
+        dateFormatter.dateFormat = "d"
+        let dayFormatter = DateFormatter()
+        dayFormatter.dateFormat = "E"
+        dayFormatter.locale = Locale(identifier: "ko_KR")
+        
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.day], from: start, to: end)
+        guard let dayCount = components.day else { return }
+        
+        dates = (0...dayCount).map { offset in
+            let date = calendar.date(byAdding: .day, value: offset, to: start)!
+            let dateString = dateFormatter.string(from: date)
+            let dayString = dayFormatter.string(from: date)
+            return (date: dateString, day: dayString)
+        }
+        
+        dateFormatter.dateFormat = "M월"
     }
+
+    
     
     func buttonTapped(){
         backButton.addTarget(self, action: #selector(dismissVC), for: .touchUpInside)
         cancelButton.addTarget(self, action: #selector(moveToMain), for: .touchUpInside)
         nextButton.addTarget(self, action: #selector(movoToNext), for: .touchUpInside)
+    }
+    
+    @objc func xButtonTapped(){
+        
+    }
+    func setTable(){
+        taskTableView.delegate = self
+        taskTableView.dataSource = self
+        taskTableView.register(Page4TaskTableViewCell.self, forCellReuseIdentifier: "page4")
+        
     }
     
     @objc func dismissVC() {
@@ -203,76 +247,30 @@ class AddDetailScheduleViewController4 : UIViewController {
         present(vc, animated: true)
     }
     
-//    private func setupKeyboardDismiss() {
-//        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-//        tapGesture.cancelsTouchesInView = false
-//        view.addGestureRecognizer(tapGesture)
-//    }
-//
-//    @objc private func dismissKeyboard() {
-//        view.endEditing(true)
-//    }
-    
 }
 
-//MARK: - CollectionView extension
-extension  AddDetailScheduleViewController4 : UICollectionViewDelegate, UICollectionViewDataSource{
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return dates.count
+
+extension AddDetailScheduleViewController4 : UITableViewDelegate,UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return taskList.count
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DateCollectionViewCell", for: indexPath) as? DateCollectionViewCell else {
-            return UICollectionViewCell()
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "page4", for: indexPath) as? Page4TaskTableViewCell else {
+            return UITableViewCell()
         }
         
-        let date = dates[indexPath.item]
-        cell.dateLabel.text = date.date
-        cell.dayLabel.text = date.day
+        cell.taskLabel.text = taskList[indexPath.row]
+        
+        
         return cell
     }
     
-    
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 60, height: 80)
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 100
     }
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        // 여기에 날짜 선택 시 contentView의 내용을 변경하는 로직 추가
-        let selectedDate = dates[indexPath.item]
-        
-        print("\(selectedDate.date)일 \(selectedDate.day)요일 선택됨")
-        
-        // 선택된 셀 가져오기
-              if let cell = collectionView.cellForItem(at: indexPath) as? DateCollectionViewCell {
-                  cell.contentView.backgroundColor = #colorLiteral(red: 0.3019607843, green: 0.5568627451, blue: 1, alpha: 1)
-              }
-    }
     
-    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-            if let cell = collectionView.cellForItem(at: indexPath) as? DateCollectionViewCell {
-                cell.contentView.backgroundColor = #colorLiteral(red: 0.2605186105, green: 0.2605186105, blue: 0.2605186105, alpha: 1)
-            }
-        }
     
-}
-
-
-extension AddDetailScheduleViewController4:  UICollectionViewDelegateFlowLayout {
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
-    }
-    
-    // 줄 간격을 0으로 설정
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 15
-    }
-    
-    // 아이템 간격 설정
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 15
-    }
     
 }

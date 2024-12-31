@@ -13,6 +13,12 @@ class AddDetailScheduleViewController2 : UIViewController {
     var plansubtitle : String?
     var userId =  UserDefaults.standard.string(forKey: "userIdentifier")
     let apiService = APIService.shared
+    private let maximumDays: Int = 30
+    
+    
+    
+    
+    
     
     let mainLabel : UILabel = {
         let label = UILabel()
@@ -362,6 +368,8 @@ class AddDetailScheduleViewController2 : UIViewController {
             postSchedule2()
         }
         
+        vc.startDate = startDatePicker.date
+        vc.endDate = endDatePicker.date
         
         
         let transition = CATransition()
@@ -379,6 +387,16 @@ class AddDetailScheduleViewController2 : UIViewController {
         let formatter = DateFormatter()
         formatter.dateFormat = "M월 dd,yyyy"
         formatter.locale = Locale(identifier: "ko_KR")
+        
+        let maxDate = Calendar.current.date(byAdding: .day, value: maximumDays, to: sender.date)
+        endDatePicker.maximumDate = maxDate
+        
+        // 종료일이 최대 허용 기간을 초과하면 자동으로 조정
+        if let maxDate = maxDate, endDatePicker.date > maxDate {
+            endDatePicker.date = maxDate
+            endTextField.text = formatter.string(from: maxDate)
+        }
+        
         startTextField.text = formatter.string(from: sender.date)
         startTextField.textColor = .systemBlue
         isStartDateSelected = true  // 날짜 선택 상태 업데이트
@@ -389,10 +407,40 @@ class AddDetailScheduleViewController2 : UIViewController {
         let formatter = DateFormatter()
         formatter.dateFormat = "M월 dd,yyyy"
         formatter.locale = Locale(identifier: "ko_KR")
+        
+        // 선택된 종료일이 시작일보다 이전이면 시작일로 설정
+        if sender.date < startDatePicker.date {
+            sender.date = startDatePicker.date
+        }
+        
+        // 선택된 종료일이 최대 허용 기간을 초과하면 최대 날짜로 설정
+        let maxDate = Calendar.current.date(byAdding: .day, value: maximumDays, to: startDatePicker.date)
+        if let maxDate = maxDate, sender.date > maxDate {
+            sender.date = maxDate
+        }
+        
         endTextField.text = formatter.string(from: sender.date)
         endTextField.textColor = .systemBlue
-        isEndDateSelected = true  // 날짜 선택 상태 업데이트
+        isEndDateSelected = true
         checkTextFieldsAndUpdateButton()
+        
+        // 날짜 차이가 30일을 초과하면 알림 표시
+        let days = Calendar.current.dateComponents([.day], from: startDatePicker.date, to: sender.date).day ?? 0
+        if days > maximumDays {
+            let alert = UIAlertController(
+                title: "알림",
+                message: "시작일로부터 최대 30일까지만 선택할 수 있습니다.",
+                preferredStyle: .alert
+            )
+            alert.addAction(UIAlertAction(title: "확인", style: .default))
+            present(alert, animated: true)
+            
+            // 종료일을 최대 허용 날짜로 재설정
+            if let maxDate = maxDate {
+                sender.date = maxDate
+                endTextField.text = formatter.string(from: maxDate)
+            }
+        }
     }
     
     @objc private func timeChanged(_ sender: UIDatePicker) {
@@ -485,9 +533,9 @@ extension AddDetailScheduleViewController2 {
         print("endDate : \(endDate)")
         print("plansubtitle : \(plansubtitle)")
         
+        guard let userId = userId else { return }
         
-        
-        let userId = "user2"
+//        let userId = "user2"
         // API 호출
         apiService.post(
             endpoint: "/plansub/\(userId)",
@@ -538,7 +586,9 @@ extension AddDetailScheduleViewController2 {
             "deadline": deadline,
         ]
         
-        let userId = "user2"
+//        let userId = "user2"
+        guard let userId = userId else { return }
+
         // API 호출
         apiService.post(
             endpoint: "/plansub/\(userId)/endtime",

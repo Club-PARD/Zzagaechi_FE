@@ -6,6 +6,8 @@ import UIKit
 class AddDetailScheduleViewController3 : UIViewController {
     
     //MARK: - property
+    var startDate : Date?
+    var endDate : Date?
     
     let scrollView : UIScrollView = {
         let view = UIScrollView()
@@ -235,8 +237,12 @@ class AddDetailScheduleViewController3 : UIViewController {
     
     @objc func movoToNext(){
         let vc = AddDetailScheduleViewController4()
+        
         vc.modalPresentationStyle = .fullScreen
-    
+        vc.taskList = tableUIView.task
+        vc.startDate = startDate
+        vc.endDate = endDate
+        
         let transition = CATransition()
         transition.duration = 0.4
         transition.type = .push
