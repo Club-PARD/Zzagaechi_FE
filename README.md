@@ -64,7 +64,7 @@
 
 <br><be>
 
-# Stack
+ Stack
 ---
 ☀️Frontend
 
