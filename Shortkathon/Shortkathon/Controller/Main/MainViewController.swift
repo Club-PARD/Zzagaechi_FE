@@ -41,7 +41,7 @@ class MainViewController : UIViewController {
     
     let image1 : UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(named: "n1-1")
+        image.image = UIImage(named: "n 최치최최종")
         image.contentMode = .scaleAspectFill
         image.clipsToBounds = true
         return image
@@ -49,7 +49,7 @@ class MainViewController : UIViewController {
     
     let image2 : UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(named: "o1")
+        image.image = UIImage(named: "O쵲옹")
         image.contentMode = .scaleAspectFill
         image.clipsToBounds = true
         return image
@@ -57,7 +57,7 @@ class MainViewController : UIViewController {
     
     let image3 : UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(named: "n2-1")
+        image.image = UIImage(named: "n 최치최최종종")
         image.contentMode = .scaleAspectFill
         image.clipsToBounds = true
         return image
@@ -65,7 +65,7 @@ class MainViewController : UIViewController {
     
     let image4 : UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(named: "a1")
+        image.image = UIImage(named: "a 쵲옹")
         image.contentMode = .scaleAspectFill
         image.clipsToBounds = true
         return image
@@ -102,32 +102,32 @@ class MainViewController : UIViewController {
         
         
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor ,constant: 50),
-            titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 29),
+            titleLabel.topAnchor.constraint(equalTo: view.topAnchor ,constant: 102),
+            titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 27),
             
             toDoLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 140 ),
             toDoLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant:   26),
             
             image1.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            image1.topAnchor.constraint(equalTo: view.topAnchor, constant: 207),
-            image1.widthAnchor.constraint(equalToConstant: 109),
-            image1.heightAnchor.constraint(equalToConstant: 147),
+            image1.topAnchor.constraint(equalTo: view.topAnchor, constant: 190),
+            image1.widthAnchor.constraint(equalToConstant: 188),
+            image1.heightAnchor.constraint(equalToConstant: 191),
             
-            image2.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 132),
+            image2.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 149),
             image2.topAnchor.constraint(equalTo: view.topAnchor, constant: 336),
-            image2.widthAnchor.constraint(equalToConstant: 98),
-            image2.heightAnchor.constraint(equalToConstant: 71),
+            image2.widthAnchor.constraint(equalToConstant: 123),
+            image2.heightAnchor.constraint(equalToConstant: 89),
             
             
             image3.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -13),
-            image3.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 197),
-            image3.widthAnchor.constraint(equalToConstant: 99),
-            image3.heightAnchor.constraint(equalToConstant: 96),
+            image3.topAnchor.constraint(equalTo: view.topAnchor, constant: 222),
+            image3.widthAnchor.constraint(equalToConstant: 130),
+            image3.heightAnchor.constraint(equalToConstant: 130),
             
             image4.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -26),
-            image4.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 25),
-            image4.widthAnchor.constraint(equalToConstant: 100),
-            image4.heightAnchor.constraint(equalToConstant: 101),
+            image4.topAnchor.constraint(equalTo: view.topAnchor, constant: 73),
+            image4.widthAnchor.constraint(equalToConstant: 125),
+            image4.heightAnchor.constraint(equalToConstant: 138),
             
             taskTableView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             taskTableView.widthAnchor.constraint(equalToConstant: 345),
