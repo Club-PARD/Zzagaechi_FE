@@ -74,6 +74,7 @@ class AddDetailScheduleViewController3 : UIViewController {
         let label = UILabel()
         label.text = "할 일들을 나눠서\n적어보세요!"
         label.font = UIFont(name: "Pretendard-SemiBold", size: 30)
+        label.textColor = .white
         label.numberOfLines = 0
         return label
     }()
