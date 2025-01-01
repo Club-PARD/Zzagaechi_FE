@@ -28,32 +28,25 @@
 이악 또 미뤄졌어!!😣
 ---
 
-
-
-여러 사람들과 메뉴를 고르는 대학생들이 함께 식사를 할 때 서로의 선호를 반영하기 힘들어서 식사 메뉴 선정에 어려움을 느낀다.
-
-<br>
-
 ### 문제
 
- **의견전달의 어려움**
-할 일이 많은 대학생들이 계획을 세우는 과정에서 해야 할 일을 세분화하고 실천 가능한 일정으로 전환하는 데 어려움을 겪어 결국 해야 할 일의 데드라인이 다가 왔을 때 버겁게 처리해야 하는 문제를 겪게 된다.
+**계획을** **세웠지만**, 시작이 안 해서 미루는 사람, 어디서 부터 손을 대야 할지 몰라 막막해지는 상황으로 작은 실천으로 계획을 실행할 수 있게 도와준다. 
 
 ### 솔루션
 
-1. 사용자가 해야 할 일을 세부적인 단계로 나눌 수 있도록 도와줌 (세분화 기능)
+1. 사용자가 만든 일정을 오늘날로 일정을 보여줌  
 
-2. 계획에 있어 구체적으로 나누는 단계가 왜 중요한 지를 알려줌 (온보딩 페이지)
+2. 사용자가 해야 할 일을 세부적인 단계로 나눌 수 있도록 도와줌 (세분화 기능) -> 진입장벽을 낮춤 
 
-3. 사용자가 설정한 마감 기한에 따라 자동 정렬된 우선순위를 보여줌.
+3. 사용자가 설정한 마감 기한을 정할 수 있음 
 
 4. 단계적으로 완료한 작업에 대해 체크 하는 기능으로써 성취감을 제공하고, 목표 달성까지의 진행 상황을 시각적으로 보여줌으로 동기 부여.
 
 <br>
 <br>
 
-# ♥ 팀원 소개
-------
+### ♥ 팀원 소개
+***
 |                                                🪽 김민준                                                 |                          😎 최준영                           |                          ❣️ 김사랑                           |                         🍞 김민규                            |
 |:-----------------------------------------------------------------------------------------------------:|:---------------------------------------------------------:|:---------------------------------------------------------:|:---------------------------------------------------------:|
 |                                                  Frontend                                                   |                            Frontend                             |                           Frontend                            |                            Backend                            |
@@ -69,7 +62,7 @@
 ☀️Frontend
 
 > Language : Swift<br>
-> Library & Framework : React<br>
+> Library & Framework : Alamofire, FSCalendar<br>
 > Styled-Components, Axios, Recoil  <br>
 > Deploy: Firebase<br>
 
@@ -114,7 +107,7 @@
 
 <img src="https://github.com/user-attachments/assets/b5333820-b033-489e-8cb8-7b455f272241" height="400" />
 
-앱을 실행할 때 나오는 화면
+앱을 실행할 때 나오는 스플래시 화면
 
 </td>
 <td align="center">
@@ -129,7 +122,7 @@
 <img src="https://github.com/user-attachments/assets/b5333820-b033-489e-8cb8-7b455f272241" height="400" />
 
 
-일정을 등록하는 방법 
+간단한 일인지 세분화가 필요한 일인지 선택할 수 있게 해줌  
 
 </td>
 <td align="center">
@@ -145,34 +138,57 @@
 
 <table align="center">
 <tr>
-<th>간편 일정 등록</th>
 <th>세부 일정 등록</th>
-<th>일정 성공 환경</th>
+</tr>
+<tr>
+
+</td>
+<td align="center">
+    
+<img src="https://github.com/user-attachments/assets/b5333820-b033-489e-8cb8-7b455f272241" height="400" />
+<img src="https://github.com/user-attachments/assets/b5333820-b033-489e-8cb8-7b455f272241" height="400" />
+<img src="https://github.com/user-attachments/assets/b5333820-b033-489e-8cb8-7b455f272241" height="400" />
+<img src="https://github.com/user-attachments/assets/b5333820-b033-489e-8cb8-7b455f272241" height="400" />
+<img src="https://github.com/user-attachments/assets/b5333820-b033-489e-8cb8-7b455f272241" height="400" />
+
+세분화를 해야하는 일정 등록하는 방법 
+
+</td>
+</tr>
+</table>
+
+<br />
+<table align="center">
+<tr>
+<th>간단한 일정 </th>
+<th>동기부여 모달 </th>
+
 </tr>
 <tr>
 <td align="center">
 
 <img src="https://github.com/user-attachments/assets/b5333820-b033-489e-8cb8-7b455f272241" height="400" />
 
-간편 일정 등록
-
-</td>
-<td align="center">
-    
-<img src="https://github.com/user-attachments/assets/b5333820-b033-489e-8cb8-7b455f272241" height="400" />
-
-세부 일정 등록
+세분화 하지 않는 간단한 일정 
 
 </td>
 <td align="center">
 
 <img src="https://github.com/user-attachments/assets/b5333820-b033-489e-8cb8-7b455f272241" height="400" />
+<img src="https://github.com/user-attachments/assets/b5333820-b033-489e-8cb8-7b455f272241" height="400" />
+<img src="https://github.com/user-attachments/assets/b5333820-b033-489e-8cb8-7b455f272241" height="400" />
 
-출발지부터 도착지까지의 경로 지도 생성
+동기부여를 줄 수 있는 모달창 
+
+</td>
+
 
 </td>
 </tr>
 </table>
+
+
+
 
 <br />
 
@@ -182,20 +198,28 @@
 
 1. **메인 페이지**
     
->    일정 체크 리스트
-    
+>    오늘 하루 등록된 일정을 확인해 체크리스트 형식으로 일정을 볼 수 있음 
+<br>
+
 2. **캘린더** 
     
->   등록된 일정을 한 눈에 볼 수 있음 
-    
+>   등록된 일정 달 형성과, 오늘의 할일 두가지로 나누어 볼 수 있음
+<br>
+   
 3. **일정 등록**
     
->    세분화 할지 안 할지를 나누어 페이지 제작 
-    
+>    세분화 할지 안 할지를 나누어 페이지 제작<br>
+>    세분화 하지 않는 간단한 일정의 경우 제목과 날짜를 입력하여, 일정을 누를 수 있음<br>
+>    세분화를 하는 일정의 경우 제목, 시작 날, 종료 날, 종료 날의 시간을 받음<br>
+>    세분화를 3가지 이상으로 세분화를 진행해줌 <br>
+>    세분화한 일을 유저가 선택한 날짜에 시작 시간과 종료시간을 각각 기입하여 만들어 일정을 등록함<br>
+<br>
+
 4. **동기 부여 넣기**
->    일정을 등록하면, 메인 페이지로 넘어가기전, 이모지 파티클을 통해 재미 요소를 통해 동기부여를 줌
+>    각각의 간단 일정, 세분화 한 일정을 등록을 완료하면 메인 화면으로 넘어가기전, 모달창이 나와 응원을 해줌 <br>
+>    오늘의 일정을 다 완료하면 성공을 축하하는 모달창이 나와 축하해줌 
 
-
+<br>
 ----------
 
 ## 로직 설명
