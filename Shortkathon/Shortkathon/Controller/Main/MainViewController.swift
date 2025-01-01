@@ -97,9 +97,9 @@ class MainViewController : UIViewController {
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-            super.viewWillDisappear(animated)
-            sendToggledTasks()
-        }
+        super.viewWillDisappear(animated)
+        sendToggledTasks()
+    }
     
     //MARK: - function
     func setUI(){
@@ -154,7 +154,7 @@ class MainViewController : UIViewController {
         taskTableView.register(MainTableViewCell.self, forCellReuseIdentifier: "mainTableViewCell")
     }
     
-
+    
 }
 
 
@@ -189,6 +189,73 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 100
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: false)
+    }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let deleteAction = UIContextualAction(style: .destructive, title: "삭제") { [weak self] (action, view, completion) in
+            guard let self = self else { return }
+            
+            let taskItem = self.taskData[indexPath.row]
+            guard let userId = self.userId else { return }
+            var endpoint: String
+            
+            switch taskItem.type {
+            case .detail:
+                if let detail = taskItem.task as? Detail {
+                    endpoint = "/plansubdetail/\(userId)/\(detail.detailId)"
+                    print("🟢 삭제 요청")
+                    print("🔗 엔드포인트: \(endpoint)")
+                    print("📦 데이터: \(taskItem)")
+                    self.apiService.delete(endpoint: endpoint) { (result: Result<APIResponse, Error>) in
+                        switch result {
+                        case .success(_):
+                            DispatchQueue.main.async {
+                                // 삭제 성공 후 데이터 새로고침
+                                self.taskData.removeAll()  // 기존 데이터 초기화
+                                self.fetchDailySchedule()
+                                self.taskTableView.reloadData()
+                                // 데이터 다시 불러오기
+                            }
+                        case .failure(let error):
+                            print("삭제 실패: \(error.localizedDescription)")
+                        }
+                    }
+                }
+            case .plan:
+                if let plan = taskItem.task as? Plan {
+                    endpoint = "/plan/\(userId)/\(plan.planId)"
+                    print("🟢 삭제 요청")
+                    print("🔗 엔드포인트: \(endpoint)")
+                    print("📦 데이터: \(taskItem)")
+                    self.apiService.delete(endpoint: endpoint) { (result: Result<APIResponse, Error>) in
+                        switch result {
+                        case .success(_):
+                            DispatchQueue.main.async {
+                                // 삭제 성공 후 데이터 새로고침
+                                self.taskData.removeAll()  // 기존 데이터 초기화
+                                self.fetchDailySchedule()
+                                self.taskTableView.reloadData()// 데이터 다시 불러오기
+                            }
+                        case .failure(let error):
+                            print("삭제 실패: \(error.localizedDescription)")
+                        }
+                    }
+                }
+            }
+            completion(true)
+        }
+        
+        deleteAction.backgroundColor = .red
+        deleteAction.title = "삭제"
+        
+        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+        configuration.performsFirstActionWithFullSwipe = false
+        return configuration
+    }
+    
     
     
     
@@ -245,10 +312,10 @@ extension MainViewController {
 //MARK: - 서버 통신 코드
 extension MainViewController {
     private func fetchDailySchedule() {
-                let today = Date().toDateString()
-//        let today = "2024-01-03"
-                guard let userId = userId else { return }
-//        let userId = "user2"
+        let today = Date().toDateString()
+        //        let today = "2024-01-03"
+        guard let userId = userId else { return }
+        //        let userId = "user2"
         let endpoint = "/daily/\(userId)/\(today)"
         print("today : \(today)")
         print("endpoint : \(endpoint)")
@@ -262,21 +329,23 @@ extension MainViewController {
                 print(schedule)
                 DispatchQueue.main.async {
                     self?.updateUI()
-                    let allPlansCompleted = !schedule.plans.isEmpty &&
-                                        schedule.plans.allSatisfy { $0.completed }
-                                    let allDetailsCompleted = !schedule.details.isEmpty &&
-                                        schedule.details.allSatisfy { $0.completed }
-                                    
-                                    // 일정이 있고 모두 완료되었을 때만 모달 표시
-                                    if schedule.totalCount > 0 &&
-                                       schedule.totalCount == schedule.completedCount {
-                                        // 모달 표시
-                                        let modalVC = completemodalController()
-                                        modalVC.modalPresentationStyle = .overFullScreen
-                                        modalVC.modalTransitionStyle = .crossDissolve
-                                        self?.present(modalVC, animated: true)
-                                    }
-                                       
+                    
+                    let modalShownKey = "modalShown_\(today)"
+                    let hasModalBeenShown = UserDefaults.standard.bool(forKey: modalShownKey)
+                    
+                    
+                    // 일정이 있고 모두 완료되었을 때만 모달 표시
+                    if schedule.totalCount > 0 &&
+                        schedule.totalCount == schedule.completedCount && !hasModalBeenShown {
+                        // 모달 표시
+                        let modalVC = completemodalController()
+                        modalVC.modalPresentationStyle = .overFullScreen
+                        modalVC.modalTransitionStyle = .crossDissolve
+                        self?.present(modalVC, animated: true)
+                        UserDefaults.standard.set(true, forKey: modalShownKey)
+                        
+                    }
+                    
                 }
                 
             case .failure(let error):
@@ -304,7 +373,7 @@ extension MainViewController {
         
         
         guard let schedule = dailySchedule else { return }
-//        taskData = []
+        //        taskData = []
         
         schedule.details.forEach { detail in
             taskData.append((type: .detail, task: detail))
@@ -382,7 +451,7 @@ extension MainViewController {
             print("===============================\n")
         }
     }
-
+    
     
 }
 
