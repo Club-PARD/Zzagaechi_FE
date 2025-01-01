@@ -41,6 +41,7 @@ class SeperateTaskView : UIView {
         super.init(frame: frame)
         setTable()
         setUI()
+        addInitialCells()
         touchAction()
         plusTaskButton.addTarget(self, action:  #selector(plusAction), for: .touchUpInside)
         
@@ -77,6 +78,18 @@ class SeperateTaskView : UIView {
         
     }
     
+    private func addInitialCells() {
+            // 3개의 빈 셀 추가
+            for _ in 0..<2 {
+                task.append("")  // 빈 문자열로 초기화
+                let indexPath = IndexPath(row: task.count - 1, section: 0)
+                seperateTaskTableView.insertRows(at: [indexPath], with: .none)
+            }
+            
+            // 테이블뷰 높이 업데이트
+            updateViewHeight()
+        }
+        
     func touchAction() {
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleBackgroundTap))

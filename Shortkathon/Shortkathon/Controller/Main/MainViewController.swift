@@ -251,6 +251,21 @@ extension MainViewController {
                 print(schedule)
                 DispatchQueue.main.async {
                     self?.updateUI()
+                    let allPlansCompleted = !schedule.plans.isEmpty &&
+                                        schedule.plans.allSatisfy { $0.completed }
+                                    let allDetailsCompleted = !schedule.details.isEmpty &&
+                                        schedule.details.allSatisfy { $0.completed }
+                                    
+                                    // 일정이 있고 모두 완료되었을 때만 모달 표시
+                                    if schedule.totalCount > 0 &&
+                                       schedule.totalCount == schedule.completedCount {
+                                        // 모달 표시
+                                        let modalVC = completemodalController()
+                                        modalVC.modalPresentationStyle = .overFullScreen
+                                        modalVC.modalTransitionStyle = .crossDissolve
+                                        self?.present(modalVC, animated: true)
+                                    }
+                                       
                 }
                 
             case .failure(let error):

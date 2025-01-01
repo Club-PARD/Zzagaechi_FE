@@ -176,11 +176,12 @@ class completemodalController: UIViewController {
             closeButton.heightAnchor.constraint(equalToConstant: 24),
             
             mainLabel.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            mainLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 64),
+            mainLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 35.32),
             mainLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 51),
             mainLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -56),
             
-            fireImageView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 36),
+            fireImageView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            fireImageView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 55.88),
             fireImageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 62),
             fireImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -48.25),
             
@@ -234,6 +235,7 @@ class completemodalController: UIViewController {
         }
     }
 }
+
 
 
 

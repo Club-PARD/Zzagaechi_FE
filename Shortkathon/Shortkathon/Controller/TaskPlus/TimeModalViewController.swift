@@ -86,7 +86,7 @@ class TimeModalViewController: UIViewController {
     let datePicker: UIDatePicker = {
         let picker = UIDatePicker()
         picker.locale = Locale(identifier: "ko_KR")
-        picker.tintColor = .white
+        picker.tintColor = .systemBlue
         picker.translatesAutoresizingMaskIntoConstraints = false
         return picker
     }()

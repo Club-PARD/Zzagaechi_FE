@@ -87,7 +87,7 @@ class AddDetailScheduleViewController4 : UIViewController {
     
     let titleLabel : UILabel = {
         let label = UILabel()
-        label.text = "할 일들을 요일별로\n배분해보아요!"
+        label.text = "세분화 한 일들을 요일별로\n나눠 등록해보세요!"
         label.font = UIFont(name: "Pretendard-SemiBold", size: 28)
         label.numberOfLines = 0
         return label

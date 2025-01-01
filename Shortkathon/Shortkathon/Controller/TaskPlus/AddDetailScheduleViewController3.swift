@@ -171,6 +171,9 @@ class AddDetailScheduleViewController3 : UIViewController {
            tableUIView.delegate = self
        }
     
+    
+    
+    
     private func updateNextButtonState() {
         if hasTableContent {
             nextButton.isEnabled = true
