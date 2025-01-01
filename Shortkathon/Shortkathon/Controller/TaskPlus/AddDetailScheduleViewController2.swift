@@ -57,7 +57,7 @@ class AddDetailScheduleViewController2 : UIViewController {
         let combinedText = "\(firstPart)\n\(secondPart)"
         
         label.text = combinedText
-        label.font = UIFont(name: "Pretendard-Regular", size: 30)//볼더임
+        label.font = UIFont(name: "Pretendard-SemiBold", size: 30)//볼더임
         label.textColor = #colorLiteral(red: 0.9999999881, green: 0.9999999881, blue: 0.9999999881, alpha: 1)
         label.numberOfLines = 0 // 여러 줄 지원
         label.lineBreakMode = .byWordWrapping // 단어 단위로 줄바꿈

@@ -46,7 +46,7 @@ class AddDetailScheduleViewController1 : UIViewController {
         
         label.text = combinedText
         label.font = .systemFont(ofSize: 30)
-        label.font = UIFont(name: "Pretendard-Regular", size: 30)//볼더임
+        label.font = UIFont(name: "Pretendard-SemiBold", size: 30)//볼더임
         label.textColor = #colorLiteral(red: 0.9999999881, green: 0.9999999881, blue: 0.9999999881, alpha: 1)
         label.numberOfLines = 0 // 여러 줄 지원
         label.lineBreakMode = .byWordWrapping // 단어 단위로 줄바꿈
@@ -57,7 +57,7 @@ class AddDetailScheduleViewController1 : UIViewController {
     let subLabel: UILabel = {
         let label = UILabel()
         label.text = "어떤 일을 해야 하는지 제목을 입력해주세요"
-        label.font = UIFont(name: "Pretendard-Regular", size: 15)
+        label.font = UIFont(name: "Pretendard-Medium", size: 15)
         label.textColor = #colorLiteral(red: 0.6901960784, green: 0.6901960784, blue: 0.6901960784, alpha: 1)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label

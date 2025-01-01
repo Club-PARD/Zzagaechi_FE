@@ -241,14 +241,6 @@ class TimeModalViewController: UIViewController {
     }
     
     
-    //    @objc private func datePickerValueChanged() {
-    //        if currentStep != .date {
-    //            let formatter = DateFormatter()
-    //            formatter.dateFormat = "a HH:mm"
-    //            timeLabel.text = formatter.string(from: datePicker.date)
-    //        }
-    //    }
-    
     
     @objc private func datePickerValueChanged() {
         if currentStep != .date {
