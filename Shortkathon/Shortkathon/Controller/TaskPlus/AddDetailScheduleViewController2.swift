@@ -177,6 +177,7 @@ class AddDetailScheduleViewController2 : UIViewController {
     let nextButton : UIButton = {
         let button = UIButton()
         button.setTitle("다음", for: .normal)
+        button.titleLabel?.font = UIFont(name: "Pretendard-Bold", size: 15)
         button.setTitleColor(#colorLiteral(red: 0.9999999881, green: 0.9999999881, blue: 0.9999999881, alpha: 1), for: .normal)
         button.backgroundColor = .clear
         button.layer.cornerRadius = 12
