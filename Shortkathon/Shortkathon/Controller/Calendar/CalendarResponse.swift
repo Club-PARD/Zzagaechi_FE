@@ -10,6 +10,7 @@ struct SimplePlan: Codable {
     let plantitle: String
     let startDate: String
     let endDate: String
+    let startTime: String?
 }
 
 struct DetailedPlan: Codable {
