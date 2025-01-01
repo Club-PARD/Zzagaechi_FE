@@ -14,16 +14,7 @@ class MainViewController : UIViewController {
     }
     
     var taskData : [(type: TaskType, task : Any)] = []
-    
-    
-    
-    
-    var toDayTask : [String] = ["로고 레퍼런스 찾기","로고 틀 짜기", "하나로 마트 가서 세제 사기"] // 더미 데이터
-    
-    
-    //    var taskData: [(type: TaskType, task: Any)] = []
-    
-    
+    var toDayTask : [String] = ["로고 레퍼런스 찾기","로고 틀 짜기", "하나로 마트 가서 세제 사기"]
     
     let titleLabel : UILabel = {
         let label = UILabel()
@@ -76,8 +67,6 @@ class MainViewController : UIViewController {
         return image
     }()
     
-    
-    
     let taskTableView : UITableView = {
         let view = UITableView()
         view.showsVerticalScrollIndicator = false
@@ -110,7 +99,6 @@ class MainViewController : UIViewController {
         
         view.bringSubviewToFront(titleLabel) // titleLabel을 항상 위로
         
-        
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: view.topAnchor ,constant: 102),
             titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 27),
@@ -118,7 +106,7 @@ class MainViewController : UIViewController {
             toDoLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 140 ),
             toDoLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant:   26),
             
-            image1.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            image1.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor ,constant: -60),
             image1.topAnchor.constraint(equalTo: view.topAnchor, constant: 190),
             image1.widthAnchor.constraint(equalToConstant: 188),
             image1.heightAnchor.constraint(equalToConstant: 191),
@@ -128,8 +116,7 @@ class MainViewController : UIViewController {
             image2.widthAnchor.constraint(equalToConstant: 123),
             image2.heightAnchor.constraint(equalToConstant: 89),
             
-            
-            image3.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -13),
+            image3.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 13),
             image3.topAnchor.constraint(equalTo: view.topAnchor, constant: 222),
             image3.widthAnchor.constraint(equalToConstant: 130),
             image3.heightAnchor.constraint(equalToConstant: 130),
@@ -153,11 +140,7 @@ class MainViewController : UIViewController {
         taskTableView.dataSource = self
         taskTableView.register(MainTableViewCell.self, forCellReuseIdentifier: "mainTableViewCell")
     }
-    
-    
 }
-
-
 //MARK: - tableview Extension
 
 extension MainViewController: UITableViewDataSource, UITableViewDelegate {
@@ -255,14 +238,7 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
         configuration.performsFirstActionWithFullSwipe = false
         return configuration
     }
-    
-    
-    
-    
 }
-
-
-
 
 //MARK: - 이미지 애니메이션
 extension MainViewController {
