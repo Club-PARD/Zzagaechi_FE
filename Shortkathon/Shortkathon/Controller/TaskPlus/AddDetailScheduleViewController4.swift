@@ -17,7 +17,7 @@ class AddDetailScheduleViewController4 : UIViewController {
     var planSubId : Int?
     var selectedDate: Date?
     private weak var selectedCell: UITableViewCell?
-
+    
     private var dates: [(date: String, day: String)] = []
     
     enum DateCellSate {
@@ -53,7 +53,7 @@ class AddDetailScheduleViewController4 : UIViewController {
         let button = UIButton()
         let image = UIImage(named: "Icon-3")
         button.setImage(image, for: .normal)
-    
+        
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -81,7 +81,7 @@ class AddDetailScheduleViewController4 : UIViewController {
         button.backgroundColor = #colorLiteral(red: 0.5591031909, green: 0.571234405, blue: 0.5998923779, alpha: 1)
         button.layer.cornerRadius = 12
         button.tintColor = .white
-        button.isEnabled = false
+        //        button.isEnabled = false
         return button
     }()
     
@@ -247,6 +247,7 @@ class AddDetailScheduleViewController4 : UIViewController {
         let vc = SchedulemodalController()
         vc.modalPresentationStyle = .overFullScreen
         vc.modalTransitionStyle = .crossDissolve
+        postPlanSubDetail()
         present(vc, animated: true)
     }
     
@@ -265,7 +266,7 @@ extension AddDetailScheduleViewController4 : UITableViewDelegate,UITableViewData
         
         cell.taskLabel.text = taskList[indexPath.row]
         cell.delegate = self // Delegate 연결
-
+        
         
         return cell
     }
@@ -277,7 +278,7 @@ extension AddDetailScheduleViewController4 : UITableViewDelegate,UITableViewData
     }
     
     
-   
+    
     
 }
 
@@ -296,7 +297,7 @@ extension AddDetailScheduleViewController4: Page4TaskTableViewCellDelegate {
         detailVC.availableStartDate = startDate
         detailVC.availableEndDate = endDate
         selectedCell = cell  // 선택된 셀 저장
-
+        
         detailVC.modalPresentationStyle = .overCurrentContext
         detailVC.modalTransitionStyle = .crossDissolve
         present(detailVC, animated: true, completion: nil)
@@ -324,5 +325,145 @@ extension AddDetailScheduleViewController4: TimeModalViewControllerDelegate {
             let endTimeString = dateFormatter.string(from: end)
             cell.timeLabel.text = "\(startTimeString)~\(endTimeString)"
         }
+    }
+}
+
+
+//MARK: - 서버 통신
+
+extension AddDetailScheduleViewController4 {
+    func postPlanSubDetail() {
+        guard let planSubId = planSubId else {
+            print("❌ planSubId가 없습니다")
+            return
+        }
+        
+        print("\n🔍 API 요청 정보 ===============")
+        print("📡 URL: /plansubdetail/\(planSubId)")
+        
+        var details: [DetailTask] = []
+        
+        for i in 0..<taskList.count {
+            if let cell = taskTableView.cellForRow(at: IndexPath(row: i, section: 0)) as? Page4TaskTableViewCell,
+               let dateText = cell.dateLabel.text,
+               let timeText = cell.timeLabel.text {
+                
+                let dateFormatter = DateFormatter()
+                dateFormatter.locale = Locale(identifier: "ko_KR")
+                dateFormatter.dateFormat = "yyyy년 M월 d일"
+                
+                if let date = dateFormatter.date(from: dateText) {
+                    dateFormatter.dateFormat = "yyyy-MM-dd"
+                    let formattedDate = dateFormatter.string(from: date)
+                    
+                    let times = timeText.split(separator: "~").map(String.init)
+                    if times.count == 2 {
+                        let timeFormatter = DateFormatter()
+                        timeFormatter.locale = Locale(identifier: "ko_KR")
+                        timeFormatter.dateFormat = "a h:mm"
+                        
+                        if let startTime = timeFormatter.date(from: times[0].trimmingCharacters(in: .whitespaces)),
+                           let endTime = timeFormatter.date(from: times[1].trimmingCharacters(in: .whitespaces)) {
+                            
+                            timeFormatter.dateFormat = "HH:mm"
+                            let formattedStartTime = timeFormatter.string(from: startTime)
+                            let formattedEndTime = timeFormatter.string(from: endTime)
+                            
+                            let content = taskList[i]
+                            let detail = DetailTask(
+                                content: content,
+                                date: formattedDate,
+                                startTime: formattedStartTime,
+                                endTime: formattedEndTime
+                            )
+                            details.append(detail)
+                            
+                            print("✅ 변환된 데이터:")
+                            print("- Content: \(content)")
+                            print("- Date: \(formattedDate)")
+                            print("- Start Time: \(formattedStartTime)")
+                            print("- End Time: \(formattedEndTime)")
+                        }
+                    }
+                }
+            }
+        }
+        
+        let planSubDetail = PlanSubDetail(details: details)
+        
+        // JSON 데이터로 변환
+        do {
+            let jsonData = try JSONEncoder().encode(planSubDetail)
+            
+            // 디버깅을 위한 JSON 출력
+            if let jsonString = String(data: jsonData, encoding: .utf8) {
+                print("\n📦 전송될 JSON 데이터:")
+                print(jsonString)
+            }
+            
+            // APIService 호출
+            APIService.shared.postData(
+                endpoint: "/plansubdetail/\(planSubId)",
+                jsonData: jsonData
+            ) { (result: Result<APIResponse, Error>) in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let response):
+                        print("✅ 세부 일정 등록 성공: \(response)")
+                        let vc = SchedulemodalController()
+                        vc.modalPresentationStyle = .overFullScreen
+                        vc.modalTransitionStyle = .crossDissolve
+                        self.present(vc, animated: true)
+                        
+                    case .failure(let error):
+                        print("❌ 세부 일정 등록 실패: \(error.localizedDescription)")
+                        let alert = UIAlertController(
+                            title: "오류",
+                            message: "일정 등록에 실패했습니다. 다시 시도해주세요.",
+                            preferredStyle: .alert
+                        )
+                        alert.addAction(UIAlertAction(title: "확인", style: .default))
+                        self.present(alert, animated: true)
+                    }
+                }
+            }
+        } catch {
+            print("❌ JSON 변환 실패: \(error)")
+            let alert = UIAlertController(
+                title: "오류",
+                message: "데이터 처리 중 오류가 발생했습니다.",
+                preferredStyle: .alert
+            )
+            alert.addAction(UIAlertAction(title: "확인", style: .default))
+            present(alert, animated: true)
+        }
+    }
+
+            
+    
+}
+
+
+
+
+struct PlanSubDetail: Codable {
+    let details: [DetailTask]
+}
+
+struct DetailTask: Codable {
+    let content: String
+    let date: String
+    let startTime: String
+    let endTime: String
+}
+
+
+extension Encodable {
+    func asDictionary() throws -> [String: Any] {
+        let data = try JSONEncoder().encode(self)
+        guard let dictionary = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any] else {
+            throw NSError(domain: "JSONSerialization", code: -1, userInfo: nil)
+        }
+        return dictionary
     }
 }

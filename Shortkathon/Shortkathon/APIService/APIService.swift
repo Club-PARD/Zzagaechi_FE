@@ -12,6 +12,23 @@ class APIService {
     
     private init() {}
     
+    func postData<T: Codable>(endpoint: String, jsonData: Data, completion: @escaping (Result<T, Error>) -> Void) {
+        let urlString = "\(baseURL)\(endpoint)"
+        
+        print("📡 POST 요청 시작 (JSON 데이터) ===============")
+        print("URL: \(urlString)")
+        
+        AF.request(urlString,
+                   method: .post,
+                   parameters: nil,
+                   encoding: JSONEncoding.default,
+                   headers: ["Content-Type": "application/json",
+                             "accept": "application/json"])
+            .validate()
+            .responseDecodable(of: T.self) { response in
+                self.handleResponse(response, completion: completion)
+            }
+    }
     // GET 요청
     func get<T: Codable>(endpoint: String, completion: @escaping (Result<T, Error>) -> Void) {
         let urlString = "\(baseURL)\(endpoint)"
@@ -83,6 +100,10 @@ class APIService {
             self.handleResponse(response, completion: completion)
         }
     }
+    
+    
+    
+    
     
     // 응답 처리 헬퍼 메서드
     private func handleResponse<T: Codable>(_ response: DataResponse<T, AFError>, completion: @escaping (Result<T, Error>) -> Void) {
