@@ -130,7 +130,24 @@ class APIService {
         }
     }
     
-    // DELETE 요청
+//    // DELETE 요청
+//    func delete<T: Codable>(endpoint: String, completion: @escaping (Result<T, Error>) -> Void) {
+//        let urlString = "\(baseURL)\(endpoint)"
+//        
+//        print("📡 DELETE 요청 시작 ===============")
+//        print("URL: \(urlString)")
+//        
+//        AF.request(urlString,
+//                  method: .delete,
+//                  headers: ["accept": "application/json"])
+//        .validate()
+//        .responseDecodable(of: T.self) { response in
+//            self.handleResponse(response, completion: completion)
+//        }
+//    }
+    
+    
+    
     func delete<T: Codable>(endpoint: String, completion: @escaping (Result<T, Error>) -> Void) {
         let urlString = "\(baseURL)\(endpoint)"
         
@@ -141,12 +158,38 @@ class APIService {
                   method: .delete,
                   headers: ["accept": "application/json"])
         .validate()
-        .responseDecodable(of: T.self) { response in
-            self.handleResponse(response, completion: completion)
+        .response { response in  // responseDecodable 대신 response 사용
+            print("\n📡 서버 응답 ===============")
+            
+            if let statusCode = response.response?.statusCode {
+                print("상태 코드: \(statusCode)")
+                
+                if statusCode == 200 {
+                    // 성공 시 EmptyResponse 생성
+                    if let emptyResponse = EmptyResponse() as? T {
+                        completion(.success(emptyResponse))
+                    } else {
+                        completion(.failure(NSError(domain: "", code: -1,
+                            userInfo: [NSLocalizedDescriptionKey: "응답 변환 실패"])))
+                    }
+                } else {
+                    completion(.failure(NSError(domain: "", code: statusCode,
+                        userInfo: [NSLocalizedDescriptionKey: "서버 에러"])))
+                }
+            }
+            
+            if let headers = response.response?.allHeaderFields {
+                print("헤더 필드:")
+                headers.forEach { key, value in
+                    print("\(key): \(value)")
+                }
+            }
+            print("===============================")
         }
     }
     
-    //patch 
+    
+    //patch
     func patch<T: Codable>(endpoint: String, parameters: [String: Any], completion: @escaping (Result<T, Error>) -> Void) {
         let urlString = "\(baseURL)\(endpoint)"
         

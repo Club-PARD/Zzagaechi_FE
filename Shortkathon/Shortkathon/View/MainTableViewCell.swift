@@ -84,8 +84,13 @@ class MainTableViewCell : UITableViewCell {
         super.layoutSubviews()
         // 레이아웃이 변경될 때마다 줄의 위치 업데이트
         if checkButton.isSelected {
-//            addStrikethrough()
+            //            addStrikethrough()
         }
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        resetCell()
     }
     //MARK: - function
     func setUI(){
@@ -122,21 +127,38 @@ class MainTableViewCell : UITableViewCell {
         
     }
     
-   
+    // 셀 초기화
+    private func resetCell() {
+        taskLabel.removeFromSuperview()
+        titleTaskLabel.removeFromSuperview()
+        timeLabel.removeFromSuperview()
+        
+        taskLabel.text = nil
+        titleTaskLabel.text = nil
+        timeLabel.text = nil
+        checkButton.isSelected = false
+        currentTask = nil
+        
+        taskLabel.font = UIFont(name: "Pretendard-Regular", size: 17)
+        taskLabel.textColor = #colorLiteral(red: 0.6606984735, green: 0.6606983542, blue: 0.6606983542, alpha: 1)
+        cellView.layer.borderColor = #colorLiteral(red: 0.7294117647, green: 0.8117647059, blue: 0.9568627451, alpha: 1).cgColor
+    }
+    
     
     @objc private func checkButtonTapped(_ sender: UIButton) {
-          sender.isSelected.toggle()
-          if let task = currentTask {
-              delegate?.didToggleCheckbox(for: task, isSelected: sender.isSelected)
-          }
-      }
-      
+        sender.isSelected.toggle()
+        if let task = currentTask {
+            delegate?.didToggleCheckbox(for: task, isSelected: sender.isSelected)
+        }
+    }
+    
     
     func configure(with plan: Plan, type: CellType) {
+        resetCell()
         taskLabel.text = plan.plantitle
         timeLabel.isHidden = true
         currentTask = plan
-
+        
         titleTaskLabel.isHidden = true
         taskLabel.removeFromSuperview()
         checkButton.setImage(UIImage(named: "noCheckPlan"), for: .normal)
@@ -152,17 +174,18 @@ class MainTableViewCell : UITableViewCell {
         // 노란색 테마 적용
         cellView.layer.borderColor = #colorLiteral(red: 0.9568627451, green: 0.9450980392, blue: 0.7294117647, alpha: 1).cgColor  // 노란색
         checkButton.isSelected = plan.completed
-    
+        
     }
     
     func configure(with detail: Detail, type: CellType) {
+        resetCell()
         taskLabel.text = detail.plansubtitle
         titleTaskLabel.text = detail.content
         currentTask = detail
         taskLabel.font = UIFont(name: "Pretendard-Regular", size: 12)
         titleTaskLabel.font = UIFont(name: "Pretendard-Regular", size: 17)
         
-
+        
         let startTime = detail.startTime.prefix(5)
         let endTime = detail.endTime.prefix(5)
         timeLabel.text = "\(startTime)~\(endTime)"
@@ -191,8 +214,8 @@ class MainTableViewCell : UITableViewCell {
         // 파란색 테마 적용
         cellView.layer.borderColor = #colorLiteral(red: 0.7294117647, green: 0.8117647059, blue: 0.9568627451, alpha: 1).cgColor  // 파란색
         checkButton.isSelected = detail.completed
-
-
+        
+        
     }
     
 }

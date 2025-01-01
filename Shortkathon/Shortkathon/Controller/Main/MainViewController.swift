@@ -90,6 +90,13 @@ class MainViewController : UIViewController {
         sendToggledTasks()
     }
     
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // 화면이 나타날 때마다 데이터 새로고침
+        fetchDailySchedule()
+    }
+    
     //MARK: - function
     func setUI(){
         [titleLabel, toDoLabel,image1,image2,image3,image4,taskTableView].forEach{
@@ -185,46 +192,44 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
             guard let userId = self.userId else { return }
             var endpoint: String
             
+            // 디버깅 로그
+            print("🟢 삭제 요청 시작")
+            print("📍 IndexPath: \(indexPath.row)")
+            print("📦 삭제할 데이터: \(taskItem)")
+            
+            // 네트워크 엔드포인트 설정
             switch taskItem.type {
             case .detail:
                 if let detail = taskItem.task as? Detail {
                     endpoint = "/plansubdetail/\(userId)/\(detail.detailId)"
-                    print("🟢 삭제 요청")
-                    print("🔗 엔드포인트: \(endpoint)")
-                    print("📦 데이터: \(taskItem)")
-                    self.apiService.delete(endpoint: endpoint) { (result: Result<APIResponse, Error>) in
-                        switch result {
-                        case .success(_):
-                            DispatchQueue.main.async {
-                                // 삭제 성공 후 데이터 새로고침
-                                self.taskData.removeAll()  // 기존 데이터 초기화
-                                self.fetchDailySchedule()
-                                self.taskTableView.reloadData()
-                                // 데이터 다시 불러오기
-                            }
-                        case .failure(let error):
-                            print("삭제 실패: \(error.localizedDescription)")
-                        }
-                    }
-                }
+                } else { return }
             case .plan:
                 if let plan = taskItem.task as? Plan {
                     endpoint = "/plan/\(userId)/\(plan.planId)"
-                    print("🟢 삭제 요청")
-                    print("🔗 엔드포인트: \(endpoint)")
-                    print("📦 데이터: \(taskItem)")
-                    self.apiService.delete(endpoint: endpoint) { (result: Result<APIResponse, Error>) in
-                        switch result {
-                        case .success(_):
-                            DispatchQueue.main.async {
-                                // 삭제 성공 후 데이터 새로고침
-                                self.taskData.removeAll()  // 기존 데이터 초기화
-                                self.fetchDailySchedule()
-                                self.taskTableView.reloadData()// 데이터 다시 불러오기
-                            }
-                        case .failure(let error):
-                            print("삭제 실패: \(error.localizedDescription)")
-                        }
+                } else { return }
+            }
+            
+            // API 삭제 요청
+            self.apiService.delete(endpoint: endpoint) { (result: Result<EmptyResponse, Error>) in
+                switch result {
+                case .success:
+                    DispatchQueue.main.async {
+                        self.taskData.remove(at: indexPath.row)
+                     
+                        
+                        
+                        tableView.beginUpdates()
+                        tableView.deleteRows(at: [indexPath], with: .automatic)
+                        tableView.endUpdates()
+                        
+                        print("✅ 삭제 성공")
+                        print("📦 남은 데이터: \(self.taskData)")
+                    }
+                case .failure(let error):
+                    DispatchQueue.main.async {
+                        
+                        print("❌ 삭제 실패: \(error.localizedDescription)")
+                        
                     }
                 }
             }
@@ -347,7 +352,8 @@ extension MainViewController {
     
     private func updateUI() {
         
-        
+        taskData.removeAll()
+
         guard let schedule = dailySchedule else { return }
         //        taskData = []
         

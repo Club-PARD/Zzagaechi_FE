@@ -26,13 +26,30 @@ class AddDetailScheduleViewController2 : UIViewController {
         return label
     }()
     
-    let backButton : UIButton = {
-        let button = UIButton()
-        let image = UIImage(named: "Icon-3")
-        button.setImage(image, for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
+//    let backButton : UIButton = {
+//        let button = UIButton()
+//        let image = UIImage(named: "Icon-3")
+//        button.setImage(image, for: .normal)
+//        button.translatesAutoresizingMaskIntoConstraints = false
+//        return button
+//    }()
+        let backButton: UIButton = {
+            var config = UIButton.Configuration.plain()
+            config.attributedTitle = AttributedString("제목", attributes: AttributeContainer([
+                .font: UIFont(name: "Pretendard-Regular", size: 16.0),
+                .foregroundColor: UIColor(red: 0.6817840338, green: 0.6817839742, blue: 0.6817840338, alpha: 1)
+            ]))
+            config.image = UIImage(named: "Icon-3")
+            config.imagePlacement = .leading
+            config.imagePadding = 8
+            config.contentInsets = NSDirectionalEdgeInsets(top: 3, leading: 3, bottom: 12, trailing: 26)
+            let button = UIButton(configuration: config)
+            button.translatesAutoresizingMaskIntoConstraints = false
+            return button
+        }()
+    
+
+    
     
     let cancelButton : UIButton = {
         let button = UIButton()
