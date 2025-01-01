@@ -14,16 +14,7 @@ class MainViewController : UIViewController {
     }
     
     var taskData : [(type: TaskType, task : Any)] = []
-    
-    
-    
-    
-    var toDayTask : [String] = ["로고 레퍼런스 찾기","로고 틀 짜기", "하나로 마트 가서 세제 사기"] // 더미 데이터
-    
-    
-    //    var taskData: [(type: TaskType, task: Any)] = []
-    
-    
+    var toDayTask : [String] = ["로고 레퍼런스 찾기","로고 틀 짜기", "하나로 마트 가서 세제 사기"]
     
     let titleLabel : UILabel = {
         let label = UILabel()
@@ -76,8 +67,6 @@ class MainViewController : UIViewController {
         return image
     }()
     
-    
-    
     let taskTableView : UITableView = {
         let view = UITableView()
         view.showsVerticalScrollIndicator = false
@@ -101,6 +90,13 @@ class MainViewController : UIViewController {
         sendToggledTasks()
     }
     
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // 화면이 나타날 때마다 데이터 새로고침
+        fetchDailySchedule()
+    }
+    
     //MARK: - function
     func setUI(){
         [titleLabel, toDoLabel,image1,image2,image3,image4,taskTableView].forEach{
@@ -110,7 +106,6 @@ class MainViewController : UIViewController {
         
         view.bringSubviewToFront(titleLabel) // titleLabel을 항상 위로
         
-        
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: view.topAnchor ,constant: 102),
             titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 27),
@@ -118,7 +113,7 @@ class MainViewController : UIViewController {
             toDoLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 140 ),
             toDoLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant:   26),
             
-            image1.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            image1.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor ,constant: -60),
             image1.topAnchor.constraint(equalTo: view.topAnchor, constant: 190),
             image1.widthAnchor.constraint(equalToConstant: 188),
             image1.heightAnchor.constraint(equalToConstant: 191),
@@ -128,8 +123,7 @@ class MainViewController : UIViewController {
             image2.widthAnchor.constraint(equalToConstant: 123),
             image2.heightAnchor.constraint(equalToConstant: 89),
             
-            
-            image3.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -13),
+            image3.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 13),
             image3.topAnchor.constraint(equalTo: view.topAnchor, constant: 222),
             image3.widthAnchor.constraint(equalToConstant: 130),
             image3.heightAnchor.constraint(equalToConstant: 130),
@@ -153,11 +147,7 @@ class MainViewController : UIViewController {
         taskTableView.dataSource = self
         taskTableView.register(MainTableViewCell.self, forCellReuseIdentifier: "mainTableViewCell")
     }
-    
-    
 }
-
-
 //MARK: - tableview Extension
 
 extension MainViewController: UITableViewDataSource, UITableViewDelegate {
@@ -182,7 +172,7 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
             }
         }
         
-        
+        cell.selectionStyle = .none
         return cell
     }
     
@@ -202,46 +192,44 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
             guard let userId = self.userId else { return }
             var endpoint: String
             
+            // 디버깅 로그
+            print("🟢 삭제 요청 시작")
+            print("📍 IndexPath: \(indexPath.row)")
+            print("📦 삭제할 데이터: \(taskItem)")
+            
+            // 네트워크 엔드포인트 설정
             switch taskItem.type {
             case .detail:
                 if let detail = taskItem.task as? Detail {
                     endpoint = "/plansubdetail/\(userId)/\(detail.detailId)"
-                    print("🟢 삭제 요청")
-                    print("🔗 엔드포인트: \(endpoint)")
-                    print("📦 데이터: \(taskItem)")
-                    self.apiService.delete(endpoint: endpoint) { (result: Result<APIResponse, Error>) in
-                        switch result {
-                        case .success(_):
-                            DispatchQueue.main.async {
-                                // 삭제 성공 후 데이터 새로고침
-                                self.taskData.removeAll()  // 기존 데이터 초기화
-                                self.fetchDailySchedule()
-                                self.taskTableView.reloadData()
-                                // 데이터 다시 불러오기
-                            }
-                        case .failure(let error):
-                            print("삭제 실패: \(error.localizedDescription)")
-                        }
-                    }
-                }
+                } else { return }
             case .plan:
                 if let plan = taskItem.task as? Plan {
                     endpoint = "/plan/\(userId)/\(plan.planId)"
-                    print("🟢 삭제 요청")
-                    print("🔗 엔드포인트: \(endpoint)")
-                    print("📦 데이터: \(taskItem)")
-                    self.apiService.delete(endpoint: endpoint) { (result: Result<APIResponse, Error>) in
-                        switch result {
-                        case .success(_):
-                            DispatchQueue.main.async {
-                                // 삭제 성공 후 데이터 새로고침
-                                self.taskData.removeAll()  // 기존 데이터 초기화
-                                self.fetchDailySchedule()
-                                self.taskTableView.reloadData()// 데이터 다시 불러오기
-                            }
-                        case .failure(let error):
-                            print("삭제 실패: \(error.localizedDescription)")
-                        }
+                } else { return }
+            }
+            
+            // API 삭제 요청
+            self.apiService.delete(endpoint: endpoint) { (result: Result<EmptyResponse, Error>) in
+                switch result {
+                case .success:
+                    DispatchQueue.main.async {
+                        self.taskData.remove(at: indexPath.row)
+                     
+                        
+                        
+                        tableView.beginUpdates()
+                        tableView.deleteRows(at: [indexPath], with: .automatic)
+                        tableView.endUpdates()
+                        
+                        print("✅ 삭제 성공")
+                        print("📦 남은 데이터: \(self.taskData)")
+                    }
+                case .failure(let error):
+                    DispatchQueue.main.async {
+                        
+                        print("❌ 삭제 실패: \(error.localizedDescription)")
+                        
                     }
                 }
             }
@@ -255,14 +243,7 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
         configuration.performsFirstActionWithFullSwipe = false
         return configuration
     }
-    
-    
-    
-    
 }
-
-
-
 
 //MARK: - 이미지 애니메이션
 extension MainViewController {
@@ -371,7 +352,8 @@ extension MainViewController {
     
     private func updateUI() {
         
-        
+        taskData.removeAll()
+
         guard let schedule = dailySchedule else { return }
         //        taskData = []
         

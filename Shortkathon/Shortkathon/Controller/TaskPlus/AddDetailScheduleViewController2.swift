@@ -26,13 +26,30 @@ class AddDetailScheduleViewController2 : UIViewController {
         return label
     }()
     
-    let backButton : UIButton = {
-        let button = UIButton()
-        let image = UIImage(named: "Icon-3")
-        button.setImage(image, for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
+//    let backButton : UIButton = {
+//        let button = UIButton()
+//        let image = UIImage(named: "Icon-3")
+//        button.setImage(image, for: .normal)
+//        button.translatesAutoresizingMaskIntoConstraints = false
+//        return button
+//    }()
+        let backButton: UIButton = {
+            var config = UIButton.Configuration.plain()
+            config.attributedTitle = AttributedString("제목", attributes: AttributeContainer([
+                .font: UIFont(name: "Pretendard-Regular", size: 16.0),
+                .foregroundColor: UIColor(red: 0.6817840338, green: 0.6817839742, blue: 0.6817840338, alpha: 1)
+            ]))
+            config.image = UIImage(named: "Icon-3")
+            config.imagePlacement = .leading
+            config.imagePadding = 8
+            config.contentInsets = NSDirectionalEdgeInsets(top: 3, leading: 3, bottom: 12, trailing: 26)
+            let button = UIButton(configuration: config)
+            button.translatesAutoresizingMaskIntoConstraints = false
+            return button
+        }()
+    
+
+    
     
     let cancelButton : UIButton = {
         let button = UIButton()
@@ -57,7 +74,7 @@ class AddDetailScheduleViewController2 : UIViewController {
         let combinedText = "\(firstPart)\n\(secondPart)"
         
         label.text = combinedText
-        label.font = UIFont(name: "Pretendard-Regular", size: 30)//볼더임
+        label.font = UIFont(name: "Pretendard-SemiBold", size: 30)//볼더임
         label.textColor = #colorLiteral(red: 0.9999999881, green: 0.9999999881, blue: 0.9999999881, alpha: 1)
         label.numberOfLines = 0 // 여러 줄 지원
         label.lineBreakMode = .byWordWrapping // 단어 단위로 줄바꿈

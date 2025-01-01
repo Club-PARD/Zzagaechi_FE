@@ -34,10 +34,18 @@ class AddDetailScheduleViewController3 : UIViewController {
         return label
     }()
     
-    let backButton : UIButton = {
-        let button = UIButton()
-        let image = UIImage(named: "Icon-3")
-        button.setImage(image, for: .normal)
+    
+    let backButton: UIButton = {
+        var config = UIButton.Configuration.plain()
+        config.attributedTitle = AttributedString("날짜/시간", attributes: AttributeContainer([
+            .font: UIFont(name: "Pretendard-Regular", size: 16.0),
+            .foregroundColor: UIColor(red: 0.6817840338, green: 0.6817839742, blue: 0.6817840338, alpha: 1)
+        ]))
+        config.image = UIImage(named: "Icon-3")
+        config.imagePlacement = .leading
+        config.imagePadding = 8
+        config.contentInsets = NSDirectionalEdgeInsets(top: 3, leading: 3, bottom: 12, trailing: 26)
+        let button = UIButton(configuration: config)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -95,7 +103,7 @@ class AddDetailScheduleViewController3 : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = #colorLiteral(red: 0.1372549087, green: 0.1372549087, blue: 0.1372549087, alpha: 1)
-
+        
         print("페이지 3\(planSubId)")
         setUI()
         buttonTapped()
@@ -169,8 +177,8 @@ class AddDetailScheduleViewController3 : UIViewController {
     }
     
     private func setupTableViewDelegate() {
-           tableUIView.delegate = self
-       }
+        tableUIView.delegate = self
+    }
     
     
     
@@ -273,25 +281,25 @@ class AddDetailScheduleViewController3 : UIViewController {
 
 extension AddDetailScheduleViewController3: SeperateTaskViewDelegate {
     func taskContentDidChange(hasContent: Bool) {
-            print("taskContentDidChange called: \(hasContent)")
-            if hasContent {
-                nextButton.isEnabled = true
-                applyGradient(to: nextButton, colors: [
-                    #colorLiteral(red: 0.5294117647, green: 0.6745098039, blue: 0.9411764706, alpha: 1).cgColor,
-                    #colorLiteral(red: 0.3098039216, green: 0.5019607843, blue: 0.8431372549, alpha: 1).cgColor
-                ])
-            } else {
-                nextButton.isEnabled = false
-                applyGradient(to: nextButton, colors: [
-                    #colorLiteral(red: 0.4862745098, green: 0.4980392157, blue: 0.5294117647, alpha: 1).cgColor,
-                    #colorLiteral(red: 0.4862745098, green: 0.4980392157, blue: 0.5294117647, alpha: 1).cgColor
-                ])
-            }
-            
-            // 레이아웃 업데이트
-            nextButton.setNeedsDisplay()
-            nextButton.layoutIfNeeded()
+        print("taskContentDidChange called: \(hasContent)")
+        if hasContent {
+            nextButton.isEnabled = true
+            applyGradient(to: nextButton, colors: [
+                #colorLiteral(red: 0.5294117647, green: 0.6745098039, blue: 0.9411764706, alpha: 1).cgColor,
+                #colorLiteral(red: 0.3098039216, green: 0.5019607843, blue: 0.8431372549, alpha: 1).cgColor
+            ])
+        } else {
+            nextButton.isEnabled = false
+            applyGradient(to: nextButton, colors: [
+                #colorLiteral(red: 0.4862745098, green: 0.4980392157, blue: 0.5294117647, alpha: 1).cgColor,
+                #colorLiteral(red: 0.4862745098, green: 0.4980392157, blue: 0.5294117647, alpha: 1).cgColor
+            ])
         }
+        
+        // 레이아웃 업데이트
+        nextButton.setNeedsDisplay()
+        nextButton.layoutIfNeeded()
+    }
     
 }
 

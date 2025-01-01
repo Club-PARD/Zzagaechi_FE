@@ -36,7 +36,7 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
         let combinedText = "\(firstPart)!\n\(secondPart)"
         
         label.text = combinedText
-        label.font = UIFont(name: "Pretendard-Regular", size: 30)//볼더임
+        label.font = UIFont(name: "Pretendard-SemiBold", size: 30)
         label.textColor = #colorLiteral(red: 0.9999999881, green: 0.9999999881, blue: 0.9999999881, alpha: 1)
         label.numberOfLines = 0 // 여러 줄 지원
         label.lineBreakMode = .byWordWrapping // 단어 단위로 줄바꿈
@@ -48,7 +48,7 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
         let label = UILabel()
         label.text = "한 번에 끝낼 수 있는 작업의 제목과 날짜, 시간을 입력해주세요"
         label.textColor = #colorLiteral(red: 0.6901960784, green: 0.6901960784, blue: 0.6901960784, alpha: 1)
-        label.font = UIFont(name: "Pretendard-Regular", size: 14)
+        label.font = UIFont(name: "Pretendard-Medium", size: 14)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
