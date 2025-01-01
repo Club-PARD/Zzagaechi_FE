@@ -194,66 +194,67 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: false)
     }
     
-    
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-           let deleteAction = UIContextualAction(style: .destructive, title: "삭제") { [weak self] (action, view, completion) in
-               guard let self = self else { return }
-               
-               let taskItem = self.taskData[indexPath.row]
-               guard let userId = self.userId else { return }
-               
-              
-               
-               var endpoint: String
-               
-               switch taskItem.type {
-               case .detail:
-                   if let detail = taskItem.task as? Detail {
-                       endpoint = "/plansub/\(userId)/\(detail.detailId)"
-                       print("🟢 삭제 요청")
-                       print("🔗 엔드포인트: \(endpoint)")
-                       print("📦 데이터: \(taskItem)")
-                       self.apiService.delete(endpoint: endpoint) { (result: Result<APIResponse, Error>) in
-                           switch result {
-                           case .success(_):
-                               DispatchQueue.main.async {
-                                   self.taskData.remove(at: indexPath.row)
-                                   tableView.deleteRows(at: [IndexPath(row: indexPath.row, section: 0)], with: .fade)
-                               }
-                           case .failure(let error):
-                               print("삭제 실패: \(error.localizedDescription)")
-                           }
-                       }
-                   }
-               case .plan:
-                   if let plan = taskItem.task as? Plan {
-                       endpoint = "/plan/\(userId)/\(plan.planId)"
-                       print("🟢 삭제 요청")
-                       print("🔗 엔드포인트: \(endpoint)")
-                       print("📦 데이터: \(taskItem)")
-                       self.apiService.delete(endpoint: endpoint) { (result: Result<APIResponse, Error>) in
-                           switch result {
-                           case .success(_):
-                               DispatchQueue.main.async {
-                                   self.taskData.remove(at: indexPath.row)
-                                   tableView.deleteRows(at: [IndexPath(row: indexPath.row, section: 0)], with: .fade)
-                               }
-                           case .failure(let error):
-                               print("삭제 실패: \(error.localizedDescription)")
-                           }
-                       }
-                   }
-               }
-               completion(true)
-           }
-           
-           deleteAction.backgroundColor = .red
-           deleteAction.title = "삭제"
-           
-           let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
-           configuration.performsFirstActionWithFullSwipe = false
-           return configuration
-       }
+        let deleteAction = UIContextualAction(style: .destructive, title: "삭제") { [weak self] (action, view, completion) in
+            guard let self = self else { return }
+            
+            let taskItem = self.taskData[indexPath.row]
+            guard let userId = self.userId else { return }
+            var endpoint: String
+            
+            switch taskItem.type {
+            case .detail:
+                if let detail = taskItem.task as? Detail {
+                    endpoint = "/plansubdetail/\(userId)/\(detail.detailId)"
+                    print("🟢 삭제 요청")
+                    print("🔗 엔드포인트: \(endpoint)")
+                    print("📦 데이터: \(taskItem)")
+                    self.apiService.delete(endpoint: endpoint) { (result: Result<APIResponse, Error>) in
+                        switch result {
+                        case .success(_):
+                            DispatchQueue.main.async {
+                                // 삭제 성공 후 데이터 새로고침
+                                self.taskData.removeAll()  // 기존 데이터 초기화
+                                self.fetchDailySchedule()
+                                self.taskTableView.reloadData()
+                                // 데이터 다시 불러오기
+                            }
+                        case .failure(let error):
+                            print("삭제 실패: \(error.localizedDescription)")
+                        }
+                    }
+                }
+            case .plan:
+                if let plan = taskItem.task as? Plan {
+                    endpoint = "/plan/\(userId)/\(plan.planId)"
+                    print("🟢 삭제 요청")
+                    print("🔗 엔드포인트: \(endpoint)")
+                    print("📦 데이터: \(taskItem)")
+                    self.apiService.delete(endpoint: endpoint) { (result: Result<APIResponse, Error>) in
+                        switch result {
+                        case .success(_):
+                            DispatchQueue.main.async {
+                                // 삭제 성공 후 데이터 새로고침
+                                self.taskData.removeAll()  // 기존 데이터 초기화
+                                self.fetchDailySchedule()
+                                self.taskTableView.reloadData()// 데이터 다시 불러오기
+                            }
+                        case .failure(let error):
+                            print("삭제 실패: \(error.localizedDescription)")
+                        }
+                    }
+                }
+            }
+            completion(true)
+        }
+        
+        deleteAction.backgroundColor = .red
+        deleteAction.title = "삭제"
+        
+        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+        configuration.performsFirstActionWithFullSwipe = false
+        return configuration
+    }
     
     
     

@@ -197,14 +197,34 @@ class TimeModalViewController: UIViewController {
         view.layoutIfNeeded()
     }
     
+    private func setupDatePicker() {
+        if currentStep == .date {
+            datePicker.minimumDate = availableStartDate
+            datePicker.maximumDate = availableEndDate
+        } else if currentStep == .startTime || currentStep == .endTime {
+            // 선택된 날짜가 오늘이면 현재 시간 이후만 선택 가능하도록 설정
+            if let selectedDate = selectedDate {
+                let calendar = Calendar.current
+                if calendar.isDateInToday(selectedDate) {
+                    datePicker.minimumDate = Date() // 현재 시간
+                } else {
+                    datePicker.minimumDate = nil // 시간 제한 없음
+                }
+            }
+        }
+    }
+    
     @objc private func nextButtonTapped() {
         switch currentStep {
         case .date:
-            selectedDate = datePicker.date
+            selectedDate = datePicker.date // 선택된 날짜 저장
             currentStep = .startTime
+            setupDatePicker() // 시간 선택 제한 설정 업데이트
         case .startTime:
             selectedStartTime = datePicker.date
             currentStep = .endTime
+            // 종료 시간은 시작 시간 이후로만 선택 가능하도록 설정
+            datePicker.minimumDate = selectedStartTime
         case .endTime:
             selectedEndTime = datePicker.date
             
@@ -214,6 +234,7 @@ class TimeModalViewController: UIViewController {
             dismiss(animated: true)
         }
     }
+
     
     @objc func back(){
         dismiss(animated: true)
@@ -228,3 +249,4 @@ class TimeModalViewController: UIViewController {
         }
     }
 }
+
