@@ -4,6 +4,9 @@ class MainViewController : UIViewController {
     //MARK: - property
     let apiService = APIService.shared
     var dailySchedule: DailySchedule?
+    private var toggledPlanIds: Set<Int> = []
+    private var toggledDetailIds: Set<Int> = []
+    
     var userId = UserDefaults.standard.string(forKey: "userIdentifier")
     enum TaskType {
         case plan
@@ -27,6 +30,7 @@ class MainViewController : UIViewController {
         label.font = UIFont(name: "Pretendard-Medium", size: 35)
         label.text = "작은 한 걸음이\n큰 변화를 만듭니다,\n오늘도 파이팅!"
         label.numberOfLines = 0
+        label.textColor = .white
         label.textAlignment = .left
         return label
     }()
@@ -35,13 +39,14 @@ class MainViewController : UIViewController {
         let label = UILabel()
         label.font = UIFont(name: "Pretendard-Regular", size: 24)
         label.text = "오늘의 할 일"
+        label.textColor = .white
         return label
     }()
     
     
     let image1 : UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(named: "n1-1")
+        image.image = UIImage(named: "n 최치최최종")
         image.contentMode = .scaleAspectFill
         image.clipsToBounds = true
         return image
@@ -49,7 +54,7 @@ class MainViewController : UIViewController {
     
     let image2 : UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(named: "o1")
+        image.image = UIImage(named: "O쵲옹")
         image.contentMode = .scaleAspectFill
         image.clipsToBounds = true
         return image
@@ -57,7 +62,7 @@ class MainViewController : UIViewController {
     
     let image3 : UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(named: "n2-1")
+        image.image = UIImage(named: "n 최치최최종종")
         image.contentMode = .scaleAspectFill
         image.clipsToBounds = true
         return image
@@ -65,7 +70,7 @@ class MainViewController : UIViewController {
     
     let image4 : UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(named: "a1")
+        image.image = UIImage(named: "a 쵲옹")
         image.contentMode = .scaleAspectFill
         image.clipsToBounds = true
         return image
@@ -91,6 +96,11 @@ class MainViewController : UIViewController {
         startFloatingAnimations()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+            super.viewWillDisappear(animated)
+            sendToggledTasks()
+        }
+    
     //MARK: - function
     func setUI(){
         [titleLabel, toDoLabel,image1,image2,image3,image4,taskTableView].forEach{
@@ -102,32 +112,32 @@ class MainViewController : UIViewController {
         
         
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor ,constant: 50),
-            titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 29),
+            titleLabel.topAnchor.constraint(equalTo: view.topAnchor ,constant: 102),
+            titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 27),
             
             toDoLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 140 ),
             toDoLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant:   26),
             
             image1.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            image1.topAnchor.constraint(equalTo: view.topAnchor, constant: 207),
-            image1.widthAnchor.constraint(equalToConstant: 109),
-            image1.heightAnchor.constraint(equalToConstant: 147),
+            image1.topAnchor.constraint(equalTo: view.topAnchor, constant: 190),
+            image1.widthAnchor.constraint(equalToConstant: 188),
+            image1.heightAnchor.constraint(equalToConstant: 191),
             
-            image2.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 132),
+            image2.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 149),
             image2.topAnchor.constraint(equalTo: view.topAnchor, constant: 336),
-            image2.widthAnchor.constraint(equalToConstant: 98),
-            image2.heightAnchor.constraint(equalToConstant: 71),
+            image2.widthAnchor.constraint(equalToConstant: 123),
+            image2.heightAnchor.constraint(equalToConstant: 89),
             
             
             image3.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -13),
-            image3.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 197),
-            image3.widthAnchor.constraint(equalToConstant: 99),
-            image3.heightAnchor.constraint(equalToConstant: 96),
+            image3.topAnchor.constraint(equalTo: view.topAnchor, constant: 222),
+            image3.widthAnchor.constraint(equalToConstant: 130),
+            image3.heightAnchor.constraint(equalToConstant: 130),
             
             image4.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -26),
-            image4.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 25),
-            image4.widthAnchor.constraint(equalToConstant: 100),
-            image4.heightAnchor.constraint(equalToConstant: 101),
+            image4.topAnchor.constraint(equalTo: view.topAnchor, constant: 73),
+            image4.widthAnchor.constraint(equalToConstant: 125),
+            image4.heightAnchor.constraint(equalToConstant: 138),
             
             taskTableView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             taskTableView.widthAnchor.constraint(equalToConstant: 345),
@@ -143,6 +153,8 @@ class MainViewController : UIViewController {
         taskTableView.dataSource = self
         taskTableView.register(MainTableViewCell.self, forCellReuseIdentifier: "mainTableViewCell")
     }
+    
+
 }
 
 
@@ -156,6 +168,7 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "mainTableViewCell", for: indexPath) as? MainTableViewCell else {return UITableViewCell()}
         
+        cell.delegate = self
         let taskItem = taskData[indexPath.row]
         
         switch taskItem.type {
@@ -249,6 +262,21 @@ extension MainViewController {
                 print(schedule)
                 DispatchQueue.main.async {
                     self?.updateUI()
+                    let allPlansCompleted = !schedule.plans.isEmpty &&
+                                        schedule.plans.allSatisfy { $0.completed }
+                                    let allDetailsCompleted = !schedule.details.isEmpty &&
+                                        schedule.details.allSatisfy { $0.completed }
+                                    
+                                    // 일정이 있고 모두 완료되었을 때만 모달 표시
+                                    if schedule.totalCount > 0 &&
+                                       schedule.totalCount == schedule.completedCount {
+                                        // 모달 표시
+                                        let modalVC = completemodalController()
+                                        modalVC.modalPresentationStyle = .overFullScreen
+                                        modalVC.modalTransitionStyle = .crossDissolve
+                                        self?.present(modalVC, animated: true)
+                                    }
+                                       
                 }
                 
             case .failure(let error):
@@ -288,6 +316,97 @@ extension MainViewController {
         
         DispatchQueue.main.async {
             self.taskTableView.reloadData()
+        }
+    }
+    
+    //MARK: - patch
+    func sendToggledTasks() {
+        guard !toggledPlanIds.isEmpty || !toggledDetailIds.isEmpty,
+              let userId = userId else {
+            print("❌ 전송 취소: toggledPlanIds와 toggledDetailIds가 모두 비어있거나 userId가 없습니다.")
+            return
+        }
+        
+        print("\n🔍 토글 데이터 확인 ===============")
+        print("👤 userId: \(userId)")
+        print("📅 토글된 Plan IDs: \(toggledPlanIds)")
+        print("📝 토글된 Detail IDs: \(toggledDetailIds)")
+        
+        let completedTasks = CompletedTasks(
+            planIds: Array(toggledPlanIds),
+            planSubDetailIds: Array(toggledDetailIds)
+        )
+        
+        let today = Date().toDateString()
+        let endpoint = "/toggle/\(userId)/\(today)"
+        
+        print("\n📡 요청 정보 ===============")
+        print("🔗 엔드포인트: \(endpoint)")
+        print("📅 날짜: \(today)")
+        
+        do {
+            let jsonData = try JSONEncoder().encode(completedTasks)
+            
+            // JSON 데이터 출력
+            if let jsonString = String(data: jsonData, encoding: .utf8) {
+                print("\n📦 전송될 JSON 데이터:")
+                print(jsonString)
+            }
+            
+            guard let parameters = try JSONSerialization.jsonObject(with: jsonData) as? [String: Any] else {
+                print("❌ JSON 변환 실패")
+                return
+            }
+            
+            print("\n🔄 변환된 파라미터:")
+            print(parameters)
+            
+            apiService.patch(endpoint: endpoint, parameters: parameters) { [weak self] (result: Result<APIResponse, Error>) in
+                switch result {
+                case .success(let response):
+                    print("\n✅ 토글 상태 전송 성공")
+                    print("응답: \(response)")
+                    self?.toggledPlanIds.removeAll()
+                    self?.toggledDetailIds.removeAll()
+                    print("🧹 토글 ID 초기화 완료")
+                    
+                case .failure(let error):
+                    print("\n❌ 토글 상태 전송 실패")
+                    print("에러: \(error.localizedDescription)")
+                }
+                print("===============================\n")
+            }
+        } catch {
+            print("\n❌ JSON 인코딩 실패")
+            print("에러: \(error)")
+            print("===============================\n")
+        }
+    }
+
+    
+}
+
+
+
+extension MainViewController: MainTableViewCellDelegate {
+    func didToggleCheckbox(for task: Any, isSelected: Bool) {
+        switch task {
+        case let plan as Plan:
+            if isSelected {
+                toggledPlanIds.insert(plan.planId)
+            } else {
+                toggledPlanIds.remove(plan.planId)
+            }
+            
+        case let detail as Detail:
+            if isSelected {
+                toggledDetailIds.insert(detail.detailId)
+            } else {
+                toggledDetailIds.remove(detail.detailId)
+            }
+            
+        default:
+            break
         }
     }
 }

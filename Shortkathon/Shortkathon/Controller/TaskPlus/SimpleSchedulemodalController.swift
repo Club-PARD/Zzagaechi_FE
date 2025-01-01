@@ -1,22 +1,13 @@
 //
-//  completemodalController.swift
+//  SimpleSchedulemodalController.swift
 //  Sergei
 //
 //  Created by 김사랑 on 12/28/24.
 //
-
-//
-//  SchedulemodalController.swift
-//  Sergei
-//
-//  Created by 김사랑 on 12/28/24.
-//
-
 
 import UIKit
 
-
-class ParticleAnimationView: UIView {
+class ParticleeeAnimationView: UIView {
     private var emitter: CAEmitterLayer?
     
     override init(frame: CGRect) {
@@ -35,8 +26,8 @@ class ParticleAnimationView: UIView {
         emitter.emitterPosition = CGPoint(x: bounds.width/2, y: bounds.height - 50)
         emitter.emitterSize = CGSize(width: 100, height: 100)
         emitter.emitterShape = .point
-        
-        let emojiStrings = ["✨", "⭐️", "👏🏻", "🎉", "🩵"]
+
+        let emojiStrings = ["🎉", "⭐️", "👏🏻", "🌼", "🔸"]
         
         var emitterCells: [CAEmitterCell] = []
         for emoji in emojiStrings {
@@ -76,7 +67,7 @@ class ParticleAnimationView: UIView {
     }
 }
 
-class completemodalController: UIViewController {
+class SimpleSchedulemodalController: UIViewController {
     
     let containerView: UIView = {
         let view = UIView()
@@ -90,38 +81,31 @@ class completemodalController: UIViewController {
     
     let mainLabel: UILabel = {
         let label = UILabel()
-        let firstPart = "  할 일을 다 해내다니"//히히 꼼수 부려버리기~!~!~!
-        let secondPart = "오늘 하루도 고생했어요!"
-        let combinedText = "\(firstPart)!\n\(secondPart)"
-        label.text = combinedText
-        label.font = UIFont(name: "Pretendard-Regular", size: 21)
-        label.textColor = #colorLiteral(red: 0.9568627451, green: 0.9568627451, blue: 0.9568627451, alpha: 1)
-        label.numberOfLines = 0 // 여러 줄 지원
-        label.lineBreakMode = .byWordWrapping // 단어 단위로 줄바꿈
+        label.text = "간단한 일 등록 완료!"
+        label.font = UIFont(name: "Pretendard-Bold", size: 24)
+        label.textColor = .white
+        label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     let subLabel: UILabel = {
         let label = UILabel()
-        let firstPart = "미루지 않고 할 일을 모두 끝낸"
-        let secondPart = "스스로에게 칭찬 한마디 어때요?"
+        let firstPart = "일정 등록을 완료했습니다"
+        let secondPart = "오늘 하루도 열심히 해봐요!"
         let combinedText = "\(firstPart)!\n\(secondPart)"
         label.text = combinedText
-        label.textAlignment = .center
         label.font = UIFont(name: "Pretendard-Regular", size: 13)
         label.textColor = #colorLiteral(red: 0.9568627451, green: 0.9568627451, blue: 0.9568627451, alpha: 1)
-        label.numberOfLines = 0 // 여러 줄 지원
-        label.lineBreakMode = .byWordWrapping // 단어 단위로 줄바꿈
+        label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
-        
-        
     }()
     
     let fireImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "Group 2063")
+        imageView.image = UIImage(named: "Frame 2055")
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
@@ -129,10 +113,9 @@ class completemodalController: UIViewController {
     
     let confirmButton: UIButton = {
         let button = UIButton()
-        button.setTitle("나 자신 칭찬해 👏🏻", for: .normal)
+        button.setTitle("열심히 하러가기 👏🏻", for: .normal)
         button.setTitleColor(#colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), for: .normal)
-        button.backgroundColor = #colorLiteral(red: 0.662745098, green: 0.7764705882, blue: 0.9803921569, alpha: 1)
-        button.layer.cornerRadius = 20
+        button.backgroundColor = #colorLiteral(red: 0.9764705882, green: 0.9529411765, blue: 0.568627451, alpha: 1)
         button.titleLabel?.font = UIFont(name: "Pretendard-Bold", size: 15)
         button.layer.cornerRadius = 20
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -147,13 +130,15 @@ class completemodalController: UIViewController {
         return button
     }()
     
-    private var animationView: ParticleAnimationView?
+    private var animationView: ParticleeeAnimationView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black.withAlphaComponent(0.5)
         setupUI()
-        setupActions()
+        [closeButton, confirmButton].forEach {
+            $0.addTarget(self, action: #selector(didTapped), for: .touchUpInside)
+        }
     }
     
     private func setupUI() {
@@ -175,40 +160,30 @@ class completemodalController: UIViewController {
             closeButton.widthAnchor.constraint(equalToConstant: 24),
             closeButton.heightAnchor.constraint(equalToConstant: 24),
             
-            mainLabel.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            mainLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 35.32),
-            mainLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 51),
-            mainLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -56),
+            mainLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 40),
+            mainLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20),
+            mainLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20),
             
-            fireImageView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            fireImageView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 55.88),
-            fireImageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 62),
-            fireImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -48.25),
+            fireImageView.topAnchor.constraint(equalTo: mainLabel.bottomAnchor, constant: 1),
+            fireImageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 46),
+            fireImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -49),
             
-            subLabel.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            subLabel.topAnchor.constraint(equalTo: mainLabel.bottomAnchor, constant: 242.12),
-            subLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 68),
-            subLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -73),
+            subLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 338),
+            subLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 85),
+            subLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -85),
             
             confirmButton.topAnchor.constraint(equalTo: subLabel.bottomAnchor, constant: 16.63),
-            confirmButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 54),
-            confirmButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -60),
+            confirmButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 62),
+            confirmButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -62),
             confirmButton.heightAnchor.constraint(equalToConstant: 44)
         ])
     }
     
-    
-    
-    
-    private func setupActions() {
-        closeButton.addTarget(self, action: #selector(dismissModal), for: .touchUpInside)
-        confirmButton.addTarget(self, action: #selector(dismissModal), for: .touchUpInside)
-    }
-    @objc private func dismissModal(_ sender: UIButton) {
+    @objc func didTapped(_ sender: UIButton) {
         sender.isEnabled = false
         animationView?.removeFromSuperview()
         
-        let newAnimationView = ParticleAnimationView(frame: containerView.bounds)
+        let newAnimationView = ParticleeeAnimationView(frame: containerView.bounds)
         containerView.addSubview(newAnimationView)
         animationView = newAnimationView
         
@@ -235,9 +210,5 @@ class completemodalController: UIViewController {
         }
     }
 }
-
-
-
-
 
 

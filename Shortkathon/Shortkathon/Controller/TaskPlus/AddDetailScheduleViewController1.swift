@@ -40,9 +40,9 @@ class AddDetailScheduleViewController1 : UIViewController {
     
     let headerLabel: UILabel = {
         let label = UILabel()
-        let firstPart = "큰 일에 대한"
+        let firstPart = "해야 하는 일에 대한"
         let secondPart = "제목을 적어보세요!"
-        let combinedText = "\(firstPart)!\n\(secondPart)"
+        let combinedText = "\(firstPart)\n\(secondPart)"
         
         label.text = combinedText
         label.font = .systemFont(ofSize: 30)
@@ -62,16 +62,7 @@ class AddDetailScheduleViewController1 : UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
-    let titleLabel : UILabel = {
-        let label = UILabel()
-        label.text = "제목"
-        label.font = .systemFont(ofSize: 15)
-        label.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
+
     let schedulTextField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "제목을 입력하세요"
@@ -122,7 +113,7 @@ class AddDetailScheduleViewController1 : UIViewController {
     
     //MARK: - function
     func setUI(){
-        [nextButton,mainLabel,backButton,cancelButton,progessbarImage,headerLabel,subLabel,titleLabel,schedulTextField].forEach{
+        [nextButton,mainLabel,backButton,cancelButton,progessbarImage,headerLabel,subLabel,schedulTextField].forEach{
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
@@ -146,10 +137,7 @@ class AddDetailScheduleViewController1 : UIViewController {
             subLabel.topAnchor.constraint(equalTo: headerLabel.bottomAnchor , constant: 16),
             subLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 31),
             
-            titleLabel.topAnchor.constraint(equalTo: subLabel.bottomAnchor , constant: 35),
-            titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 32),
-            
-            schedulTextField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor , constant: 5),
+            schedulTextField.topAnchor.constraint(equalTo: subLabel.bottomAnchor , constant: 65),
             schedulTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 31),
             schedulTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor , constant: -31),
             schedulTextField.heightAnchor.constraint(equalToConstant: 50),

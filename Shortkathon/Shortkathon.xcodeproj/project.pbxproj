@@ -39,6 +39,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
+				View/Add4_Page/Page4TaskTableViewCell.swift,
 			);
 			target = 48E4B2872CE5011F001F4294 /* Shortkathon */;
 		};

@@ -1,11 +1,4 @@
 //
-//  timemodalController2.swift
-//  Shortkathon
-//
-//  Created by 김사랑 on 12/30/24.
-//
-
-//
 //  timemodalController.swift
 //  Shortkathon
 //
@@ -36,16 +29,18 @@ class timemodalController2: UIViewController {
     
     let nextButton: UIButton = {
         let button = UIButton()
-        let image = UIImage(named: "Icon-3")
-        button.setImage(image, for: .normal)
+        button.setTitleColor(#colorLiteral(red: 0.3369887173, green: 0.6149112582, blue: 1, alpha: 1), for: .normal)
+        button.setTitle("다음", for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
+        button.backgroundColor = .clear
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
     let cancelButton: UIButton = {
         let button = UIButton()
-        button.setTitleColor(#colorLiteral(red: 0.337254902, green: 0.6156862745, blue: 1, alpha: 1), for: .normal)
-        button.setTitle("완료", for: .normal)
+        button.setTitleColor(#colorLiteral(red: 0.7529411765, green: 0.2156862745, blue: 0.2156862745, alpha: 1), for: .normal)
+        button.setTitle("취소", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
         button.backgroundColor = .clear
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -122,6 +117,23 @@ class timemodalController2: UIViewController {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "a HH:mm"
         timeLabel.text = dateFormatter.string(from: timedatePicker.date)
+    }
+    
+    
+    func buttonTap(){
+        nextButton.addTarget(self, action: #selector(moveToNext), for: .touchUpInside)
+        cancelButton.addTarget(self, action: #selector(cancelModal), for: .touchUpInside)
+    }
+    
+    @objc func moveToNext(){
+        let vc = timemodalController3()
+        print("페이지 2 다음")
+        present(vc,animated: true)
+    }
+    
+    @objc func cancelModal(){
+        print("페이지 2 취소")
+        dismiss(animated: true, completion: nil)
     }
 }
     

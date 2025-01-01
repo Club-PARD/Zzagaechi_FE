@@ -7,14 +7,15 @@ class SeparateTaskViewController : UIViewController {
     private let gradientLayer: CAGradientLayer = {
         let layer = CAGradientLayer()
         layer.colors = [
-                   UIColor(red: 0.668, green: 0.800, blue: 1.0, alpha: 1.0).cgColor,
-                   UIColor(red: 0.261, green: 0.539, blue: 0.935, alpha: 1.0).cgColor
-               ]
+            UIColor(red: 0.529, green: 0.698, blue: 1.0, alpha: 1.0).cgColor, // #87B2FF
+            UIColor(red: 0.447, green: 0.643, blue: 1.0, alpha: 1.0).cgColor  // #72A4FF
+        ]
         layer.locations = [0.0, 1.0]
         layer.startPoint = CGPoint(x: 0.0, y: 0.0)  // 왼쪽 상단
         layer.endPoint = CGPoint(x: 0.5, y: 1.0)    // 가운데 하단
         return layer
     }()
+
     
     let mainLabel: UILabel = {
         let label = UILabel()
@@ -197,5 +198,6 @@ class SeparateTaskViewController : UIViewController {
     
     
 }
+
 
 

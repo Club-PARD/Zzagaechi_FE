@@ -26,7 +26,7 @@ class ParticleeAnimationView: UIView {
         emitter.emitterPosition = CGPoint(x: bounds.width/2, y: bounds.height - 50)
         emitter.emitterSize = CGSize(width: 100, height: 100)
         emitter.emitterShape = .point
-        
+    
         let emojiStrings = ["🔥", "⭐️", "♥️", "🔺", "🔴"]
         
         var emitterCells: [CAEmitterCell] = []
@@ -82,7 +82,7 @@ class SchedulemodalController: UIViewController {
     let mainLabel: UILabel = {
         let label = UILabel()
         label.text = "오늘 할 일 등록 완료!"
-        label.font = .systemFont(ofSize: 20, weight: .bold)
+        label.font = UIFont(name: "Pretendard-Bold", size: 24)
         label.textColor = .white
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -113,9 +113,10 @@ class SchedulemodalController: UIViewController {
     
     let confirmButton: UIButton = {
         let button = UIButton()
-        button.setTitle("열심히 해보자 👏🏻", for: .normal)
+        button.setTitle("열심히 하러가기 👏🏻", for: .normal)
         button.setTitleColor(#colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), for: .normal)
         button.backgroundColor = #colorLiteral(red: 0.662745098, green: 0.7764705882, blue: 0.9803921569, alpha: 1)
+        button.titleLabel?.font = UIFont(name: "Pretendard-Bold", size: 15)
         button.layer.cornerRadius = 20
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -152,28 +153,30 @@ class SchedulemodalController: UIViewController {
             containerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             containerView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             containerView.widthAnchor.constraint(equalToConstant: 315),
-            containerView.heightAnchor.constraint(equalToConstant: 467),
+            containerView.heightAnchor.constraint(equalToConstant: 466),
             
             closeButton.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 16),
             closeButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16),
             closeButton.widthAnchor.constraint(equalToConstant: 24),
             closeButton.heightAnchor.constraint(equalToConstant: 24),
             
-            mainLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 40),
+            mainLabel.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            mainLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 64),
             mainLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20),
             mainLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20),
             
-            fireImageView.topAnchor.constraint(equalTo: mainLabel.bottomAnchor, constant: 1),
+            fireImageView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 95),
             fireImageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 67),
-            fireImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -67),
+            fireImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -68),
             
-            subLabel.topAnchor.constraint(equalTo: fireImageView.bottomAnchor, constant: 1),
+            subLabel.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            subLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 338),
             subLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 85),
             subLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -85),
             
             confirmButton.topAnchor.constraint(equalTo: subLabel.bottomAnchor, constant: 16.63),
             confirmButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 62),
-            confirmButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -62),
+            confirmButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -52),
             confirmButton.heightAnchor.constraint(equalToConstant: 44)
         ])
     }
@@ -209,5 +212,6 @@ class SchedulemodalController: UIViewController {
         }
     }
 }
+
 
 

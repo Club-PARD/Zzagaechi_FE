@@ -1,8 +1,6 @@
 import UIKit
 import FSCalendar
 
-
-
 class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSCalendarDelegateAppearance, AddButtonModalViewControllerDelegate, UITableViewDelegate, UITableViewDataSource {
     var userId = UserDefaults.standard.string(forKey: "userIdentifier")
 
@@ -26,8 +24,11 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
     private let apiService = APIService.shared
     private var monthlySchedule: CalendarResponse?
 //    private var userId = "user2" // 사용자 ID 설정
+
     private var currentYear: Int = 0
     private var currentMonth: Int = 0
+    private var todayScheduleTopConstraint: NSLayoutConstraint!
+    private var dailySchedule: DailySchedule?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,11 +46,13 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
         calendar.appearance.headerMinimumDissolvedAlpha = 0.0
         calendar.appearance.headerTitleColor = .white
         calendar.appearance.headerTitleFont = UIFont(name: "Pretendard-Regular", size: 25)
+        calendar.weekdayHeight = 20
+
         calendar.appearance.weekdayTextColor = .white
         calendar.appearance.titleDefaultColor = .white
         calendar.appearance.titlePlaceholderColor = .gray
-        calendar.appearance.selectionColor = .systemBlue
-        calendar.appearance.todayColor = #colorLiteral(red: 0.1829021573, green: 0.1829021573, blue: 0.1829021573, alpha: 1)
+        calendar.appearance.selectionColor = .gray
+        calendar.appearance.todayColor = .blue
         calendar.placeholderType = .fillHeadTail
         
         let dividerView = UIView()
@@ -79,7 +82,7 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
         prevButton.addTarget(self, action: #selector(prevButtonTapped), for: .touchUpInside)
         nextButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
         
-        calendarHeightConstraint = calendar.heightAnchor.constraint(equalToConstant: 500)
+        calendarHeightConstraint = calendar.heightAnchor.constraint(equalToConstant: 550)
         NSLayoutConstraint.activate([
             calendar.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
             calendar.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
@@ -103,8 +106,10 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
         todayScheduleView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(todayScheduleView)
         
+        todayScheduleTopConstraint = todayScheduleView.topAnchor.constraint(equalTo: calendar.bottomAnchor, constant: 10)
+
         NSLayoutConstraint.activate([
-            todayScheduleView.topAnchor.constraint(equalTo: calendar.bottomAnchor, constant: 10),
+            todayScheduleTopConstraint,
             todayScheduleView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             todayScheduleView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             todayScheduleView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
@@ -187,12 +192,31 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
         scheduleTableView.delegate = self
         scheduleTableView.dataSource = self
         
+        // 현재 날짜로 초기화
+        let currentDate = Date()
+        let calendar = Calendar.current
+        currentYear = calendar.component(.year, from: currentDate)
+        currentMonth = calendar.component(.month, from: currentDate)
+        
         fetchCurrentMonthSchedule()
+        fetchDailySchedule(for: Date())
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         addEventRangeLine()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        // 현재 달의 일정을 가져오고 Event range 라인을 그립니다
+        fetchCurrentMonthSchedule()
+        
+        // 약간의 지연을 주어 레이아웃이 완전히 설정된 후 라인을 그립니다
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            self.addEventRangeLine()
+        }
     }
     
     @objc private func addButtonTapped() {
@@ -205,6 +229,7 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
     // MARK: - FSCalendarDelegate
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         print("Selected date: \(date)")
+        fetchDailySchedule(for: date)
     }
     
     func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
@@ -269,7 +294,7 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
         scheduleTableView.reloadData()
         
         // 테이블뷰 업데이트 후 약간의 지연을 주어 셀이 모두 그려진 후 선을 그림
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             self.drawConnectionLines()
         }
         
@@ -302,9 +327,29 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
         timeFormatter.dateFormat = "HH:mm"
         
         for (index, event) in events.enumerated() {
-            guard let startCell = calendar.cell(for: event.startDate, at: .current),
-                  let endCell = calendar.cell(for: event.endDate, at: .current) else {
-                print("Date is not in the current visible range.")
+            // 이벤트가 현재 보이는 범위와 전혀 겹치지 않으면 건너뛰기
+            if !isDateInCurrentView(event.startDate) && !isDateInCurrentView(event.endDate) {
+                continue
+            }
+            
+            // 주간 보기일 때는 현재 주에 포함된 부분만 표시
+            if calendar.scope == .week {
+                let calendar = Calendar.current
+                let weekRange = calendar.dateInterval(of: .weekOfMonth, for: self.calendar.currentPage)!
+                
+                // 이벤트가 현재 주와 전혀 겹치지 않으면 건너뛰기
+                if event.endDate < weekRange.start || event.startDate > weekRange.end {
+                    continue
+                }
+            }
+            
+            // 이벤트의 시작일과 종료일을 현재 보이는 범위로 조정
+            let adjustedStartDate = getAdjustedDateForCurrentView(event.startDate)
+            let adjustedEndDate = getAdjustedDateForCurrentView(event.endDate)
+            
+            // 조정된 날짜로 셀 가져오기
+            guard let startCell = calendar.cell(for: adjustedStartDate, at: .current),
+                  let endCell = calendar.cell(for: adjustedEndDate, at: .current) else {
                 continue
             }
             
@@ -324,7 +369,7 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
                 
                 let startX = startPoint.x
                 let endX = endCell.convert(endCell.bounds, to: calendar).maxX
-                let y = startPoint.y + startCell.frame.height - 25 + verticalOffset
+                let y = startPoint.y + startCell.frame.height - 20 + verticalOffset
                 
                 lineView.frame = CGRect(x: startX, y: y, width: endX - startX, height: 13)
                 eventRangeViews.append(lineView)
@@ -332,7 +377,7 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
                 let nameLabel = UILabel()
                 nameLabel.text = event.name
                 nameLabel.font = .systemFont(ofSize: 10)
-                nameLabel.textColor = event.isDetailed ? .systemBlue : .systemYellow
+                nameLabel.textColor = event.isDetailed ? #colorLiteral(red: 0.1882352941, green: 0.3058823529, blue: 0.5137254902, alpha: 1) : #colorLiteral(red: 0.3921568627, green: 0.4039215686, blue: 0.1725490196, alpha: 1)
                 nameLabel.sizeToFit()
                 calendar.addSubview(nameLabel)
                 
@@ -345,7 +390,7 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
                 let timeLabel = UILabel()
                 timeLabel.text = "~\(timeFormatter.string(from: event.endDate))"
                 timeLabel.font = .systemFont(ofSize: 10)
-                timeLabel.textColor = event.isDetailed ? .systemBlue : .systemYellow
+                timeLabel.textColor = event.isDetailed ? #colorLiteral(red: 0.1882352941, green: 0.3058823529, blue: 0.5137254902, alpha: 1) : #colorLiteral(red: 0.3921568627, green: 0.4039215686, blue: 0.1725490196, alpha: 1)
                 timeLabel.sizeToFit()
                 calendar.addSubview(timeLabel)
                 
@@ -365,7 +410,7 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
                 
                 let firstLineStartX = startPoint.x
                 let firstLineEndX = calendar.bounds.width
-                let firstLineY = startPoint.y + startCell.frame.height - 25 + verticalOffset
+                let firstLineY = startPoint.y + startCell.frame.height - 20 + verticalOffset
                 
                 firstLineView.frame = CGRect(x: firstLineStartX, y: firstLineY, width: firstLineEndX - firstLineStartX, height: 13)
                 eventRangeViews.append(firstLineView)
@@ -373,7 +418,7 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
                 let nameLabel = UILabel()
                 nameLabel.text = event.name
                 nameLabel.font = .systemFont(ofSize: 10)
-                nameLabel.textColor = event.isDetailed ? .systemBlue : .systemYellow
+                nameLabel.textColor = event.isDetailed ? #colorLiteral(red: 0.2426371872, green: 0.3858973086, blue: 0.5858027339, alpha: 1) : #colorLiteral(red: 0.3921568627, green: 0.4039215686, blue: 0.1725490196, alpha: 1)
                 nameLabel.sizeToFit()
                 calendar.addSubview(nameLabel)
                 
@@ -392,7 +437,7 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
                 
                 let lastLineStartX: CGFloat = 0
                 let lastLineEndX = endCell.convert(endCell.bounds, to: calendar).maxX
-                let lastLineY = endPoint.y + endCell.frame.height - 25 + verticalOffset
+                let lastLineY = endPoint.y + endCell.frame.height - 20 + verticalOffset
                 
                 lastLineView.frame = CGRect(x: lastLineStartX, y: lastLineY, width: lastLineEndX, height: 13)
                 eventRangeViews.append(lastLineView)
@@ -402,7 +447,7 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
                 let timeLabel = UILabel()
                 timeLabel.text = "~\(timeFormatter.string(from: event.endDate))"
                 timeLabel.font = .systemFont(ofSize: 10)
-                timeLabel.textColor = event.isDetailed ? .systemBlue : .systemYellow
+                timeLabel.textColor = event.isDetailed ? #colorLiteral(red: 0.2426371872, green: 0.3858973086, blue: 0.5858027339, alpha: 1) : #colorLiteral(red: 0.3921568627, green: 0.4039215686, blue: 0.1725490196, alpha: 1)
                 timeLabel.sizeToFit()
                 calendar.addSubview(timeLabel)
                 
@@ -415,14 +460,13 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
                 if endPoint.y - startPoint.y > startCell.frame.height {
                     let rowCount = Int((endPoint.y - startPoint.y) / startCell.frame.height)
                     
-                    let firstLineY = startPoint.y + startCell.frame.height - 25 + verticalOffset
-                    let lastLineY = endPoint.y + endCell.frame.height - 25 + verticalOffset
+                    let firstLineY = startPoint.y + startCell.frame.height - 20 + verticalOffset
+                    let lastLineY = endPoint.y + endCell.frame.height - 20 + verticalOffset
                     let totalHeight = lastLineY - firstLineY
                     
                     for row in 1..<rowCount {
                         let middleLineView = UIView()
                         middleLineView.backgroundColor = lineColor
-                        middleLineView.layer.cornerRadius = 5
                         calendar.addSubview(middleLineView)
                         
                         let ratio = CGFloat(row) / CGFloat(rowCount)
@@ -574,8 +618,16 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
             let deltaY = touchPoint.y - initialTouchPoint.y
             if deltaY > 50 && calendar.scope == .week {
                 calendar.setScope(.month, animated: true)
+                UIView.animate(withDuration: 0.3) {
+                    self.todayScheduleTopConstraint.constant = 10
+                    self.view.layoutIfNeeded()
+                }
             } else if deltaY < -50 && calendar.scope == .month {
                 calendar.setScope(.week, animated: true)
+                UIView.animate(withDuration: 0.3) {
+                    self.todayScheduleTopConstraint.constant = 20
+                    self.view.layoutIfNeeded()
+                }
             }
         default:
             break
@@ -588,58 +640,79 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
     }
 
     private func updateScheduleCount() {
-        let totalCount = events.count
-        let todayCount = events.filter { Calendar.current.isDateInToday($0.startDate) }.count
-        countLabel.text = "\(todayCount)/\(totalCount)개"
+        if let dailySchedule = dailySchedule {
+            countLabel.text = "\(dailySchedule.completedCount)/\(dailySchedule.totalCount)개"
+        } else {
+            countLabel.text = "0/0개"
+        }
     }
 
     // UITableViewDataSource 메서드
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return events.count
+        return (dailySchedule?.plans.count ?? 0) + (dailySchedule?.details.count ?? 0)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .value1, reuseIdentifier: "cell")
-        let event = events[indexPath.row]
         
-        // 이미지뷰 생성 및 설정
-        let ballImageView = UIImageView()
-        ballImageView.image = UIImage(named: event.isDetailed ? "detailBall" : "noDetailBall")
-        ballImageView.contentMode = .scaleAspectFit
+        let plansCount = dailySchedule?.plans.count ?? 0
         
-        // 이미지뷰를 셀의 contentView에 추가
-        cell.contentView.addSubview(ballImageView)
-        ballImageView.translatesAutoresizingMaskIntoConstraints = false
-        
-        // 이미지뷰 제약조건 설정
-        NSLayoutConstraint.activate([
-            ballImageView.leadingAnchor.constraint(equalTo: cell.contentView.leadingAnchor, constant: 10),
-            ballImageView.centerYAnchor.constraint(equalTo: cell.contentView.centerYAnchor),
-            ballImageView.widthAnchor.constraint(equalToConstant: 10),
-            ballImageView.heightAnchor.constraint(equalToConstant: 10)
-        ])
-        
-        // 텍스트 레이블 설정
-        cell.textLabel?.text = "      " + event.name
-        cell.backgroundColor = .clear
-        cell.textLabel?.textColor = .white
-        cell.textLabel?.font = UIFont(name: "Pretendard-Regular", size: 17)
-        cell.selectionStyle = .none
-        
-        // 시간 표시 (isDetailed가 true일 때만)
-        if event.isDetailed {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "HH:mm"
-            let startTime = formatter.string(from: event.startDate)
-            let endTime = formatter.string(from: event.endDate)
-            cell.detailTextLabel?.text = "\(startTime)~\(endTime)"
-            cell.detailTextLabel?.textColor = .white
-            cell.detailTextLabel?.font = UIFont(name: "Pretendard-Regular", size: 15)
+        if indexPath.row < plansCount {
+            // Plan
+            if let plan = dailySchedule?.plans[indexPath.row] {
+                configurePlanCell(cell, with: plan)
+            }
         } else {
-            cell.detailTextLabel?.text = ""
+            // Detail
+            if let detail = dailySchedule?.details[indexPath.row - plansCount] {
+                configureDetailCell(cell, with: detail)
+            }
         }
         
         return cell
+    }
+
+    private func configurePlanCell(_ cell: UITableViewCell, with plan: Plan) {
+        let ballImageView = UIImageView(frame: CGRect(x: 10, y: 10, width: 10, height: 10))
+        ballImageView.image = UIImage(named: "noDetailBall")
+        cell.contentView.addSubview(ballImageView)
+        
+        cell.textLabel?.text = "      " + plan.plantitle
+        if let startTime = plan.startTime {
+            cell.detailTextLabel?.text = startTime
+        }
+        cell.backgroundColor = .clear
+        cell.textLabel?.textColor = .white
+        cell.detailTextLabel?.textColor = .white
+    }
+
+    private func configureDetailCell(_ cell: UITableViewCell, with detail: Detail) {
+        let ballImageView = UIImageView(frame: CGRect(x: 10, y: 10, width: 10, height: 10))
+        ballImageView.image = UIImage(named: "detailBall")
+        cell.contentView.addSubview(ballImageView)
+        
+        // 시간 포맷 변경
+        let timeFormatter = DateFormatter()
+        timeFormatter.dateFormat = "HH:mm:ss"
+        let outputFormatter = DateFormatter()
+        outputFormatter.dateFormat = "HH:mm"
+        
+        var startTimeFormatted = detail.startTime
+        var endTimeFormatted = detail.endTime
+        
+        if let startDate = timeFormatter.date(from: detail.startTime) {
+            startTimeFormatted = outputFormatter.string(from: startDate)
+        }
+        
+        if let endDate = timeFormatter.date(from: detail.endTime) {
+            endTimeFormatted = outputFormatter.string(from: endDate)
+        }
+        
+        cell.textLabel?.text = "      " + detail.content
+        cell.detailTextLabel?.text = "\(startTimeFormatted)~\(endTimeFormatted)"
+        cell.backgroundColor = .clear
+        cell.textLabel?.textColor = .white
+        cell.detailTextLabel?.textColor = .white
     }
 
     private func drawConnectionLines() {
@@ -743,5 +816,71 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
 //        userId = "user2"
         fetchMonthlySchedule(userId: userId, yearMonth: yearMonth)
     }
+
+    private func isDateInCurrentView(_ date: Date) -> Bool {
+        let calendar = Calendar.current
+        let currentPage = self.calendar.currentPage
+        
+        if self.calendar.scope == .month {
+            let startOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: currentPage))!
+            let endOfMonth = calendar.date(byAdding: DateComponents(month: 1, day: -1), to: startOfMonth)!
+            return date >= startOfMonth && date <= endOfMonth
+        } else {
+            let weekRange = calendar.dateInterval(of: .weekOfMonth, for: currentPage)!
+            // 주간 보기에서는 더 엄격한 체크
+            return date >= weekRange.start && date <= weekRange.end
+        }
+    }
+
+    private func getAdjustedDateForCurrentView(_ date: Date) -> Date {
+        let calendar = Calendar.current
+        let currentPage = self.calendar.currentPage
+        
+        if self.calendar.scope == .month {
+            let startOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: currentPage))!
+            let endOfMonth = calendar.date(byAdding: DateComponents(month: 1, day: -1), to: startOfMonth)!
+            
+            if date < startOfMonth {
+                return startOfMonth
+            } else if date > endOfMonth {
+                return endOfMonth
+            }
+        } else {
+            let weekRange = calendar.dateInterval(of: .weekOfMonth, for: currentPage)!
+            if date < weekRange.start {
+                return weekRange.start
+            } else if date > weekRange.end {
+                return weekRange.end
+            }
+        }
+        return date
+    }
+
+    private func fetchDailySchedule(for date: Date) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let dateString = dateFormatter.string(from: date)
+        
+        guard let userId = userId else { return }
+        let endpoint = "/daily/\(userId)/\(dateString)"
+        
+        apiService.get(endpoint: endpoint) { [weak self] (result: Result<DailySchedule, Error>) in
+            switch result {
+            case .success(let schedule):
+                self?.dailySchedule = schedule
+                DispatchQueue.main.async {
+                    self?.updateDailyScheduleUI()
+                    self?.updateScheduleCount()
+                }
+            case .failure(let error):
+                print("Failed to fetch daily schedule:", error)
+            }
+        }
+    }
+
+    private func updateDailyScheduleUI() {
+        // Implementation of updateDailyScheduleUI
+    }
+
 }
 

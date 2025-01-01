@@ -1,4 +1,11 @@
 //
+//  timemodalController2.swift
+//  Shortkathon
+//
+//  Created by 김사랑 on 12/30/24.
+//
+
+//
 //  timemodalController.swift
 //  Shortkathon
 //
@@ -7,7 +14,7 @@
 
 import UIKit
 
-class timemodalController1: UIViewController {
+class timemodalController3: UIViewController {
     
     let containerView: UIView = {
         let view = UIView()
@@ -22,47 +29,58 @@ class timemodalController1: UIViewController {
         label.textColor = .white
         label.font = .systemFont(ofSize: 16, weight: .bold)
         label.textAlignment = .center
-        label.text = "날짜"
+        label.text = "시작 시간"
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     let nextButton: UIButton = {
         let button = UIButton()
-        button.setTitleColor(#colorLiteral(red: 0.3369887173, green: 0.6149112582, blue: 1, alpha: 1), for: .normal)
-        button.setTitle("다음", for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
-        button.backgroundColor = .clear
+        let image = UIImage(named: "Icon-3")
+        button.setImage(image, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
     let cancelButton: UIButton = {
         let button = UIButton()
-        button.setTitleColor(#colorLiteral(red: 0.7529411765, green: 0.2156862745, blue: 0.2156862745, alpha: 1), for: .normal)
-        button.setTitle("취소", for: .normal)
+        button.setTitleColor(#colorLiteral(red: 0.337254902, green: 0.6156862745, blue: 1, alpha: 1), for: .normal)
+        button.setTitle("완료", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
         button.backgroundColor = .clear
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
+    let timeLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .white
+        label.font = .systemFont(ofSize: 24, weight: .bold)
+        label.textAlignment = .center
+        label.text = "00:00"
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
     let timedatePicker: UIDatePicker = {
         let picker = UIDatePicker()
-        picker.datePickerMode = .date
-        picker.preferredDatePickerStyle = .inline
+        picker.datePickerMode = .time
+        picker.preferredDatePickerStyle = .wheels
         picker.locale = Locale(identifier: "ko_KR")
-        picker.tintColor = .systemBlue
-        picker.overrideUserInterfaceStyle = .dark
+        picker.tintColor = .white
+        picker.setValue(UIColor.white, forKey: "textColor")
         picker.translatesAutoresizingMaskIntoConstraints = false
         return picker
     }()
 
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black.withAlphaComponent(0.5)
         setupUI()
-        buttonTap()
+        // DatePicker의 값이 변경될 때마다 updateTimeLabel 메서드 호출
+        timedatePicker.addTarget(self, action: #selector(updateTimeLabel), for: .valueChanged)
     }
     
     private func setupUI() {
@@ -70,30 +88,42 @@ class timemodalController1: UIViewController {
         containerView.addSubview(titleLabel)
         containerView.addSubview(nextButton)
         containerView.addSubview(cancelButton)
+        containerView.addSubview(timeLabel)
         containerView.addSubview(timedatePicker)
 
+        
         NSLayoutConstraint.activate([
             containerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             containerView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            containerView.widthAnchor.constraint(equalToConstant: 350),
-            containerView.heightAnchor.constraint(equalToConstant: 400),
+            containerView.widthAnchor.constraint(equalToConstant: 333),
+            containerView.heightAnchor.constraint(equalToConstant: 331),
             
             titleLabel.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            titleLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 20),
+            titleLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 26),
             
-            nextButton.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 20),
-            nextButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20),
+            nextButton.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 26),
+            nextButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -25),
             
-            cancelButton.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 20),
-            cancelButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20),
+            cancelButton.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 26),
+            cancelButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 39),
+            
+            timeLabel.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            timeLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 30),
             
             timedatePicker.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            timedatePicker.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
+            timedatePicker.topAnchor.constraint(equalTo: timeLabel.bottomAnchor, constant: 20),
             timedatePicker.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20),
-            timedatePicker.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20),
-            timedatePicker.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -20)
+            timedatePicker.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20)
         ])
     }
+    
+    // timeLabel 업데이트를 위한 메서드
+    @objc private func updateTimeLabel() {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "a HH:mm"
+        timeLabel.text = dateFormatter.string(from: timedatePicker.date)
+    }
+    
     
     func buttonTap(){
         nextButton.addTarget(self, action: #selector(moveToNext), for: .touchUpInside)
@@ -108,7 +138,6 @@ class timemodalController1: UIViewController {
     @objc func cancelModal(){
         dismiss(animated: true, completion: nil)
     }
-    
-    
 }
-
+    
+   
