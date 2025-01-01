@@ -81,7 +81,7 @@ class AddDetailScheduleViewController4 : UIViewController {
         button.backgroundColor = #colorLiteral(red: 0.5591031909, green: 0.571234405, blue: 0.5998923779, alpha: 1)
         button.layer.cornerRadius = 12
         button.tintColor = .white
-        //        button.isEnabled = false
+        button.isEnabled = false
         return button
     }()
     
@@ -221,6 +221,30 @@ class AddDetailScheduleViewController4 : UIViewController {
         
     }
     
+    private func updateNextButtonState() {
+        // 모든 셀 확인
+        var allCellsComplete = true
+        
+        for i in 0..<taskList.count {
+            guard let cell = taskTableView.cellForRow(at: IndexPath(row: i, section: 0)) as? Page4TaskTableViewCell else {
+                allCellsComplete = false
+                break
+            }
+            
+            // 날짜와 시간이 모두 설정되었는지 확인
+            if cell.dateLabel.text == "날짜" || cell.timeLabel.text == "시간" {
+                allCellsComplete = false
+                break
+            }
+        }
+        
+        // 버튼 상태 업데이트
+        nextButton.isEnabled = allCellsComplete
+        nextButton.backgroundColor = allCellsComplete ?
+        #colorLiteral(red: 0.4862745098, green: 0.6666666667, blue: 1, alpha: 1) :
+        #colorLiteral(red: 0.5591031909, green: 0.571234405, blue: 0.5998923779, alpha: 1)
+    }
+    
     @objc func dismissVC() {
         let transition = CATransition()
         transition.duration = 0.4
@@ -325,6 +349,8 @@ extension AddDetailScheduleViewController4: TimeModalViewControllerDelegate {
             let endTimeString = dateFormatter.string(from: end)
             cell.timeLabel.text = "\(startTimeString)~\(endTimeString)"
         }
+        
+        updateNextButtonState()
     }
 }
 
@@ -441,8 +467,8 @@ extension AddDetailScheduleViewController4 {
             present(alert, animated: true)
         }
     }
-
-            
+    
+    
     
 }
 
@@ -465,7 +491,7 @@ extension Encodable {
     func asDictionary() throws -> [String: Any] {
         let data = try JSONEncoder().encode(self)
         guard let dictionary = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any] else {
-            throw NSError(domain: "JSONSerialization", code: -1, userInfo: nil)
+            throw NSError(domain: "JSONSe   rialization", code: -1, userInfo: nil)
         }
         return dictionary
     }
