@@ -127,7 +127,7 @@ class AddDetailScheduleViewController2 : UIViewController {
         picker.datePickerMode = .date
         picker.preferredDatePickerStyle = .inline
         picker.locale = Locale(identifier: "ko_KR")
-        picker.tintColor = .white
+        picker.tintColor = .systemBlue
         return picker
     }()
     
@@ -148,7 +148,7 @@ class AddDetailScheduleViewController2 : UIViewController {
         picker.datePickerMode = .date
         picker.preferredDatePickerStyle = .inline
         picker.locale = Locale(identifier: "ko_KR")
-        picker.tintColor = .white
+        picker.tintColor = .systemBlue
         return picker
     }()
     
@@ -169,7 +169,7 @@ class AddDetailScheduleViewController2 : UIViewController {
         picker.datePickerMode = .time
         picker.preferredDatePickerStyle = .wheels
         picker.locale = Locale(identifier: "ko_KR")
-        picker.tintColor = .white
+        picker.tintColor = .systemBlue
         return picker
     }()
     

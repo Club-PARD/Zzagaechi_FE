@@ -27,6 +27,7 @@ class MainViewController : UIViewController {
         label.font = UIFont(name: "Pretendard-Medium", size: 35)
         label.text = "작은 한 걸음이\n큰 변화를 만듭니다,\n오늘도 파이팅!"
         label.numberOfLines = 0
+        label.textColor = .white
         label.textAlignment = .left
         return label
     }()
@@ -35,6 +36,7 @@ class MainViewController : UIViewController {
         let label = UILabel()
         label.font = UIFont(name: "Pretendard-Regular", size: 24)
         label.text = "오늘의 할 일"
+        label.textColor = .white
         return label
     }()
     

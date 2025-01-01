@@ -8,6 +8,20 @@ protocol Page4TaskTableViewCellDelegate: AnyObject {
 class Page4TaskTableViewCell : UITableViewCell {
     weak var delegate: Page4TaskTableViewCellDelegate?
     
+    private let gradientLayer: CAGradientLayer = {
+           let layer = CAGradientLayer()
+           layer.colors = [
+               UIColor(red: 0.529, green: 0.698, blue: 1.0, alpha: 1.0).cgColor, // #87B2FF
+               UIColor(red: 0.447, green: 0.643, blue: 1.0, alpha: 1.0).cgColor  // #72A4FF
+           ]
+           layer.locations = [0.0, 1.0]
+           layer.startPoint = CGPoint(x: 0.0, y: 0.0)
+           layer.endPoint = CGPoint(x: 0.5, y: 1.0)
+           layer.cornerRadius = 12  // 셀의 모서리를 둥글게
+           return layer
+       }()
+    
+    
     
     let clearView :  UIView = {
         let view = UIView()
@@ -20,7 +34,7 @@ class Page4TaskTableViewCell : UITableViewCell {
         let view = UIView()
         view.backgroundColor = #colorLiteral(red: 0.137254902, green: 0.137254902, blue: 0.137254902, alpha: 1)
         view.layer.borderWidth = 2
-        view.layer.borderColor = #colorLiteral(red: 0.21482867, green: 0.5404123664, blue: 0.9672456384, alpha: 1)
+        view.layer.borderColor = #colorLiteral(red: 0.4196078431, green: 0.631372549, blue: 1, alpha: 1)
         view.layer.cornerRadius = 12
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -54,7 +68,7 @@ class Page4TaskTableViewCell : UITableViewCell {
 
     let blueView : UIView = {
         let view = UIView()
-        view.backgroundColor = #colorLiteral(red: 0.21482867, green: 0.5404123664, blue: 0.9672456384, alpha: 1)
+        view.backgroundColor = #colorLiteral(red: 0.4196078431, green: 0.631372549, blue: 1, alpha: 1)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -82,6 +96,9 @@ class Page4TaskTableViewCell : UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: "page4")
         setUI()
+        contentView.layer.insertSublayer(gradientLayer, at: 0)
+        selectionStyle = .none
+
     }
     
     required init?(coder: NSCoder) {
@@ -145,7 +162,7 @@ class Page4TaskTableViewCell : UITableViewCell {
 
     override func layoutSubviews() {
             super.layoutSubviews()
-            
+            gradientLayer.frame = contentView.bounds
             // 하단만 cornerRadius 설정
             let cornerRadius: CGFloat = 12
             let maskPath = UIBezierPath(

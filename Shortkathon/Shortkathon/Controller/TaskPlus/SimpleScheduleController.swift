@@ -133,7 +133,7 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
         picker.datePickerMode = .date
         picker.preferredDatePickerStyle = .inline
         picker.locale = Locale(identifier: "ko_KR")
-        picker.tintColor = .white
+        picker.tintColor = #colorLiteral(red: 0.9764705882, green: 0.9529411765, blue: 0.568627451, alpha: 1)
         return picker
     }()
     
@@ -153,7 +153,7 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
         picker.datePickerMode = .date
         picker.preferredDatePickerStyle = .inline
         picker.locale = Locale(identifier: "ko_KR")
-        picker.tintColor = .white
+        picker.tintColor = #colorLiteral(red: 0.9764705882, green: 0.9529411765, blue: 0.568627451, alpha: 1)
         return picker
     }()
     
@@ -173,7 +173,7 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
         picker.datePickerMode = .time
         picker.preferredDatePickerStyle = .wheels
         picker.locale = Locale(identifier: "ko_KR")
-        picker.tintColor = .white
+        picker.tintColor = #colorLiteral(red: 0.9764705882, green: 0.9529411765, blue: 0.568627451, alpha: 1)
         return picker
     }()
     
