@@ -116,7 +116,7 @@ class AddDetailScheduleViewController3 : UIViewController {
         
         
         
-        tableUIView.viewHeightConstraint = tableUIView.heightAnchor.constraint(equalToConstant: 280)
+        tableUIView.viewHeightConstraint = tableUIView.heightAnchor.constraint(equalToConstant: 330)
         tableUIView.viewHeightConstraint?.isActive = true
         
         NSLayoutConstraint.activate([
@@ -154,17 +154,17 @@ class AddDetailScheduleViewController3 : UIViewController {
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 31),
             
             // TableUIView
-            tableUIView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 98),
+            tableUIView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 70),
             tableUIView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 31),
             tableUIView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -31),
             tableUIView.viewHeightConstraint!,
             
             // NextButton
-            nextButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            nextButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             nextButton.topAnchor.constraint(equalTo: tableUIView.bottomAnchor, constant: 20),
             nextButton.heightAnchor.constraint(equalToConstant: 46),
-            nextButton.widthAnchor.constraint(equalToConstant: 331),
-            nextButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20) // 중요
+            nextButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 31),
+            nextButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -40) // 중요
         ])
     }
     

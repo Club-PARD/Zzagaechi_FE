@@ -17,6 +17,39 @@ class APIService {
     
     private init() {}
     
+    //MARK: - 달력 삭제를 위한 DELETE
+    func deleteWithStatusCode(endpoint: String, completion: @escaping (Int) -> Void) {
+        let urlString = "\(baseURL)\(endpoint)"
+        
+        print("📡 DELETE 요청 시작 ===============")
+        print("URL: \(urlString)")
+        
+        AF.request(urlString,
+                method: .delete,
+                headers: ["accept": "application/json"])
+        .validate()
+        .response { response in
+            print("\n📡 서버 응답 ===============")
+            
+            if let statusCode = response.response?.statusCode {
+                print("상태 코드: \(statusCode)")
+                completion(statusCode)
+            } else {
+                print("상태 코드를 받지 못했습니다.")
+                completion(500)
+            }
+            
+            if let headers = response.response?.allHeaderFields {
+                print("헤더 필드:")
+                headers.forEach { key, value in
+                    print("\(key): \(value)")
+                }
+            }
+            print("===============================")
+        }
+    }
+
+    //MARK: - 세분화 3,4 를 위한 POST
     func postData<T: Codable>(endpoint: String, jsonData: Data, completion: @escaping (Result<T, Error>) -> Void) {
         let urlString = "\(baseURL)\(endpoint)"
         

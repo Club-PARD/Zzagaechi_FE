@@ -170,114 +170,6 @@ class SeperateTaskView : UIView {
     
 }
 
-
-//MARK: - TableView Extension
-//extension SeperateTaskView : UITableViewDelegate, UITableViewDataSource {
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return task.count
-//    }
-//    
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        guard let cell = tableView.dequeueReusableCell(withIdentifier: "ThirdTableCell", for: indexPath) as? SeperateTaskViewTableCell else {
-//            
-//            return UITableViewCell()
-//        }
-//        
-//        cell.taskTextField.text = task[indexPath.row]
-//        cell.taskTextField.tag = indexPath.row
-//        cell.taskTextField.delegate = self
-//        
-//        // 셀과 텍스트필드의 사용자 상호작용 활성화
-//        cell.isUserInteractionEnabled = true
-//        cell.taskTextField.isUserInteractionEnabled = true
-//        
-//        return cell
-//    }
-//    
-//    func numberOfSections(in tableView: UITableView) -> Int {
-//        return 1
-//    }
-//    
-//    
-//    
-//    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-//        updateHeight()
-//    }
-//}
-//
-//
-////MARK: - textField extension
-//extension SeperateTaskView : UITextFieldDelegate {
-//    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-//        // 텍스트 변경될 때마다 호출
-//        let currentText = textField.text ?? ""
-//        let updatedText = (currentText as NSString).replacingCharacters(in: range, with: string)
-//        task[textField.tag] = updatedText
-//        notifyContentChange()
-//        return true
-//    }
-//
-//    func textFieldDidEndEditing(_ textField: UITextField) {
-//        task[textField.tag] = textField.text ?? ""
-//        notifyContentChange()
-//    }
-//
-//   
-//
-//    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-//        if editingStyle == .delete {
-//            task.remove(at: indexPath.row)
-//            tableView.deleteRows(at: [indexPath], with: .fade)
-//            
-//            if task.isEmpty {
-//                task.append("")
-//                tableView.reloadData()
-//            }
-//            updateViewHeight()
-//            notifyContentChange()
-//        }
-//    }
-//    
-//    
-//    //textFiled 편집되었을떄 호출
-////
-//    func textFieldDidBeginEditing(_ textField: UITextField) {
-//        // 텍스트필드 편집 시작할 때 호출
-//        print("텍스트필드 편집 시작")
-//    }
-//    
-//
-////    
-//    // Enter 눌렀을때 return
-//    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-//        textField.resignFirstResponder()
-//        return true
-//    }
-//    
-//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        return 57
-//    }
-//    
-//    
-//    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-//        return true
-//    }
-//    
-//    // 스와이프 스타일 설정
-//    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-//        return .delete
-//    }
-//
-//    
-//    func tableView(_ tableView: UITableView, titleForDeleteConfirmationButtonForRowAt indexPath: IndexPath) -> String? {
-//        return "삭제"
-//    }
-//}
-//
-
-
-
-
 extension SeperateTaskView : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return task.count
@@ -291,6 +183,19 @@ extension SeperateTaskView : UITableViewDelegate, UITableViewDataSource {
         cell.taskTextField.text = task[indexPath.row]
         cell.taskTextField.tag = indexPath.row
         cell.taskTextField.delegate = self
+        
+        switch indexPath.row {
+            case 0:
+                cell.taskTextField.placeholder = "어떤 작업부터 시작해야 할지 적어볼까요?"
+            case 1:
+                cell.taskTextField.placeholder = "예)자료 찾기, 초안 작성하기, 수정하기 등"
+            case 2:
+                cell.taskTextField.placeholder = "한 번에 하나씩 실행할 수 있는 크기로 나눠보세요"
+            default:
+                cell.taskTextField.placeholder = "새로운 작업을 입력하세요"
+            }
+        
+        
         
         cell.isUserInteractionEnabled = true
         cell.taskTextField.isUserInteractionEnabled = true
