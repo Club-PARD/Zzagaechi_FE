@@ -2,7 +2,12 @@ import Foundation
 import Alamofire
 
 struct APIResponse: Codable {
-    let check: Int
+    let check: Int?
+}
+
+struct CompletedTasks: Codable {
+    let planIds: [Int]
+    let planSubDetailIds: [Int]
 }
 
 class APIService {
@@ -108,6 +113,36 @@ class APIService {
         }
     }
     
+    //patch 
+    func patch<T: Codable>(endpoint: String, parameters: [String: Any], completion: @escaping (Result<T, Error>) -> Void) {
+        let urlString = "\(baseURL)\(endpoint)"
+        
+        print("📡 PATCH 요청 시작 ===============")
+        print("URL: \(urlString)")
+        print("Parameters: \(parameters)")
+        
+        AF.request(urlString,
+                  method: .patch,
+                  parameters: parameters,
+                  encoding: JSONEncoding.default,
+                  headers: ["Content-Type": "application/json",
+                           "accept": "application/json"])
+        .validate()
+        .response { response in  // .responseDecodable 대신 .response 사용
+            // 응답이 비어있어도 성공으로 처리
+            if response.error == nil {
+                // 빈 APIResponse 생성
+                if let emptyResponse = APIResponse(check: 1) as? T {
+                    completion(.success(emptyResponse))
+                } else {
+                    completion(.failure(NSError(domain: "", code: -1,
+                        userInfo: [NSLocalizedDescriptionKey: "응답 변환 실패"])))
+                }
+            } else {
+                completion(.failure(response.error!))
+            }
+        }
+    }
     
     
     

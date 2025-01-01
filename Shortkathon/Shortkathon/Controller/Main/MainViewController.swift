@@ -4,6 +4,9 @@ class MainViewController : UIViewController {
     //MARK: - property
     let apiService = APIService.shared
     var dailySchedule: DailySchedule?
+    private var toggledPlanIds: Set<Int> = []
+    private var toggledDetailIds: Set<Int> = []
+    
     var userId = UserDefaults.standard.string(forKey: "userIdentifier")
     enum TaskType {
         case plan
@@ -93,6 +96,11 @@ class MainViewController : UIViewController {
         startFloatingAnimations()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+            super.viewWillDisappear(animated)
+            sendToggledTasks()
+        }
+    
     //MARK: - function
     func setUI(){
         [titleLabel, toDoLabel,image1,image2,image3,image4,taskTableView].forEach{
@@ -145,6 +153,8 @@ class MainViewController : UIViewController {
         taskTableView.dataSource = self
         taskTableView.register(MainTableViewCell.self, forCellReuseIdentifier: "mainTableViewCell")
     }
+    
+
 }
 
 
@@ -158,6 +168,7 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "mainTableViewCell", for: indexPath) as? MainTableViewCell else {return UITableViewCell()}
         
+        cell.delegate = self
         let taskItem = taskData[indexPath.row]
         
         switch taskItem.type {
@@ -305,6 +316,97 @@ extension MainViewController {
         
         DispatchQueue.main.async {
             self.taskTableView.reloadData()
+        }
+    }
+    
+    //MARK: - patch
+    func sendToggledTasks() {
+        guard !toggledPlanIds.isEmpty || !toggledDetailIds.isEmpty,
+              let userId = userId else {
+            print("❌ 전송 취소: toggledPlanIds와 toggledDetailIds가 모두 비어있거나 userId가 없습니다.")
+            return
+        }
+        
+        print("\n🔍 토글 데이터 확인 ===============")
+        print("👤 userId: \(userId)")
+        print("📅 토글된 Plan IDs: \(toggledPlanIds)")
+        print("📝 토글된 Detail IDs: \(toggledDetailIds)")
+        
+        let completedTasks = CompletedTasks(
+            planIds: Array(toggledPlanIds),
+            planSubDetailIds: Array(toggledDetailIds)
+        )
+        
+        let today = Date().toDateString()
+        let endpoint = "/toggle/\(userId)/\(today)"
+        
+        print("\n📡 요청 정보 ===============")
+        print("🔗 엔드포인트: \(endpoint)")
+        print("📅 날짜: \(today)")
+        
+        do {
+            let jsonData = try JSONEncoder().encode(completedTasks)
+            
+            // JSON 데이터 출력
+            if let jsonString = String(data: jsonData, encoding: .utf8) {
+                print("\n📦 전송될 JSON 데이터:")
+                print(jsonString)
+            }
+            
+            guard let parameters = try JSONSerialization.jsonObject(with: jsonData) as? [String: Any] else {
+                print("❌ JSON 변환 실패")
+                return
+            }
+            
+            print("\n🔄 변환된 파라미터:")
+            print(parameters)
+            
+            apiService.patch(endpoint: endpoint, parameters: parameters) { [weak self] (result: Result<APIResponse, Error>) in
+                switch result {
+                case .success(let response):
+                    print("\n✅ 토글 상태 전송 성공")
+                    print("응답: \(response)")
+                    self?.toggledPlanIds.removeAll()
+                    self?.toggledDetailIds.removeAll()
+                    print("🧹 토글 ID 초기화 완료")
+                    
+                case .failure(let error):
+                    print("\n❌ 토글 상태 전송 실패")
+                    print("에러: \(error.localizedDescription)")
+                }
+                print("===============================\n")
+            }
+        } catch {
+            print("\n❌ JSON 인코딩 실패")
+            print("에러: \(error)")
+            print("===============================\n")
+        }
+    }
+
+    
+}
+
+
+
+extension MainViewController: MainTableViewCellDelegate {
+    func didToggleCheckbox(for task: Any, isSelected: Bool) {
+        switch task {
+        case let plan as Plan:
+            if isSelected {
+                toggledPlanIds.insert(plan.planId)
+            } else {
+                toggledPlanIds.remove(plan.planId)
+            }
+            
+        case let detail as Detail:
+            if isSelected {
+                toggledDetailIds.insert(detail.detailId)
+            } else {
+                toggledDetailIds.remove(detail.detailId)
+            }
+            
+        default:
+            break
         }
     }
 }

@@ -13,7 +13,7 @@ struct SimplePlan: Codable {
 }
 
 struct DetailedPlan: Codable {
-    let id: Int
+    let plansubId: Int
     let plansubtitle: String
     let startDate: String
     let endDate: String
