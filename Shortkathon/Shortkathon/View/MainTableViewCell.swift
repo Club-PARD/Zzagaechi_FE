@@ -12,14 +12,14 @@ class MainTableViewCell : UITableViewCell {
     
     let titleTaskLabel : UILabel = {
         let label = UILabel()
-        label.textColor = #colorLiteral(red: 0.6606984735, green: 0.6606983542, blue: 0.6606983542, alpha: 1)
+        label.textColor = .white
         label.font = UIFont(name: "Pretendard-Regular", size: 12)
         return label
     }()
     
     let taskLabel : UILabel = {
         let label = UILabel()
-        label.textColor = .white
+        label.textColor = #colorLiteral(red: 0.6606984735, green: 0.6606983542, blue: 0.6606983542, alpha: 1)
         label.font = UIFont(name: "Pretendard-Regular", size: 17)
         return label
     }()
@@ -170,10 +170,13 @@ class MainTableViewCell : UITableViewCell {
     func configure(with plan: Plan, type: CellType) {
         taskLabel.text = plan.plantitle
         timeLabel.isHidden = true
+        
         titleTaskLabel.isHidden = true
         taskLabel.removeFromSuperview()
         checkButton.setImage(UIImage(named: "noCheckPlan"), for: .normal)
         checkButton.setImage(UIImage(named: "yesCheck"), for: .selected)
+        
+        taskLabel.textColor = .white
         
         cellView.addSubview(taskLabel)
         NSLayoutConstraint.activate([
@@ -223,11 +226,6 @@ class MainTableViewCell : UITableViewCell {
         cellView.layer.borderColor = #colorLiteral(red: 0.7294117647, green: 0.8117647059, blue: 0.9568627451, alpha: 1).cgColor  // 파란색
         checkButton.isSelected = detail.completed
     }
-    
-    
-    
-    
-    
     
 }
 

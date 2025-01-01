@@ -10,7 +10,7 @@
 import UIKit
 
 class AddDetailScheduleViewController4 : UIViewController {
-    
+    var userId =  UserDefaults.standard.string(forKey: "userIdentifier")
     var taskList : [String] = []
     var startDate : Date?
     var endDate : Date?
@@ -338,6 +338,9 @@ extension AddDetailScheduleViewController4 {
             return
         }
         
+        guard let userId = userId else {return}
+        
+        
         print("\n🔍 API 요청 정보 ===============")
         print("📡 URL: /plansubdetail/\(planSubId)")
         
@@ -403,7 +406,7 @@ extension AddDetailScheduleViewController4 {
             
             // APIService 호출
             APIService.shared.postData(
-                endpoint: "/plansubdetail/\(planSubId)",
+                endpoint: "/plansubdetail/\(userId)/\(planSubId)",
                 jsonData: jsonData
             ) { (result: Result<APIResponse, Error>) in
                 DispatchQueue.main.async {

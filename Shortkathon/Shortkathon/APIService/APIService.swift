@@ -18,12 +18,19 @@ class APIService {
         print("📡 POST 요청 시작 (JSON 데이터) ===============")
         print("URL: \(urlString)")
         
+        // JSON 데이터를 Dictionary로 변환
+        guard let jsonObject = try? JSONSerialization.jsonObject(with: jsonData),
+              let parameters = jsonObject as? [String: Any] else {
+            completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "JSON 변환 실패"])))
+            return
+        }
+        
         AF.request(urlString,
                    method: .post,
-                   parameters: nil,
+                   parameters: parameters,  // 변환된 parameters 사용
                    encoding: JSONEncoding.default,
                    headers: ["Content-Type": "application/json",
-                             "accept": "application/json"])
+                            "accept": "application/json"])
             .validate()
             .responseDecodable(of: T.self) { response in
                 self.handleResponse(response, completion: completion)
