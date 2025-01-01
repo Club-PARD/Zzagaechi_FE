@@ -234,19 +234,31 @@ class TimeModalViewController: UIViewController {
             dismiss(animated: true)
         }
     }
-
+    
     
     @objc func back(){
         dismiss(animated: true)
     }
     
     
+    //    @objc private func datePickerValueChanged() {
+    //        if currentStep != .date {
+    //            let formatter = DateFormatter()
+    //            formatter.dateFormat = "a HH:mm"
+    //            timeLabel.text = formatter.string(from: datePicker.date)
+    //        }
+    //    }
+    
+    
     @objc private func datePickerValueChanged() {
         if currentStep != .date {
             let formatter = DateFormatter()
-            formatter.dateFormat = "a HH:mm"
+            formatter.dateFormat = "a h:mm"
+            formatter.locale = Locale(identifier: "ko_KR")
             timeLabel.text = formatter.string(from: datePicker.date)
         }
     }
+    
+    
 }
 
