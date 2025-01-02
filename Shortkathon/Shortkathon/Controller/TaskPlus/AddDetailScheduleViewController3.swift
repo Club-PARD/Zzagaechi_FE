@@ -106,6 +106,7 @@ class AddDetailScheduleViewController3 : UIViewController {
         
         print("페이지 3\(planSubId)")
         setUI()
+        setupKeyboardNotifications()
         buttonTapped()
         setupKeyboardDismiss()
         setupTableViewDelegate()
@@ -177,6 +178,60 @@ class AddDetailScheduleViewController3 : UIViewController {
             nextButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -40) // 중요
         ])
     }
+    
+    private func setupKeyboardNotifications() {
+          NotificationCenter.default.addObserver(
+              self,
+              selector: #selector(keyboardWillShow),
+              name: UIResponder.keyboardWillShowNotification,
+              object: nil
+          )
+          
+          NotificationCenter.default.addObserver(
+              self,
+              selector: #selector(keyboardWillHide),
+              name: UIResponder.keyboardWillHideNotification,
+              object: nil
+          )
+      }
+    
+    @objc private func keyboardWillShow(notification: NSNotification) {
+           guard let userInfo = notification.userInfo,
+                 let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
+                 let activeTextField = findFirstResponder(in: tableUIView) else { return }
+           
+           let convertedFrame = view.convert(activeTextField.frame, from: activeTextField.superview)
+           let textFieldBottom = convertedFrame.maxY
+           
+           let keyboardTop = view.frame.height - keyboardFrame.height
+           let padding: CGFloat = 20 // 원하는 여백
+           
+           if textFieldBottom > keyboardTop {
+               let scrollOffset = textFieldBottom - keyboardTop + padding
+               scrollView.setContentOffset(CGPoint(x: 0, y: scrollOffset), animated: true)
+           }
+       }
+       
+       @objc private func keyboardWillHide(notification: NSNotification) {
+           scrollView.setContentOffset(.zero, animated: true)
+       }
+       
+       private func findFirstResponder(in view: UIView) -> UIView? {
+           if view.isFirstResponder {
+               return view
+           }
+           
+           for subview in view.subviews {
+               if let firstResponder = findFirstResponder(in: subview) {
+                   return firstResponder
+               }
+           }
+           
+           return nil
+       }
+    
+    
+    
     
     private func setupTableViewDelegate() {
         tableUIView.delegate = self
