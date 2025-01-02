@@ -174,7 +174,7 @@
 
 <img src="https://github.com/user-attachments/assets/79275ffc-df43-450c-b5ce-78277bad40ab" height="400" />
 <img src="https://github.com/user-attachments/assets/81b36ae3-d59e-497d-87de-c94f3ea659e4" height="400" />
-<img src="https://github.com/user-attachments/assets/b5333820-b033-489e-8cb8-7b455f272241" height="400" />
+<img src="https://github.com/user-attachments/assets/b94daced-69c5-4631-b5d2-d655ddb1a6e6" height="400" />
 
 동기부여를 줄 수 있는 모달창 
 
