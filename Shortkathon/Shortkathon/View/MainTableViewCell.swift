@@ -17,6 +17,19 @@ class MainTableViewCell : UITableViewCell {
     
     private var strikethroughLayer: CAShapeLayer?
     
+    
+    private let clapLabel: UILabel = {
+        let label = UILabel()
+        label.text = "👏"
+        label.font = .systemFont(ofSize: 40)
+        label.alpha = 0
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    
+    
+    
     let titleTaskLabel : UILabel = {
         let label = UILabel()
         label.textColor = .white
@@ -73,6 +86,7 @@ class MainTableViewCell : UITableViewCell {
         self.backgroundColor = .clear
         
         setUI()
+        setupClapLabel()
         checkButton.addTarget(self, action: #selector(checkButtonTapped(_:)), for: .touchUpInside)
     }
     
@@ -91,6 +105,10 @@ class MainTableViewCell : UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         resetCell()
+        
+        
+        clapLabel.alpha = 0
+        clapLabel.transform = .identity
     }
     //MARK: - function
     func setUI(){
@@ -118,14 +136,23 @@ class MainTableViewCell : UITableViewCell {
             
             checkButton.leadingAnchor.constraint(equalTo: cellView.leadingAnchor, constant: 20),
             checkButton.topAnchor.constraint(equalTo: cellView.topAnchor, constant: 34),
-            
-            
+
             
             
         ])
         
         
     }
+    
+    
+    private func setupClapLabel() {
+        contentView.addSubview(clapLabel)
+        NSLayoutConstraint.activate([
+            clapLabel.leadingAnchor.constraint(equalTo: cellView.leadingAnchor),
+            clapLabel.centerYAnchor.constraint(equalTo: cellView.centerYAnchor)
+        ])
+    }
+    
     
     // 셀 초기화
     private func resetCell() {
@@ -147,6 +174,12 @@ class MainTableViewCell : UITableViewCell {
     
     @objc private func checkButtonTapped(_ sender: UIButton) {
         sender.isSelected.toggle()
+        //        if let task = currentTask {
+        //            delegate?.didToggleCheckbox(for: task, isSelected: sender.isSelected)
+        //        }
+        if sender.isSelected {
+            showClapAnimation()
+        }
         if let task = currentTask {
             delegate?.didToggleCheckbox(for: task, isSelected: sender.isSelected)
         }
@@ -216,6 +249,27 @@ class MainTableViewCell : UITableViewCell {
         checkButton.isSelected = detail.completed
         
         
+    }
+    
+    
+    private func showClapAnimation() {
+        // 초기 상태 설정
+        clapLabel.transform = CGAffineTransform(scaleX: 0.1, y: 0.1)
+        clapLabel.alpha = 1
+        
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: [], animations: {
+            // 크게 확대
+            self.clapLabel.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
+        }) { _ in
+            UIView.animate(withDuration: 0.3, delay: 0.1, options: [], animations: {
+                // 위로 올라가면서 페이드 아웃
+                self.clapLabel.transform = CGAffineTransform(translationX: 0, y: -50)
+                self.clapLabel.alpha = 0
+            }) { _ in
+                // 애니메이션 완료 후 초기 상태로 리셋
+                self.clapLabel.transform = .identity
+            }
+        }
     }
     
 }
