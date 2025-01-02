@@ -310,6 +310,23 @@ extension AddDetailScheduleViewController4 : UITableViewDelegate,UITableViewData
     }
     
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+           tableView.deselectRow(at: indexPath, animated: true)
+           
+           let selectedTask = taskList[indexPath.row]
+           print("Cell tapped for task: \(selectedTask)")
+           
+           let detailVC = TimeModalViewController()
+           detailVC.delegate = self
+           detailVC.availableStartDate = startDate
+           detailVC.availableEndDate = endDate
+           selectedCell = tableView.cellForRow(at: indexPath)  // 선택된 셀 저장
+           
+           detailVC.modalPresentationStyle = .overCurrentContext
+           detailVC.modalTransitionStyle = .crossDissolve
+           present(detailVC, animated: true, completion: nil)
+       }
+    
     
     
 }
