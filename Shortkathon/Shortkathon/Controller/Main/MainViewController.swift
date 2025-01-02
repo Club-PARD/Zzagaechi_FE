@@ -75,6 +75,16 @@ class MainViewController : UIViewController {
         return view
     }()
     
+    
+    let resetButton : UIButton = {
+        let button = UIButton()
+        button.backgroundColor = .clear
+        return button
+    }()
+    
+    
+    
+    
     //MARK: - main
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -83,6 +93,7 @@ class MainViewController : UIViewController {
         setUI()
         setTable()
         startFloatingAnimations()
+        resetButton.addTarget(self, action: #selector(reset), for: .touchUpInside)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -99,7 +110,7 @@ class MainViewController : UIViewController {
     
     //MARK: - function
     func setUI(){
-        [titleLabel, toDoLabel,image1,image2,image3,image4,taskTableView].forEach{
+        [titleLabel, toDoLabel,image1,image2,image3,image4,taskTableView,resetButton].forEach{
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
@@ -133,6 +144,11 @@ class MainViewController : UIViewController {
             image4.widthAnchor.constraint(equalToConstant: 125),
             image4.heightAnchor.constraint(equalToConstant: 138),
             
+            resetButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 73),
+            resetButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -26 ),
+            resetButton.widthAnchor.constraint(equalToConstant: 125),
+            resetButton.heightAnchor.constraint(equalToConstant: 138),
+            
             taskTableView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             taskTableView.widthAnchor.constraint(equalToConstant: 345),
             taskTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
@@ -146,6 +162,37 @@ class MainViewController : UIViewController {
         taskTableView.delegate = self
         taskTableView.dataSource = self
         taskTableView.register(MainTableViewCell.self, forCellReuseIdentifier: "mainTableViewCell")
+    }
+    
+    @objc func reset(){
+        let today = Date().toDateString()
+            let modalShownKey = "modalShown_\(today)"
+            
+            // 알림 메시지 생성
+            let alert = UIAlertController(title: "확인",
+                                           message: "오늘 할일 상태 초기화하시겠습니까?",
+                                           preferredStyle: .alert)
+            // 확인 버튼
+            let confirmAction = UIAlertAction(title: "초기화", style: .destructive) { _ in
+                // UserDefaults 값 삭제
+                UserDefaults.standard.removeObject(forKey: modalShownKey)
+                print("모달 상태 초기화됨")
+            
+            }
+            
+            // 취소 버튼
+            let cancelAction = UIAlertAction(title: "취소", style: .cancel) { _ in
+                print("초기화 취소됨")
+            }
+            
+            // 알림에 액션 추가
+            alert.addAction(confirmAction)
+            alert.addAction(cancelAction)
+            
+            // 알림 표시
+            if let currentViewController = UIApplication.shared.keyWindow?.rootViewController {
+                currentViewController.present(alert, animated: true, completion: nil)
+            }
     }
 }
 //MARK: - tableview Extension
