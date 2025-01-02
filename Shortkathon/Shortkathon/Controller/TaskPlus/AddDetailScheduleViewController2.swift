@@ -119,8 +119,9 @@ class AddDetailScheduleViewController2 : UIViewController {
     }()
     
     let timeLabel: UILabel = {
+        
         let label = UILabel()
-        label.text = "시간"
+        label.text = "종료 시간"
         label.textColor = #colorLiteral(red: 0.9999999881, green: 0.9999999881, blue: 0.9999999881, alpha: 1)
         label.font = UIFont(name: "Pretendard-Regular", size: 19)
         label.translatesAutoresizingMaskIntoConstraints = false
