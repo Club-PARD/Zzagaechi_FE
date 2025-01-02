@@ -136,9 +136,12 @@ class SimpleSchedulemodalController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .black.withAlphaComponent(0.5)
         setupUI()
-        [closeButton, confirmButton].forEach {
+        [confirmButton].forEach {
             $0.addTarget(self, action: #selector(didTapped), for: .touchUpInside)
         }
+        
+        closeButton.addTarget(self, action: #selector(diss), for: .touchUpInside)
+        
     }
     
     private func setupUI() {
@@ -178,6 +181,13 @@ class SimpleSchedulemodalController: UIViewController {
             confirmButton.heightAnchor.constraint(equalToConstant: 44)
         ])
     }
+    
+    
+    @objc func diss(){
+        dismiss(animated: true)
+    }
+    
+    
     
     @objc func didTapped(_ sender: UIButton) {
         sender.isEnabled = false

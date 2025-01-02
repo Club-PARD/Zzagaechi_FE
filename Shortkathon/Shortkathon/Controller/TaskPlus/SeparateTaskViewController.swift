@@ -124,7 +124,7 @@ class SeparateTaskViewController : UIViewController {
         
         setupGradientBackground()
         Button.addTarget(self, action: #selector(didTap), for:  .touchUpInside)
-        Button2.addTarget(self, action: #selector(doTap), for: .touchUpInside)
+        Button2.addTarget(self, action: #selector(diss), for: .touchUpInside)
         setUI()
         
     }
@@ -178,6 +178,10 @@ class SeparateTaskViewController : UIViewController {
         vc.modalPresentationStyle = .fullScreen
         present(vc,animated: true)
         
+    }
+    
+    @objc func diss(){
+        dismiss(animated: true)
     }
     
     @objc func doTap() {
