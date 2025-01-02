@@ -355,7 +355,7 @@ extension MainViewController {
         taskData.removeAll()
 
         guard let schedule = dailySchedule else { return }
-        //        taskData = []
+
         
         schedule.details.forEach { detail in
             taskData.append((type: .detail, task: detail))
