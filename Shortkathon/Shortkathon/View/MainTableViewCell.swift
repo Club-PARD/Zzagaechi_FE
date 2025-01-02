@@ -17,6 +17,8 @@ class MainTableViewCell : UITableViewCell {
     
     private var strikethroughLayer: CAShapeLayer?
     
+    private var emitter: CAEmitterLayer?
+    
     
     private let clapLabel: UILabel = {
         let label = UILabel()
@@ -105,7 +107,8 @@ class MainTableViewCell : UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         resetCell()
-        
+        emitter?.removeFromSuperlayer()
+        emitter = nil
         
         clapLabel.alpha = 0
         clapLabel.transform = .identity
@@ -253,24 +256,69 @@ class MainTableViewCell : UITableViewCell {
     
     
     private func showClapAnimation() {
-        // 초기 상태 설정
-        clapLabel.transform = CGAffineTransform(scaleX: 0.1, y: 0.1)
-        clapLabel.alpha = 1
+        startParticleAnimation()
+    }
+    
+    private func startParticleAnimation() {
+        emitter?.removeFromSuperlayer()
         
-        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: [], animations: {
-            // 크게 확대
-            self.clapLabel.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
-        }) { _ in
-            UIView.animate(withDuration: 0.3, delay: 0.1, options: [], animations: {
-                // 위로 올라가면서 페이드 아웃
-                self.clapLabel.transform = CGAffineTransform(translationX: 0, y: -50)
-                self.clapLabel.alpha = 0
-            }) { _ in
-                // 애니메이션 완료 후 초기 상태로 리셋
-                self.clapLabel.transform = .identity
-            }
+        // 현재 셀의 절대 위치를 window 좌표계로 변환
+        guard let window = UIApplication.shared.windows.first,
+              let absolutePosition = checkButton.superview?.convert(checkButton.center, to: window) else {
+            return
+        }
+        
+        let emitter = CAEmitterLayer()
+        emitter.emitterPosition = absolutePosition
+        emitter.emitterSize = CGSize(width: 100, height: 100)
+        emitter.emitterShape = .point
+        
+        let emojiStrings = ["🎉", "⭐️", "👏🏻", "🌼", "🔸"]
+        
+        var emitterCells: [CAEmitterCell] = []
+        for emoji in emojiStrings {
+            let cell = CAEmitterCell()
+            cell.contents = {
+                let font = UIFont.systemFont(ofSize: 20)
+                let size = emoji.size(withAttributes: [.font: font])
+                let renderer = UIGraphicsImageRenderer(size: size)
+                let image = renderer.image { context in
+                    emoji.draw(at: .zero, withAttributes: [.font: font])
+                }
+                return image.cgImage
+            }()
+            
+            cell.birthRate = 30 / Float(emojiStrings.count)
+            cell.lifetime = 1.5
+            cell.velocity = 300
+            cell.velocityRange = 50
+            cell.emissionRange = .pi / 5
+            cell.emissionLongitude = .pi / -2
+            cell.scale = 0.4
+            cell.scaleRange = 0.2
+            cell.scaleSpeed = -0.1
+            cell.alphaRange = 0.3
+            cell.alphaSpeed = -0.5
+            
+            emitterCells.append(cell)
+        }
+        
+        emitter.emitterCells = emitterCells
+        // window의 layer에 추가
+        window.layer.addSublayer(emitter)
+        self.emitter = emitter
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            emitter.birthRate = 0
+        }
+        
+        // 파티클 효과가 끝나면 제거
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            self.emitter?.removeFromSuperlayer()
+            self.emitter = nil
         }
     }
     
 }
+
 
