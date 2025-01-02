@@ -57,26 +57,19 @@
 
 <br><be>
 
- Stack
+ Deployment Link
 ---
 ☀️Frontend
-
-> Language : Swift<br>
-> Library & Framework : Alamofire, FSCalendar<br>
-> Styled-Components, Axios, Recoil  <br>
-> Deploy: Firebase<br>
+ - [🙋‍♂️ nano plan's FE](https://github.com/Club-PARD/Zzagaechi_BE)
 
 <br>
 🌕Backend
 
-> Language : JavaScript<br>
-> Library & Framework : React<br>
-> Styled-Components, Axios, Recoil  <br>
-> Deploy: Firebase
+- [🙋‍♂️ nano plan's BE](https://github.com/Club-PARD/Zzagaechi_BE)
 
 <br>
 
-- [🙋‍♂️ 민규's server](https://github.com/Club-PARD/Zzagaechi_BE)
+
 
 
 <br>
