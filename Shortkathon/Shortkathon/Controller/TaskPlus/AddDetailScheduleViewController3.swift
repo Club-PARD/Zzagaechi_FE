@@ -165,8 +165,8 @@ class AddDetailScheduleViewController3 : UIViewController {
             
             // TableUIView
             tableUIView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 70),
-            tableUIView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 31),
-            tableUIView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -31),
+            tableUIView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
+            tableUIView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15),
             tableUIView.viewHeightConstraint!,
             
             // NextButton
