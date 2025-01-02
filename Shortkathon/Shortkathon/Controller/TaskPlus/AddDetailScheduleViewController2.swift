@@ -506,8 +506,7 @@ class AddDetailScheduleViewController2 : UIViewController {
     }
     
     private func checkTextFieldsAndUpdateButton() {
-        let isEnabled = isStartDateSelected && isEndDateSelected
-        //        && isTimeSelected
+        let isEnabled = isEndDateSelected && isTimeSelected
         
         nextButton.isEnabled = isEnabled
         if isEnabled {
