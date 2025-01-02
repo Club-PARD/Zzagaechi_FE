@@ -16,6 +16,7 @@ struct SimplePlan: Codable {
 struct DetailedPlan: Codable {
     let plansubId: Int
     let plansubtitle: String
+    let contents: String?
     let startDate: String
     let endDate: String
     let deadline: String?

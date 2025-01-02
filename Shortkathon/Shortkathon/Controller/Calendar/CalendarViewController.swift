@@ -1,4 +1,5 @@
 import UIKit
+
 import FSCalendar
 
 class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSCalendarDelegateAppearance, UITableViewDelegate, UITableViewDataSource {
@@ -8,7 +9,7 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
     private var prevButton: UIButton!
     private var nextButton: UIButton!
     
-    private var events: [(id: Int, name: String, startDate: Date, endDate: Date, startTime: String?, deadline: String?)] = []
+    private var events: [(id: Int, name: String, contents: String?, startDate: Date, endDate: Date, startTime: String?, deadline: String?)] = []
     private var eventRangeViews: [UIView] = []
     private var todayScheduleView: UIView!
     private var addButton: UIButton!
@@ -65,7 +66,7 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
         NSLayoutConstraint.activate([
             dividerView.leadingAnchor.constraint(equalTo: calendar.leadingAnchor, constant: 15),
             dividerView.trailingAnchor.constraint(equalTo: calendar.trailingAnchor, constant: -15),
-            dividerView.topAnchor.constraint(equalTo: calendar.calendarWeekdayView.bottomAnchor),
+            dividerView.topAnchor.constraint(equalTo: calendar.calendarWeekdayView.bottomAnchor, constant: 5),
             dividerView.heightAnchor.constraint(equalToConstant: 0.5)
         ])
         
@@ -204,7 +205,7 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
         fetchCurrentMonthSchedule()
         
         // 약간의 지연을 주어 레이아웃이 완전히 설정된 후 라인을 그립니다
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
             self.addEventRangeLine()
         }
     }
@@ -219,8 +220,8 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
         return 0
     }
     
-    func didAddEvent(id: Int, name: String, startDate: Date, endDate: Date, startTime: String?, deadline: String?) {
-        let newEvent = (id: id, name: name, startDate: startDate, endDate: endDate, startTime: startTime, deadline: deadline)
+    func didAddEvent(id: Int, name: String, contents: String?, startDate: Date, endDate: Date, startTime: String?, deadline: String?) {
+        let newEvent = (id: id, name: name, contents: contents, startDate: startDate, endDate: endDate, startTime: startTime, deadline: deadline)
         let level = getOverlappingLineLevel(for: newEvent)
         
         if level == -1 {
@@ -269,14 +270,14 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
         
         calendar.reloadData()
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
             self.addEventRangeLine()
         }
         
         updateScheduleCount()
         scheduleTableView.reloadData()
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             self.drawConnectionLines()
         }
         
@@ -335,8 +336,7 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
                 continue
             }
             
-            let lineColor = event.deadline != nil ?
-            #colorLiteral(red: 0.7760145068, green: 0.8501827121, blue: 0.9661260247, alpha: 1) : #colorLiteral(red: 0.9568627451, green: 0.9450980392, blue: 0.7294117647, alpha: 1)
+            let lineColor = event.startTime != nil && event.deadline == nil ? #colorLiteral(red: 0.9568627451, green: 0.9450980392, blue: 0.7294117647, alpha: 1) : #colorLiteral(red: 0.7760145068, green: 0.8501827121, blue: 0.9661260247, alpha: 1)
             
             let startPoint = startCell.convert(startCell.bounds.origin, to: calendar)
             let endPoint = endCell.convert(endCell.bounds.origin, to: calendar)
@@ -375,20 +375,40 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
                 )
                 eventRangeViews.append(nameLabel)
                 
-                if startDateString != endDateString {
-                    let timeLabel = UILabel()
-                    timeLabel.text = "~\(timeFormatter.string(from: event.endDate))"
-                    timeLabel.font = .systemFont(ofSize: 10)
-                    timeLabel.textColor = event.deadline != nil ? #colorLiteral(red: 0.1882352941, green: 0.3058823529, blue: 0.5137254902, alpha: 1) : #colorLiteral(red: 0.3921568627, green: 0.4039215686, blue: 0.1725490196, alpha: 1)
-                    timeLabel.sizeToFit()
-                    calendar.addSubview(timeLabel)
-                    
-                    timeLabel.frame.origin = CGPoint(
-                        x: endX - timeLabel.frame.width - 5,
-                        y: y
-                    )
-                    eventRangeViews.append(timeLabel)
+                let timeLabel = UILabel()
+                let timeFormatter = DateFormatter()
+                timeFormatter.dateFormat = "HH:mm:ss"
+                let outputFormatter = DateFormatter()
+                outputFormatter.dateFormat = "HH:mm"
+
+                let timeText: String
+                if let startTime = event.startTime {
+                    if let date = timeFormatter.date(from: startTime) {
+                        timeText = "~\(outputFormatter.string(from: date))"
+                    } else {
+                        timeText = "~\(startTime)"
+                    }
+                } else if let deadline = event.deadline {
+                    if let date = timeFormatter.date(from: deadline) {
+                        timeText = "~\(outputFormatter.string(from: date))"
+                    } else {
+                        timeText = "~\(deadline)"
+                    }
+                } else {
+                    timeText = "~\(timeFormatter.string(from: event.endDate))"
                 }
+
+                timeLabel.text = timeText
+                timeLabel.font = .systemFont(ofSize: 10)
+                timeLabel.textColor = event.deadline != nil ? #colorLiteral(red: 0.1882352941, green: 0.3058823529, blue: 0.5137254902, alpha: 1) : #colorLiteral(red: 0.3921568627, green: 0.4039215686, blue: 0.1725490196, alpha: 1)
+                timeLabel.sizeToFit()
+                calendar.addSubview(timeLabel)
+                
+                timeLabel.frame.origin = CGPoint(
+                    x: endX - timeLabel.frame.width - 5,
+                    y: y
+                )
+                eventRangeViews.append(timeLabel)
                 
                 addLongPressGesture(to: lineView, for: event)
                 
@@ -436,7 +456,29 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
                 addLongPressGesture(to: lastLineView, for: event)
                 
                 let timeLabel = UILabel()
-                timeLabel.text = "~\(timeFormatter.string(from: event.endDate))"
+                let timeFormatter = DateFormatter()
+                timeFormatter.dateFormat = "HH:mm:ss"
+                let outputFormatter = DateFormatter()
+                outputFormatter.dateFormat = "HH:mm"
+
+                let timeText: String
+                if let startTime = event.startTime {
+                    if let date = timeFormatter.date(from: startTime) {
+                        timeText = "~\(outputFormatter.string(from: date))"
+                    } else {
+                        timeText = "~\(startTime)"
+                    }
+                } else if let deadline = event.deadline {
+                    if let date = timeFormatter.date(from: deadline) {
+                        timeText = "~\(outputFormatter.string(from: date))"
+                    } else {
+                        timeText = "~\(deadline)"
+                    }
+                } else {
+                    timeText = "~\(timeFormatter.string(from: event.endDate))"
+                }
+
+                timeLabel.text = timeText
                 timeLabel.font = .systemFont(ofSize: 10)
                 timeLabel.textColor = event.deadline != nil ? #colorLiteral(red: 0.2426371872, green: 0.3858973086, blue: 0.5858027339, alpha: 1) : #colorLiteral(red: 0.3921568627, green: 0.4039215686, blue: 0.1725490196, alpha: 1)
                 timeLabel.sizeToFit()
@@ -494,7 +536,7 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
         addEventRangeLine()
     }
     
-    private func getOverlappingLineLevel(for newEvent: (id: Int, name: String, startDate: Date, endDate: Date, startTime: String?, deadline: String?)) -> Int {
+    private func getOverlappingLineLevel(for newEvent: (id: Int, name: String, contents: String?, startDate: Date, endDate: Date, startTime: String?, deadline: String?)) -> Int {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
         
@@ -526,7 +568,7 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
         return -1
     }
     
-    private func addLongPressGesture(to view: UIView, for event: (id: Int, name: String, startDate: Date, endDate: Date, startTime: String?, deadline: String?)) {
+    private func addLongPressGesture(to view: UIView, for event: (id: Int, name: String, contents: String?, startDate: Date, endDate: Date, startTime: String?, deadline: String?)) {
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
         view.isUserInteractionEnabled = true
         view.addGestureRecognizer(longPressGesture)
@@ -550,7 +592,7 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
             let event = self.events[index]
             guard let userId = self.userId else { return }
             
-            let endpoint = event.deadline == nil ?
+            let endpoint = event.startTime != nil && event.deadline == nil ?
                 "/plan/\(userId)/\(event.id)" :
                 "/plansub/\(userId)/\(event.id)"
             
@@ -563,6 +605,18 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
                         self.events.remove(at: index)
                         self.eventRangeViews.forEach { $0.removeFromSuperview() }
                         self.eventRangeViews.removeAll()
+                        
+                        // 캘린더 데이터 새로고침
+                        self.fetchCurrentMonthSchedule()
+                        
+                        // 현재 선택된 날짜의 일정 새로고침
+                        if let selectedDate = self.calendar.selectedDate {
+                            self.fetchDailySchedule(for: selectedDate)
+                        } else {
+                            self.fetchDailySchedule(for: Date())
+                        }
+                        
+                        // UI 업데이트
                         self.addEventRangeLine()
                         self.scheduleTableView.reloadData()
                         self.drawConnectionLines()
@@ -670,8 +724,18 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
         
         cell.textLabel?.text = "      " + plan.plantitle
         if let startTime = plan.startTime {
-            cell.detailTextLabel?.text = startTime
+            let timeFormatter = DateFormatter()
+            timeFormatter.dateFormat = "HH:mm:ss"
+            let outputFormatter = DateFormatter()
+            outputFormatter.dateFormat = "HH:mm"
+            
+            if let date = timeFormatter.date(from: startTime) {
+                cell.detailTextLabel?.text = outputFormatter.string(from: date)
+            } else {
+                cell.detailTextLabel?.text = startTime
+            }
         }
+        
         cell.backgroundColor = .clear
         cell.textLabel?.textColor = .white
         cell.detailTextLabel?.textColor = .white
@@ -779,8 +843,8 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
         for plan in response.plans {
             if let startDate = dateFormatter.date(from: plan.startDate),
                let endDate = dateFormatter.date(from: plan.endDate) {
-                let event: (id: Int, name: String, startDate: Date, endDate: Date, startTime: String?, deadline: String?) = 
-                    (id: plan.planId, name: plan.plantitle, startDate: startDate, endDate: endDate, startTime: plan.startTime, deadline: nil)
+                let event: (id: Int, name: String, contents: String?, startDate: Date, endDate: Date, startTime: String?, deadline: String?) =
+                (id: plan.planId, name: plan.plantitle, contents: nil, startDate: startDate, endDate: endDate, startTime: plan.startTime, deadline: nil)
                 events.append(event)
             }
         }
@@ -788,8 +852,8 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
         for planSub in response.planSubs {
             if let startDate = dateFormatter.date(from: planSub.startDate),
                let endDate = dateFormatter.date(from: planSub.endDate) {
-                let event: (id: Int, name: String, startDate: Date, endDate: Date, startTime: String?, deadline: String?) = 
-                    (id: planSub.plansubId, name: planSub.plansubtitle, startDate: startDate, endDate: endDate, startTime: nil, deadline: planSub.deadline)
+                let event: (id: Int, name: String, contents: String?, startDate: Date, endDate: Date, startTime: String?, deadline: String?) =
+                (id: planSub.plansubId, name: planSub.plansubtitle, contents: planSub.contents, startDate: startDate, endDate: endDate, startTime: nil, deadline: planSub.deadline)
                 events.append(event)
             }
         }
@@ -874,7 +938,18 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
     }
 
     private func updateDailyScheduleUI() {
-        // Implementation of updateDailyScheduleUI
+        guard let schedule = dailySchedule else { return }
+        
+        // scheduleTableView 데이터 초기화
+        scheduleTableView.reloadData()
+        
+        // 연결선 다시 그리기
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            self.drawConnectionLines()
+        }
+        
+        // 일정 카운트 업데이트
+        updateScheduleCount()
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
