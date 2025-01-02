@@ -7,6 +7,8 @@ class MainViewController : UIViewController {
     private var toggledPlanIds: Set<Int> = []
     private var toggledDetailIds: Set<Int> = []
     
+    private var checkedStates: [Bool] = []
+
     var userId = UserDefaults.standard.string(forKey: "userIdentifier")
     enum TaskType {
         case plan
@@ -208,14 +210,20 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
         cell.delegate = self
         let taskItem = taskData[indexPath.row]
         
+        let isChecked = checkedStates[indexPath.row]
+
+        
         switch taskItem.type {
         case .plan:
             if let plan = taskItem.task as? Plan {
                 cell.configure(with: plan, type: .plan)
+                cell.checkButton.isSelected = isChecked  // 여기서 체크 상태 설정
+
             }
         case .detail:
             if let detail = taskItem.task as? Detail {
                 cell.configure(with: detail, type: .detail)
+                cell.checkButton.isSelected = isChecked  
             }
         }
         
@@ -401,16 +409,20 @@ extension MainViewController {
     private func updateUI() {
         
         taskData.removeAll()
-        
+        checkedStates.removeAll()
+
         guard let schedule = dailySchedule else { return }
         
         
         schedule.details.forEach { detail in
             taskData.append((type: .detail, task: detail))
+            checkedStates.append(detail.completed)
+
         }
         
         schedule.plans.forEach { plan in
             taskData.append((type: .plan, task: plan))
+            checkedStates.append(plan.completed)
         }
         
         DispatchQueue.main.async {
@@ -488,27 +500,66 @@ extension MainViewController {
 
 
 extension MainViewController: MainTableViewCellDelegate {
+//    func didToggleCheckbox(for task: Any, isSelected: Bool) {
+//        switch task {
+//        case let plan as Plan:
+//            if isSelected {
+//                toggledPlanIds.insert(plan.planId)
+//            } else {
+//                toggledPlanIds.insert(plan.planId)
+//            }
+//            
+//        case let detail as Detail:
+//            if isSelected {
+//                toggledDetailIds.insert(detail.detailId)
+//            } else {
+//                toggledDetailIds.insert(detail.detailId)
+//            }
+//            
+//        default:
+//            break
+//        }
+//        
+//    }
+    
     func didToggleCheckbox(for task: Any, isSelected: Bool) {
-        switch task {
-        case let plan as Plan:
-            if isSelected {
-                toggledPlanIds.insert(plan.planId)
-            } else {
-                toggledPlanIds.insert(plan.planId)
-            }
-            
-        case let detail as Detail:
-            if isSelected {
-                toggledDetailIds.insert(detail.detailId)
-            } else {
-                toggledDetailIds.insert(detail.detailId)
-            }
-            
-        default:
-            break
-        }
-        
-    }
+          // 토글된 셀의 인덱스 찾기
+          if let index = taskData.firstIndex(where: { item in
+              switch (item.task, task) {
+              case let (plan as Plan, taskPlan as Plan):
+                  return plan.planId == taskPlan.planId
+              case let (detail as Detail, taskDetail as Detail):
+                  return detail.detailId == taskDetail.detailId
+              default:
+                  return false
+              }
+          }) {
+              // 체크 상태 업데이트
+              checkedStates[index] = isSelected
+              
+              // 토글 상태 저장
+              switch task {
+              case let plan as Plan:
+                  if isSelected {
+                      toggledPlanIds.insert(plan.planId)
+                  } else {
+                      toggledPlanIds.insert(plan.planId)
+                  }
+              case let detail as Detail:
+                  if isSelected {
+                      toggledDetailIds.insert(detail.detailId)
+                  } else {
+                      toggledDetailIds.insert(detail.detailId)
+                  }
+              default:
+                  break
+              }
+              
+              // 서버에 변경사항 전송
+//              sendToggledTasks()
+          }
+      }
+    
     
     
 }

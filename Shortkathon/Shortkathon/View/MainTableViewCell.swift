@@ -166,7 +166,6 @@ class MainTableViewCell : UITableViewCell {
         taskLabel.text = nil
         titleTaskLabel.text = nil
         timeLabel.text = nil
-        checkButton.isSelected = false
         currentTask = nil
         
         taskLabel.font = UIFont(name: "Pretendard-Regular", size: 17)
