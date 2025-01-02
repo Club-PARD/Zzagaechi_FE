@@ -723,6 +723,8 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
         cell.contentView.addSubview(ballImageView)
         
         cell.textLabel?.text = "      " + plan.plantitle
+        cell.textLabel?.font = UIFont(name: "Pretendard-Regular", size: 17)
+        
         if let startTime = plan.startTime {
             let timeFormatter = DateFormatter()
             timeFormatter.dateFormat = "HH:mm:ss"
@@ -745,6 +747,14 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
         let ballImageView = UIImageView(frame: CGRect(x: 10, y: 20, width: 10, height: 10))
         ballImageView.image = UIImage(named: "detailBall")
         cell.contentView.addSubview(ballImageView)
+
+        // 상위 제목 레이블 추가
+        let titleLabel = UILabel()
+        titleLabel.text = detail.plansubtitle
+        titleLabel.font = UIFont(name: "Pretendard-Regular", size: 12)
+        titleLabel.textColor = #colorLiteral(red: 0.7472824454, green: 0.7472824454, blue: 0.7472824454, alpha: 1)
+        titleLabel.frame = CGRect(x: 41, y: 5, width: cell.contentView.frame.width - 40, height: 10)
+        cell.contentView.addSubview(titleLabel)
         
         // 시간 포맷 변경
         let timeFormatter = DateFormatter()
@@ -765,6 +775,7 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
         
         cell.textLabel?.text = "      " + detail.content
         cell.detailTextLabel?.text = "\(startTimeFormatted)~\(endTimeFormatted)"
+        cell.textLabel?.font = UIFont(name: "Pretendard-Regular", size: 17)
         cell.backgroundColor = .clear
         cell.textLabel?.textColor = .white
         cell.detailTextLabel?.textColor = .white
