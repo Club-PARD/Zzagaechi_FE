@@ -13,7 +13,9 @@ class TimeModalViewController: UIViewController {
     private var selectedDate: Date?
     private var selectedStartTime: Date?
     private var selectedEndTime: Date?
-    
+    var deadline: Date?
+    var isLastDay: Bool = false
+
     enum ModalStep {
         case date
         case startTime
@@ -201,15 +203,21 @@ class TimeModalViewController: UIViewController {
         if currentStep == .date {
             datePicker.minimumDate = availableStartDate
             datePicker.maximumDate = availableEndDate
-        } else if currentStep == .startTime || currentStep == .endTime {
-            // 선택된 날짜가 오늘이면 현재 시간 이후만 선택 가능하도록 설정
-            if let selectedDate = selectedDate {
-                let calendar = Calendar.current
-                if calendar.isDateInToday(selectedDate) {
-                    datePicker.minimumDate = Date() // 현재 시간
-                } else {
-                    datePicker.minimumDate = nil // 시간 제한 없음
+        } else if currentStep == .startTime {
+            // 시작 시간은 제한 없음
+            datePicker.minimumDate = nil
+            datePicker.maximumDate = nil
+        } else if currentStep == .endTime {
+            if isLastDay {
+                if let deadline = deadline {
+                    // 마지막 날에만 deadline 시간 제한 적용
+                    datePicker.maximumDate = deadline
+                    print("마지막 날 데드라인 시간: \(deadline)")
                 }
+            } else {
+                // 마지막 날이 아닐 경우 시간 제한 없음
+                datePicker.minimumDate = nil
+                datePicker.maximumDate = nil
             }
         }
     }
@@ -225,9 +233,9 @@ class TimeModalViewController: UIViewController {
             currentStep = .endTime
             // 종료 시간은 시작 시간 이후로만 선택 가능하도록 설정
             datePicker.minimumDate = selectedStartTime
+            setupDatePicker()
         case .endTime:
             selectedEndTime = datePicker.date
-            
             if let date = selectedDate {
                 delegate?.didSelectDateTime(date: date, startTime: selectedStartTime, endTime: selectedEndTime)
             }

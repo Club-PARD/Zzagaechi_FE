@@ -112,13 +112,12 @@ class Page4TaskTableViewCell : UITableViewCell {
             cellView.trailingAnchor.constraint(equalTo: clearView.trailingAnchor),
             cellView.bottomAnchor.constraint(equalTo: clearView.bottomAnchor , constant: -8),
             
-//            taskLabel.topAnchor.constraint(equalTo: cellView.topAnchor ,constant: 18),
             taskLabel.leadingAnchor.constraint(equalTo: cellView.leadingAnchor, constant:  16  ),
             taskLabel.bottomAnchor.constraint(equalTo: blueView.topAnchor, constant: -8),
             
             
-            addButton.topAnchor.constraint(equalTo: cellView.topAnchor, constant: 11),
-            addButton.trailingAnchor.constraint(equalTo: cellView.trailingAnchor,constant: -11),
+            addButton.topAnchor.constraint(equalTo: cellView.topAnchor, constant: 14),
+            addButton.trailingAnchor.constraint(equalTo: cellView.trailingAnchor,constant: -18),
             addButton.widthAnchor.constraint(equalToConstant: 10),
             addButton.heightAnchor.constraint(equalToConstant: 20),
         

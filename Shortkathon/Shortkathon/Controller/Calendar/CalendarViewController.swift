@@ -1,5 +1,4 @@
 import UIKit
-
 import FSCalendar
 
 class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSCalendarDelegateAppearance, UITableViewDelegate, UITableViewDataSource {
@@ -336,7 +335,14 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
                 continue
             }
             
-            let lineColor = event.startTime != nil && event.deadline == nil ? #colorLiteral(red: 0.9568627451, green: 0.9450980392, blue: 0.7294117647, alpha: 1) : #colorLiteral(red: 0.7760145068, green: 0.8501827121, blue: 0.9661260247, alpha: 1)
+            let lineColor: UIColor
+            if event.startTime == nil && event.deadline == nil {
+                lineColor = #colorLiteral(red: 0.9568627451, green: 0.9450980392, blue: 0.7294117647, alpha: 1)  // 노란색
+            } else {
+                lineColor = event.startTime != nil && event.deadline == nil ? 
+                    #colorLiteral(red: 0.9568627451, green: 0.9450980392, blue: 0.7294117647, alpha: 1) : 
+                    #colorLiteral(red: 0.7760145068, green: 0.8501827121, blue: 0.9661260247, alpha: 1)  // 파란색
+            }
             
             let startPoint = startCell.convert(startCell.bounds.origin, to: calendar)
             let endPoint = endCell.convert(endCell.bounds.origin, to: calendar)
@@ -362,7 +368,9 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
                 let endDateString = formatter.string(from: event.endDate)
                 
                 let nameLabel = UILabel()
-                let truncatedName = event.name.count > 5 ? event.name.prefix(5) + "..." : event.name
+                let truncatedName = startDateString == endDateString ? 
+                    (event.name.count > 10 ? event.name.prefix(10) + "..." : event.name) :
+                    (event.name.count > 5 ? event.name.prefix(5) + "..." : event.name)
                 nameLabel.text = truncatedName
                 nameLabel.font = .systemFont(ofSize: 10)
                 nameLabel.textColor = event.deadline != nil ? #colorLiteral(red: 0.1882352941, green: 0.3058823529, blue: 0.5137254902, alpha: 1) : #colorLiteral(red: 0.3921568627, green: 0.4039215686, blue: 0.1725490196, alpha: 1)
@@ -375,43 +383,40 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
                 )
                 eventRangeViews.append(nameLabel)
                 
-                let timeLabel = UILabel()
-                let timeFormatter = DateFormatter()
-                timeFormatter.dateFormat = "HH:mm:ss"
-                let outputFormatter = DateFormatter()
-                outputFormatter.dateFormat = "HH:mm"
-
-                let timeText: String
-                if let startTime = event.startTime {
-                    if let date = timeFormatter.date(from: startTime) {
-                        timeText = "~\(outputFormatter.string(from: date))"
-                    } else {
-                        timeText = "~\(startTime)"
+                if startDateString != endDateString {
+                    let timeLabel = UILabel()
+                    let timeFormatter = DateFormatter()
+                    timeFormatter.dateFormat = "HH:mm:ss"
+                    let outputFormatter = DateFormatter()
+                    outputFormatter.dateFormat = "HH:mm"
+                    
+                    if let startTime = event.startTime {
+                        if let date = timeFormatter.date(from: startTime) {
+                            timeLabel.text = "~" + outputFormatter.string(from: date)
+                        } else {
+                            timeLabel.text = "~" + startTime
+                        }
+                    } else if let deadline = event.deadline {
+                        if let date = timeFormatter.date(from: deadline) {
+                            timeLabel.text = "~" + outputFormatter.string(from: date)
+                        } else {
+                            timeLabel.text = "~" + deadline
+                        }
                     }
-                } else if let deadline = event.deadline {
-                    if let date = timeFormatter.date(from: deadline) {
-                        timeText = "~\(outputFormatter.string(from: date))"
-                    } else {
-                        timeText = "~\(deadline)"
-                    }
-                } else {
-                    timeText = "~\(timeFormatter.string(from: event.endDate))"
+                    
+                    timeLabel.font = .systemFont(ofSize: 10)
+                    timeLabel.textColor = event.deadline != nil ? #colorLiteral(red: 0.1882352941, green: 0.3058823529, blue: 0.5137254902, alpha: 1) : #colorLiteral(red: 0.3921568627, green: 0.4039215686, blue: 0.1725490196, alpha: 1)
+                    timeLabel.sizeToFit()
+                    calendar.addSubview(timeLabel)
+                    
+                    timeLabel.frame.origin = CGPoint(
+                        x: endX - timeLabel.frame.width - 5,
+                        y: y
+                    )
+                    eventRangeViews.append(timeLabel)
                 }
-
-                timeLabel.text = timeText
-                timeLabel.font = .systemFont(ofSize: 10)
-                timeLabel.textColor = event.deadline != nil ? #colorLiteral(red: 0.1882352941, green: 0.3058823529, blue: 0.5137254902, alpha: 1) : #colorLiteral(red: 0.3921568627, green: 0.4039215686, blue: 0.1725490196, alpha: 1)
-                timeLabel.sizeToFit()
-                calendar.addSubview(timeLabel)
-                
-                timeLabel.frame.origin = CGPoint(
-                    x: endX - timeLabel.frame.width - 5,
-                    y: y
-                )
-                eventRangeViews.append(timeLabel)
                 
                 addLongPressGesture(to: lineView, for: event)
-                
             } else {
                 let firstLineView = UIView()
                 firstLineView.backgroundColor = lineColor
@@ -592,9 +597,14 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
             let event = self.events[index]
             guard let userId = self.userId else { return }
             
-            let endpoint = event.startTime != nil && event.deadline == nil ?
-                "/plan/\(userId)/\(event.id)" :
-                "/plansub/\(userId)/\(event.id)"
+            let endpoint: String
+            if event.startTime == nil && event.deadline == nil {
+                endpoint = "/plan/\(userId)/\(event.id)"
+            } else {
+                endpoint = event.startTime != nil && event.deadline == nil ?
+                    "/plan/\(userId)/\(event.id)" :
+                    "/plansub/\(userId)/\(event.id)"
+            }
             
             self.apiService.deleteWithStatusCode(endpoint: endpoint) { [weak self] statusCode in
                 DispatchQueue.main.async {
@@ -723,6 +733,8 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
         cell.contentView.addSubview(ballImageView)
         
         cell.textLabel?.text = "      " + plan.plantitle
+        cell.textLabel?.font = UIFont(name: "Pretendard-Regular", size: 17)
+        
         if let startTime = plan.startTime {
             let timeFormatter = DateFormatter()
             timeFormatter.dateFormat = "HH:mm:ss"
@@ -745,6 +757,14 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
         let ballImageView = UIImageView(frame: CGRect(x: 10, y: 20, width: 10, height: 10))
         ballImageView.image = UIImage(named: "detailBall")
         cell.contentView.addSubview(ballImageView)
+
+        // 상위 제목 레이블 추가
+        let titleLabel = UILabel()
+        titleLabel.text = detail.plansubtitle
+        titleLabel.font = UIFont(name: "Pretendard-Regular", size: 12)
+        titleLabel.textColor = #colorLiteral(red: 0.7472824454, green: 0.7472824454, blue: 0.7472824454, alpha: 1)
+        titleLabel.frame = CGRect(x: 41, y: 5, width: cell.contentView.frame.width - 40, height: 10)
+        cell.contentView.addSubview(titleLabel)
         
         // 시간 포맷 변경
         let timeFormatter = DateFormatter()
@@ -765,6 +785,7 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
         
         cell.textLabel?.text = "      " + detail.content
         cell.detailTextLabel?.text = "\(startTimeFormatted)~\(endTimeFormatted)"
+        cell.textLabel?.font = UIFont(name: "Pretendard-Regular", size: 17)
         cell.backgroundColor = .clear
         cell.textLabel?.textColor = .white
         cell.detailTextLabel?.textColor = .white
@@ -938,18 +959,25 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
     }
 
     private func updateDailyScheduleUI() {
-        guard let schedule = dailySchedule else { return }
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MM.dd"
+        dateFormatter.locale = Locale(identifier: "ko_KR")
         
-        // scheduleTableView 데이터 초기화
-        scheduleTableView.reloadData()
-        
-        // 연결선 다시 그리기
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            self.drawConnectionLines()
+        if let selectedDate = calendar.selectedDate {
+            // 오늘 날짜와 선택된 날짜 비교
+            let calendar = Calendar.current
+            if calendar.isDateInToday(selectedDate) {
+                todayLabel.text = "오늘 할 일"
+            } else {
+                let dateString = dateFormatter.string(from: selectedDate)
+                todayLabel.text = "\(dateString) 할 일"
+            }
+        } else {
+            todayLabel.text = "오늘 할 일"
         }
         
-        // 일정 카운트 업데이트
-        updateScheduleCount()
+        scheduleTableView.reloadData()
+        drawConnectionLines()
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

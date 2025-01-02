@@ -57,7 +57,7 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
         let label = UILabel()
         label.text = "제목"
         label.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-        label.font = .systemFont(ofSize: 19)
+        label.font = UIFont(name: "Pretendard-Medium", size: 19)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -183,6 +183,7 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
         button.setTitleColor(#colorLiteral(red: 0.2980392157, green: 0.2980392157, blue: 0.2980392157, alpha: 1), for: .normal)
         button.backgroundColor = .clear
         button.layer.cornerRadius = 12
+        button.titleLabel?.font = UIFont(name: "Pretendard-Bold", size: 15)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
