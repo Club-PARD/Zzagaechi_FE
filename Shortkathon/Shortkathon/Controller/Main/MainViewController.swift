@@ -166,33 +166,33 @@ class MainViewController : UIViewController {
     
     @objc func reset(){
         let today = Date().toDateString()
-            let modalShownKey = "modalShown_\(today)"
+        let modalShownKey = "modalShown_\(today)"
+        
+        // 알림 메시지 생성
+        let alert = UIAlertController(title: "확인",
+                                      message: "오늘 할일 상태 초기화하시겠습니까?",
+                                      preferredStyle: .alert)
+        // 확인 버튼
+        let confirmAction = UIAlertAction(title: "초기화", style: .destructive) { _ in
+            // UserDefaults 값 삭제
+            UserDefaults.standard.removeObject(forKey: modalShownKey)
+            print("모달 상태 초기화됨")
             
-            // 알림 메시지 생성
-            let alert = UIAlertController(title: "확인",
-                                           message: "오늘 할일 상태 초기화하시겠습니까?",
-                                           preferredStyle: .alert)
-            // 확인 버튼
-            let confirmAction = UIAlertAction(title: "초기화", style: .destructive) { _ in
-                // UserDefaults 값 삭제
-                UserDefaults.standard.removeObject(forKey: modalShownKey)
-                print("모달 상태 초기화됨")
-            
-            }
-            
-            // 취소 버튼
-            let cancelAction = UIAlertAction(title: "취소", style: .cancel) { _ in
-                print("초기화 취소됨")
-            }
-            
-            // 알림에 액션 추가
-            alert.addAction(confirmAction)
-            alert.addAction(cancelAction)
-            
-            // 알림 표시
-            if let currentViewController = UIApplication.shared.keyWindow?.rootViewController {
-                currentViewController.present(alert, animated: true, completion: nil)
-            }
+        }
+        
+        // 취소 버튼
+        let cancelAction = UIAlertAction(title: "취소", style: .cancel) { _ in
+            print("초기화 취소됨")
+        }
+        
+        // 알림에 액션 추가
+        alert.addAction(confirmAction)
+        alert.addAction(cancelAction)
+        
+        // 알림 표시
+        if let currentViewController = UIApplication.shared.keyWindow?.rootViewController {
+            currentViewController.present(alert, animated: true, completion: nil)
+        }
     }
 }
 //MARK: - tableview Extension
@@ -262,7 +262,7 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
                 case .success:
                     DispatchQueue.main.async {
                         self.taskData.remove(at: indexPath.row)
-                     
+                        
                         
                         
                         tableView.beginUpdates()
@@ -285,7 +285,7 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
         
         deleteAction.backgroundColor = #colorLiteral(red: 0.9986872077, green: 0.3591775596, blue: 0.006945624482, alpha: 1)
         deleteAction.title = "삭제"
-    
+        
         
         let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
         configuration.performsFirstActionWithFullSwipe = false
@@ -401,9 +401,9 @@ extension MainViewController {
     private func updateUI() {
         
         taskData.removeAll()
-
+        
         guard let schedule = dailySchedule else { return }
-
+        
         
         schedule.details.forEach { detail in
             taskData.append((type: .detail, task: detail))
@@ -494,18 +494,21 @@ extension MainViewController: MainTableViewCellDelegate {
             if isSelected {
                 toggledPlanIds.insert(plan.planId)
             } else {
-                toggledPlanIds.remove(plan.planId)
+                toggledPlanIds.insert(plan.planId)
             }
             
         case let detail as Detail:
             if isSelected {
                 toggledDetailIds.insert(detail.detailId)
             } else {
-                toggledDetailIds.remove(detail.detailId)
+                toggledDetailIds.insert(detail.detailId)
             }
             
         default:
             break
         }
+        
     }
+    
+    
 }
