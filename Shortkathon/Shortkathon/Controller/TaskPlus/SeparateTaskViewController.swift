@@ -15,7 +15,7 @@ class SeparateTaskViewController : UIViewController {
         layer.endPoint = CGPoint(x: 0.5, y: 1.0)    // 가운데 하단
         return layer
     }()
-
+    
     
     let mainLabel: UILabel = {
         let label = UILabel()
@@ -114,6 +114,8 @@ class SeparateTaskViewController : UIViewController {
     let iconImage2: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "Icon_right")
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -147,17 +149,18 @@ class SeparateTaskViewController : UIViewController {
             Button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant:44),
             Button.widthAnchor.constraint(equalToConstant: 305),
             Button.heightAnchor.constraint(equalToConstant: 92),
+            Button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant:   -44),
             
             subLabel.topAnchor.constraint(equalTo: mainLabel.bottomAnchor, constant: 85),
             subLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 64),
             
             iconImage.topAnchor.constraint(equalTo: view.topAnchor, constant: 175),
-//            iconImage.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 324.25),
+            //            iconImage.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 324.25),
             iconImage.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -62.57),
             
             Button2.topAnchor.constraint(equalTo: Button.bottomAnchor, constant: 22),
             Button2.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant:44),
-            
+            Button2.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant:   -44),
             Button2.widthAnchor.constraint(equalToConstant: 305),
             Button2.heightAnchor.constraint(equalToConstant: 92),
             
@@ -165,7 +168,7 @@ class SeparateTaskViewController : UIViewController {
             ezLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 64),
             
             iconImage2.topAnchor.constraint(equalTo: view.topAnchor, constant: 289),
-//            iconImage2.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 324.25),
+            //            iconImage2.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 324.25),
             iconImage2.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -62.57),
         ])
         

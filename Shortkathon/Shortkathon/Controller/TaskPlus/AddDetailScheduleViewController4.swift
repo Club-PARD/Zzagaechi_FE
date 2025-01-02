@@ -41,7 +41,7 @@ class AddDetailScheduleViewController4 : UIViewController {
     
     let mainLabel : UILabel = {
         let label = UILabel()
-        label.text = "세분화 일정 등록"
+        label.text = "목록 나누기"
         label.font = .systemFont(ofSize: 16)
         label.textColor = .white
         label.textAlignment = .center

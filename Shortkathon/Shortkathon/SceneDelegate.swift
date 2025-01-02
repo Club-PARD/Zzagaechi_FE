@@ -29,7 +29,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         } else {
             // 로그인하지 않은 상태라면 AppleLoginViewController로 이동
             print("아직 로그인")
-            let loginVC = AppleLoginViewController()
+            let loginVC = ViewController()
             loginVC.modalPresentationStyle = .fullScreen
             window.rootViewController = loginVC
         }
