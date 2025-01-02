@@ -124,7 +124,7 @@ class SeparateTaskViewController : UIViewController {
         
         setupGradientBackground()
         Button.addTarget(self, action: #selector(didTap), for:  .touchUpInside)
-        Button2.addTarget(self, action: #selector(diss), for: .touchUpInside)
+        Button2.addTarget(self, action: #selector(doTap), for: .touchUpInside)
         setUI()
         
     }
@@ -180,9 +180,6 @@ class SeparateTaskViewController : UIViewController {
         
     }
     
-    @objc func diss(){
-        dismiss(animated: true)
-    }
     
     @objc func doTap() {
         print("누가 간단한 일정 눌렀디")

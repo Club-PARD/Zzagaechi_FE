@@ -298,6 +298,8 @@ class AddDetailScheduleViewController2 : UIViewController {
             
             progessbarImage.topAnchor.constraint(equalTo: mainLabel.bottomAnchor, constant: 57),
             progessbarImage.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 31),
+            progessbarImage.widthAnchor.constraint(equalToConstant: 179),
+            progessbarImage.heightAnchor.constraint(equalToConstant: 21),
             
             headerLabel.topAnchor.constraint(equalTo: progessbarImage.bottomAnchor , constant: 12),
             headerLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 31),

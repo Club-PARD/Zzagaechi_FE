@@ -136,9 +136,10 @@ class SchedulemodalController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .black.withAlphaComponent(0.5)
         setupUI()
-        [closeButton, confirmButton].forEach {
+        [ confirmButton].forEach {
             $0.addTarget(self, action: #selector(didTapped), for: .touchUpInside)
         }
+        closeButton.addTarget(self, action: #selector(dis), for: .touchUpInside)
     }
     
     private func setupUI() {
@@ -180,6 +181,13 @@ class SchedulemodalController: UIViewController {
             confirmButton.heightAnchor.constraint(equalToConstant: 44)
         ])
     }
+    
+    @objc func dis(){
+        self.dismiss(animated: true)
+    }
+    
+    
+    
     
     @objc func didTapped(_ sender: UIButton) {
         sender.isEnabled = false

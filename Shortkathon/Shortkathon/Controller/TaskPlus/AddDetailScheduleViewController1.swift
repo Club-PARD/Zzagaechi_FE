@@ -64,20 +64,26 @@ class AddDetailScheduleViewController1 : UIViewController {
     }()
 
     let schedulTextField: UITextField = {
-        let textField = UITextField()
-        textField.placeholder = "제목을 입력하세요"
-        textField.borderStyle = .roundedRect
-        textField.layer.cornerRadius = 12
-        textField.font = .systemFont(ofSize: 14)
-        textField.font = UIFont(name: "Pretendard-Regular", size: 14)
-        
-        textField.backgroundColor = #colorLiteral(red: 0.137254902, green: 0.137254902, blue: 0.137254902, alpha: 1)
-        textField.textColor = #colorLiteral(red: 0.9999999881, green: 0.9999999881, blue: 0.9999999881, alpha: 1)
-        textField.layer.borderColor = #colorLiteral(red: 0.7294117647, green: 0.8117647059, blue: 0.9568627451, alpha: 1)
-        textField.layer.borderWidth = 2
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        return textField
-    }()
+            let textField = UITextField()
+            textField.placeholder = "제목을 입력하세요"
+            textField.borderStyle = .roundedRect
+            textField.layer.cornerRadius = 12
+            textField.font = .systemFont(ofSize: 14)
+            textField.font = UIFont(name: "Pretendard-Regular", size: 14)
+            
+            textField.backgroundColor = #colorLiteral(red: 0.137254902, green: 0.137254902, blue: 0.137254902, alpha: 1)
+            textField.textColor = #colorLiteral(red: 0.9999999881, green: 0.9999999881, blue: 0.9999999881, alpha: 1)
+            textField.layer.borderColor = #colorLiteral(red: 0.7294117647, green: 0.8117647059, blue: 0.9568627451, alpha: 1)
+            textField.layer.borderWidth = 2
+            textField.translatesAutoresizingMaskIntoConstraints = false
+            
+            // 왼쪽 여백 추가
+            let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: textField.frame.height))
+            textField.leftView = paddingView
+            textField.leftViewMode = .always
+
+            return textField
+        }()
     
     let progessbarImage : UIImageView = {
         let imageView = UIImageView()
@@ -130,6 +136,8 @@ class AddDetailScheduleViewController1 : UIViewController {
             
             progessbarImage.topAnchor.constraint(equalTo: mainLabel.bottomAnchor, constant: 60),
             progessbarImage.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 31),
+            progessbarImage.widthAnchor.constraint(equalToConstant: 179),
+            progessbarImage.heightAnchor.constraint(equalToConstant: 21),
             
             headerLabel.topAnchor.constraint(equalTo: progessbarImage.bottomAnchor , constant: 11),
             headerLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 31),
