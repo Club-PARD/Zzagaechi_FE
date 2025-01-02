@@ -19,7 +19,7 @@ class AddDetailScheduleViewController2 : UIViewController {
     let mainLabel : UILabel = {
         let label = UILabel()
         label.text = "세분화 일정 등록"
-        label.font = UIFont(name: "Pretendard-Bold", size: 20)
+        label.font = .systemFont(ofSize: 16)
         label.textColor = .white
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -482,9 +482,13 @@ class AddDetailScheduleViewController2 : UIViewController {
         let formatter = DateFormatter()
         formatter.dateFormat = "a hh:mm"
         formatter.locale = Locale(identifier: "ko_KR")
+
         timeTextField.text = formatter.string(from: sender.date)
         timeTextField.textColor = .systemBlue
         isTimeSelected = true    // 시간 선택 상태 업데이트
+        
+        UserDefaults.standard.set(sender.date, forKey: "selectedDeadline")
+        
         checkTextFieldsAndUpdateButton()  // 버튼 상태 체크 추가
         timeTextField.resignFirstResponder()
     }
