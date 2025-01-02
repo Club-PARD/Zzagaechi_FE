@@ -283,8 +283,9 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
             completion(true)
         }
         
-        deleteAction.backgroundColor = .red
+        deleteAction.backgroundColor = #colorLiteral(red: 0.9986872077, green: 0.3591775596, blue: 0.006945624482, alpha: 1)
         deleteAction.title = "삭제"
+    
         
         let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
         configuration.performsFirstActionWithFullSwipe = false
