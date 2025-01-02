@@ -76,6 +76,10 @@
 
 <br>
 
+- [🙋‍♂️ 민규's server](https://github.com/Club-PARD/Zzagaechi_BE)
+
+
+<br>
 <br>
 <div align="left"> 
 ** 개발환경 및 언어 **  <br>
