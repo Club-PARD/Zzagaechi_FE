@@ -286,6 +286,11 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
         ])
     }
     
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder() // 키보드 내리기
+        return true
+    }
+    
     private func setupDatePicker() {
         startTextField.inputView = startDatePicker
         

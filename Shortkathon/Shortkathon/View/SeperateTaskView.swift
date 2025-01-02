@@ -149,14 +149,7 @@ class SeperateTaskView : UIView {
         print(task)
         self.endEditing(true)
     }
-    
-//    @objc private func plusAction(){
-//        task.append("")
-//        print(task)
-//        seperateTaskTableView.reloadData()
-//        updateViewHeight()
-//        
-//    }
+
     
     @objc private func plusAction() {
         task.append("")
@@ -211,27 +204,51 @@ extension SeperateTaskView : UITableViewDelegate, UITableViewDataSource {
         return true
     }
     
-    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-        return .delete
-    }
-    
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            task.remove(at: indexPath.row)
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let deleteAction = UIContextualAction(style: .destructive, title: "삭제") { [weak self] (action, view, completion) in
+            guard let self = self else { return }
+            
+            self.task.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
             
-            if task.isEmpty {
-                task.append("")
+            if self.task.isEmpty {
+                self.task.append("")
                 tableView.reloadData()
             }
-            updateViewHeight()
-            notifyContentChange()
+            
+            self.updateViewHeight()
+            self.notifyContentChange()
+            completion(true)
         }
+        
+        deleteAction.backgroundColor = #colorLiteral(red: 0.9986872077, green: 0.3591775596, blue: 0.006945624482, alpha: 1)
+        
+        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+        configuration.performsFirstActionWithFullSwipe = false
+        return configuration
     }
     
-    func tableView(_ tableView: UITableView, titleForDeleteConfirmationButtonForRowAt indexPath: IndexPath) -> String? {
-        return "삭제"
-    }
+//    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+//        return .delete
+//    }
+//    
+//    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+//        if editingStyle == .delete {
+//            task.remove(at: indexPath.row)
+//            tableView.deleteRows(at: [indexPath], with: .fade)
+//            
+//            if task.isEmpty {
+//                task.append("")
+//                tableView.reloadData()
+//            }
+//            updateViewHeight()
+//            notifyContentChange()
+//        }
+//    }
+//    
+//    func tableView(_ tableView: UITableView, titleForDeleteConfirmationButtonForRowAt indexPath: IndexPath) -> String? {
+//        return "삭제"
+//    }
 }
 
 // MARK: - TextField Extension

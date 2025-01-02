@@ -273,7 +273,7 @@ class MainTableViewCell : UITableViewCell {
         emitter.emitterSize = CGSize(width: 100, height: 100)
         emitter.emitterShape = .point
         
-        let emojiStrings = ["🎉", "⭐️", "👏🏻", "🌼", "🔸"]
+        let emojiStrings = ["🎉", "⭐️", "👏🏻","🥳"]
         
         var emitterCells: [CAEmitterCell] = []
         for emoji in emojiStrings {

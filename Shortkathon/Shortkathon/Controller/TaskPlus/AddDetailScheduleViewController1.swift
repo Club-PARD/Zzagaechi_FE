@@ -9,7 +9,7 @@
 
 import UIKit
 
-class AddDetailScheduleViewController1 : UIViewController {
+class AddDetailScheduleViewController1 : UIViewController,  UITextFieldDelegate {
     
     let mainLabel : UILabel = {
         let label = UILabel()
@@ -110,6 +110,7 @@ class AddDetailScheduleViewController1 : UIViewController {
         super.viewDidLoad()
         view.backgroundColor = #colorLiteral(red: 0.1372549087, green: 0.1372549087, blue: 0.1372549087, alpha: 1)
         
+        schedulTextField.delegate = self
         setUI()
         buttonTapped()
         setupKeyboardDismiss()
@@ -156,6 +157,10 @@ class AddDetailScheduleViewController1 : UIViewController {
             nextButton.heightAnchor.constraint(equalToConstant: 46),
             nextButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 31),
         ])
+    }
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder() // 키보드 내리기
+        return true
     }
     
     
