@@ -172,13 +172,12 @@ class MainViewController : UIViewController {
             let alert = UIAlertController(title: "확인",
                                            message: "오늘 할일 상태 초기화하시겠습니까?",
                                            preferredStyle: .alert)
-            
             // 확인 버튼
             let confirmAction = UIAlertAction(title: "초기화", style: .destructive) { _ in
                 // UserDefaults 값 삭제
                 UserDefaults.standard.removeObject(forKey: modalShownKey)
                 print("모달 상태 초기화됨")
-                self.showResetConfirmationMessage() 
+            
             }
             
             // 취소 버튼
@@ -194,20 +193,6 @@ class MainViewController : UIViewController {
             if let currentViewController = UIApplication.shared.keyWindow?.rootViewController {
                 currentViewController.present(alert, animated: true, completion: nil)
             }
-
-    }
-    
-    func showResetConfirmationMessage() {
-        let confirmationAlert = UIAlertController(title: "완료",
-                                                  message: "오늘 할일 상태가 초기화되었습니다.",
-                                                  preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "확인", style: .default)
-        confirmationAlert.addAction(okAction)
-        
-        // 알림 표시
-        if let currentViewController = UIApplication.shared.keyWindow?.rootViewController {
-            currentViewController.present(confirmationAlert, animated: true, completion: nil)
-        }
     }
 }
 //MARK: - tableview Extension
