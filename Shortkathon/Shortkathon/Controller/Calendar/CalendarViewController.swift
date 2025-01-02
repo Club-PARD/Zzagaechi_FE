@@ -1,5 +1,4 @@
 import UIKit
-
 import FSCalendar
 
 class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSCalendarDelegateAppearance, UITableViewDelegate, UITableViewDataSource {
@@ -336,7 +335,14 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
                 continue
             }
             
-            let lineColor = event.startTime != nil && event.deadline == nil ? #colorLiteral(red: 0.9568627451, green: 0.9450980392, blue: 0.7294117647, alpha: 1) : #colorLiteral(red: 0.7760145068, green: 0.8501827121, blue: 0.9661260247, alpha: 1)
+            let lineColor: UIColor
+            if event.startTime == nil && event.deadline == nil {
+                lineColor = #colorLiteral(red: 0.9568627451, green: 0.9450980392, blue: 0.7294117647, alpha: 1)  // 노란색
+            } else {
+                lineColor = event.startTime != nil && event.deadline == nil ? 
+                    #colorLiteral(red: 0.9568627451, green: 0.9450980392, blue: 0.7294117647, alpha: 1) : 
+                    #colorLiteral(red: 0.7760145068, green: 0.8501827121, blue: 0.9661260247, alpha: 1)  // 파란색
+            }
             
             let startPoint = startCell.convert(startCell.bounds.origin, to: calendar)
             let endPoint = endCell.convert(endCell.bounds.origin, to: calendar)
@@ -591,9 +597,14 @@ class CalendarViewController: UIViewController, FSCalendarDelegate, FSCalendarDa
             let event = self.events[index]
             guard let userId = self.userId else { return }
             
-            let endpoint = event.startTime != nil && event.deadline == nil ?
-                "/plan/\(userId)/\(event.id)" :
-                "/plansub/\(userId)/\(event.id)"
+            let endpoint: String
+            if event.startTime == nil && event.deadline == nil {
+                endpoint = "/plan/\(userId)/\(event.id)"
+            } else {
+                endpoint = event.startTime != nil && event.deadline == nil ?
+                    "/plan/\(userId)/\(event.id)" :
+                    "/plansub/\(userId)/\(event.id)"
+            }
             
             self.apiService.deleteWithStatusCode(endpoint: endpoint) { [weak self] statusCode in
                 DispatchQueue.main.async {
