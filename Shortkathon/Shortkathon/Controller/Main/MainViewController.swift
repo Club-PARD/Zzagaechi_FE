@@ -144,9 +144,9 @@ class MainViewController : UIViewController {
             image4.widthAnchor.constraint(equalToConstant: 125),
             image4.heightAnchor.constraint(equalToConstant: 138),
             
-            resetButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 73),
-            resetButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -26 ),
-            resetButton.widthAnchor.constraint(equalToConstant: 125),
+            resetButton.topAnchor.constraint(equalTo: view.topAnchor , constant: 20),
+            resetButton.leadingAnchor.constraint(equalTo: view.leadingAnchor ,constant: 20 ),
+            resetButton.widthAnchor.constraint(equalToConstant: 300),
             resetButton.heightAnchor.constraint(equalToConstant: 138),
             
             taskTableView.centerXAnchor.constraint(equalTo: view.centerXAnchor),

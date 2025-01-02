@@ -156,6 +156,8 @@ class AddDetailScheduleViewController3 : UIViewController {
             // ProgressBarImage
             progessbarImage.topAnchor.constraint(equalTo: mainLabel.bottomAnchor, constant: 60),
             progessbarImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 31),
+            progessbarImage.widthAnchor.constraint(equalToConstant: 179),
+            progessbarImage.heightAnchor.constraint(equalToConstant: 21),
             
             // TitleLabel
             titleLabel.topAnchor.constraint(equalTo: progessbarImage.bottomAnchor, constant: 15),
@@ -163,8 +165,8 @@ class AddDetailScheduleViewController3 : UIViewController {
             
             // TableUIView
             tableUIView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 70),
-            tableUIView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 31),
-            tableUIView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -31),
+            tableUIView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
+            tableUIView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15),
             tableUIView.viewHeightConstraint!,
             
             // NextButton

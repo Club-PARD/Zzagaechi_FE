@@ -63,20 +63,25 @@ class SimpleScheduleController: UIViewController, UITextFieldDelegate {
     }()
     
     let schedulTextField: UITextField = {
-        let textField = UITextField()
-        textField.placeholder = "제목을 입력하세요"
-        textField.borderStyle = .roundedRect
-        textField.layer.cornerRadius = 12
-        textField.font = .systemFont(ofSize: 14)
-        textField.font = UIFont(name: "Pretendard-Regular", size: 14)
-        
-        textField.backgroundColor = #colorLiteral(red: 0.137254902, green: 0.137254902, blue: 0.137254902, alpha: 1)
-        textField.textColor = #colorLiteral(red: 0.9999999881, green: 0.9999999881, blue: 0.9999999881, alpha: 1)
-        textField.layer.borderColor = #colorLiteral(red: 0.9764705882, green: 0.9529411765, blue: 0.568627451, alpha: 1)
-        textField.layer.borderWidth = 2
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        return textField
-    }()
+            let textField = UITextField()
+            textField.placeholder = "제목을 입력하세요"
+            textField.borderStyle = .roundedRect
+            textField.layer.cornerRadius = 12
+            textField.font = .systemFont(ofSize: 14)
+            textField.font = UIFont(name: "Pretendard-Regular", size: 14)
+            
+            textField.backgroundColor = #colorLiteral(red: 0.137254902, green: 0.137254902, blue: 0.137254902, alpha: 1)
+            textField.textColor = #colorLiteral(red: 0.9999999881, green: 0.9999999881, blue: 0.9999999881, alpha: 1)
+            textField.layer.borderColor = #colorLiteral(red: 0.9764705882, green: 0.9529411765, blue: 0.568627451, alpha: 1)
+            textField.layer.borderWidth = 2
+            
+            let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: textField.frame.height))
+            textField.leftView = paddingView
+            textField.leftViewMode = .always
+            
+            textField.translatesAutoresizingMaskIntoConstraints = false
+            return textField
+        }()
     
     let startLabel: UILabel = {
         let label = UILabel()

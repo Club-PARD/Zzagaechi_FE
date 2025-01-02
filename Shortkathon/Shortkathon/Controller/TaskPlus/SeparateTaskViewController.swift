@@ -180,6 +180,7 @@ class SeparateTaskViewController : UIViewController {
         
     }
     
+    
     @objc func doTap() {
         print("누가 간단한 일정 눌렀디")
         let vc = SimpleScheduleController()

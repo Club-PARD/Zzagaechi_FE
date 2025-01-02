@@ -160,6 +160,8 @@ class AddDetailScheduleViewController4 : UIViewController {
             
             progessbarImage.topAnchor.constraint(equalTo: mainLabel.bottomAnchor, constant: 60),
             progessbarImage.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 31),
+            progessbarImage.widthAnchor.constraint(equalToConstant: 179),
+            progessbarImage.heightAnchor.constraint(equalToConstant: 21),
             
             titleLabel.topAnchor.constraint(equalTo: progessbarImage.bottomAnchor, constant: 15),
             titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor , constant: 31),
@@ -171,7 +173,7 @@ class AddDetailScheduleViewController4 : UIViewController {
             
             
             taskTableView.topAnchor.constraint(equalTo: descriptionImage.bottomAnchor, constant: 6),
-            taskTableView.heightAnchor.constraint(equalToConstant: 281),
+            taskTableView.heightAnchor.constraint(equalToConstant: 297),
             taskTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 29),
             taskTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -29),
             
@@ -307,6 +309,23 @@ extension AddDetailScheduleViewController4 : UITableViewDelegate,UITableViewData
         return 100
     }
     
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+           tableView.deselectRow(at: indexPath, animated: true)
+           
+           let selectedTask = taskList[indexPath.row]
+           print("Cell tapped for task: \(selectedTask)")
+           
+           let detailVC = TimeModalViewController()
+           detailVC.delegate = self
+           detailVC.availableStartDate = startDate
+           detailVC.availableEndDate = endDate
+           selectedCell = tableView.cellForRow(at: indexPath)  // 선택된 셀 저장
+           
+           detailVC.modalPresentationStyle = .overCurrentContext
+           detailVC.modalTransitionStyle = .crossDissolve
+           present(detailVC, animated: true, completion: nil)
+       }
     
     
     
