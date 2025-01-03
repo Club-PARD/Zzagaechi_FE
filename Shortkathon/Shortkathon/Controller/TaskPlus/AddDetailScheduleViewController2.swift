@@ -85,7 +85,7 @@ class AddDetailScheduleViewController2 : UIViewController {
     let subLabel: UILabel = {
         let label = UILabel()
         label.text = "언제부터 언제까지 진행하실건가요?"
-        label.font = UIFont(name: "Pretendard-Regular", size: 15)
+        label.font = UIFont(name: "Pretendard-Medium", size: 16)
         label.textColor = #colorLiteral(red: 0.6901960784, green: 0.6901960784, blue: 0.6901960784, alpha: 1)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label

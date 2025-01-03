@@ -57,7 +57,7 @@ class AddDetailScheduleViewController1 : UIViewController,  UITextFieldDelegate 
     let subLabel: UILabel = {
         let label = UILabel()
         label.text = "어떤 일을 해야 하는지 제목을 입력해주세요"
-        label.font = UIFont(name: "Pretendard-Medium", size: 15)
+        label.font = UIFont(name: "Pretendard-Medium", size: 14)
         label.textColor = #colorLiteral(red: 0.6901960784, green: 0.6901960784, blue: 0.6901960784, alpha: 1)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
