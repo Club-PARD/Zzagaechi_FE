@@ -69,7 +69,6 @@
 <br>
 
 
-![IMG_2584](https://github.com/user-attachments/assets/f849fd8b-c5d8-45b8-9f2d-e19abf4f9e01)
 
 
 <br>
